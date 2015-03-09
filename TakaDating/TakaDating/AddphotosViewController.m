@@ -232,7 +232,8 @@
     NSMutableDictionary * dictParm=[[NSMutableDictionary alloc]init];
     [dictParm setValue:[SingletonClass shareSingleton].userID forKey:@"id"];
 
-    NSString * postUrl=@"http://taka.dating/mobile/uploadImage/";
+    //NSString * postUrl=@"http://taka.dating/mobile/uploadImage/";
+    NSString * postUrl=@"http://23.238.24.26/mobi/upload-mobile";
     AFNHelper * afn=[[AFNHelper alloc]init];
    
     
@@ -319,7 +320,7 @@
         [[UIApplication sharedApplication] openURL:instagramUrl];
     }*/
     NSString * client_id = @"ae273bad2ab543b789f5be827a6a1e29";
-    NSString * redirectUri=@"http://takadating/instagram-images";
+    NSString * redirectUri=@"http://23.238.24.26/instagram-images/";
    // NSString * redirectUri=@"https://www.google.com/";
     NSString * url=[NSString stringWithFormat:@"https://instagram.com/oauth/authorize/?client_id=%@&redirect_uri=%@&response_type=token",client_id,redirectUri];
     NSURL * instagramUrl=[NSURL URLWithString:url];

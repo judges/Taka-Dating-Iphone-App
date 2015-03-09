@@ -275,11 +275,26 @@
     imageScroll.delegate=self;
     [imageScroll setShowsHorizontalScrollIndicator:NO];
     [self.parentView addSubview:imageScroll];
-    NSArray * arrOfImages=[NSArray arrayWithArray:[SingletonClass shareSingleton].userImages];
-   // NSMutableArray * arrOfImages=[[NSMutableArray alloc]init];
+   // NSArray * arrOfImages=[NSArray arrayWithArray:[SingletonClass shareSingleton].userImages];
+    NSMutableArray * arrOfImages=[[NSMutableArray alloc]init];
      NSString * imageUrl;
-       // NSMutableArray * arrOfImages=[[NSMutableArray alloc]init];
+    
     NSLog(@"arr count %lu",(unsigned long)[SingletonClass shareSingleton].profileImages.count);
+   
+    for (int s=0; s<[SingletonClass shareSingleton].profileImages.count; s++) {
+        NSMutableDictionary * dict=[[SingletonClass shareSingleton].profileImages objectAtIndex:s];
+     
+            
+            if ([[dict objectForKey:@"privacy"]isEqualToString:@"3"]) {
+                imageUrl=[NSString stringWithString:[dict objectForKey:@"imageLink"]];
+            }
+            else{
+                imageUrl=[NSString stringWithFormat:@"http://taka.dating/%@",[dict objectForKey:@"imageLink"]];
+            }
+            [arrOfImages addObject:imageUrl];
+        }
+
+    
    
     for (int i=0; i<arrOfImages.count; i++) {
         
@@ -304,7 +319,7 @@
     view.backgroundColor=[UIColor grayColor];
     view.layer.cornerRadius=5;
     view.clipsToBounds=YES;
-    if ([SingletonClass shareSingleton].userImages.count==0) {
+    if ([SingletonClass shareSingleton].profileImages.count==0) {
         view.hidden=YES;
     }
     else{
@@ -319,20 +334,26 @@
    imageCount=[[UILabel alloc]initWithFrame:CGRectMake(40, 20, 50, 25)];
     imageCount.textColor=[UIColor whiteColor];
     imageCount.font=[UIFont systemFontOfSize:12];
-    if ([SingletonClass shareSingleton].userImages.count==0) {
+    if ([SingletonClass shareSingleton].profileImages.count==0) {
         imageCount.hidden=YES;
     }
     else{
-     imageCount.text=[NSString stringWithFormat:@"1/%lu",(unsigned long)[SingletonClass shareSingleton].userImages.count];
+     imageCount.text=[NSString stringWithFormat:@"1/%lu",(unsigned long)[SingletonClass shareSingleton].profileImages.count];
     }
     [self.parentView addSubview:imageCount];
     
+    isOnline=[[UIImageView alloc]init];
+    isOnline.image=[UIImage imageNamed:@"online_icon.png"];
+    [self.parentView addSubview:isOnline];
     UILabel *  ProfileName=[[UILabel alloc]init];
+    
     if ([UIScreen mainScreen].bounds.size.height<500) {
         ProfileName.frame=CGRectMake(40, self.parentView.frame.size.height-220, self.parentView.frame.size.width-150, 30);
+        isOnline.frame=CGRectMake(10, self.parentView.frame.size.height-220, 30, 30);
     }
     else{
-    ProfileName.frame=CGRectMake(40, self.parentView.frame.size.height-180, 200, 30);
+        ProfileName.frame=CGRectMake(40, self.parentView.frame.size.height-180, 200, 30);
+        isOnline.frame=CGRectMake(10, self.parentView.frame.size.height-180, 30, 30);
     }
     ProfileName.textColor=[UIColor blackColor];
     ProfileName.text=[SingletonClass shareSingleton].name;
@@ -392,11 +413,11 @@
     CGFloat pageWidth = scrollView.frame.size.width;
     int page = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     page=page+1;
-    if ([SingletonClass shareSingleton].userImages.count==0) {
+    if ([SingletonClass shareSingleton].profileImages.count==0) {
         imageCount.hidden=YES;
     }
     else{
-    imageCount.text=[NSString stringWithFormat:@"%d/%lu",page,(unsigned long)[SingletonClass shareSingleton].userImages.count];
+    imageCount.text=[NSString stringWithFormat:@"%d/%lu",page,(unsigned long)[SingletonClass shareSingleton].profileImages.count];
     }
     NSLog(@"Scrolling - You are now on page %i",page);
 }
@@ -434,7 +455,7 @@ NS_AVAILABLE_IOS(5_0){
 -(void)swipeGesture:(CGRect)frame{
     if(self.parentView.frame.origin.y==0)
     {
-        [UIView animateWithDuration:2 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             
             if ([UIScreen mainScreen].bounds.size.height>500) {
                 
@@ -466,7 +487,7 @@ NS_AVAILABLE_IOS(5_0){
     }
     else{
         
-        [UIView animateWithDuration:2 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=CGRectMake(0,0 ,self.screen_width, self.view.frame.size.height);
             self.secondView.hidden=YES;
         } completion:^(BOOL finished) {
@@ -664,7 +685,7 @@ NS_AVAILABLE_IOS(5_0){
        )//&& self.selectedIndex!=tagValue)
     {
         
-        [UIView animateWithDuration:2 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=frame;//CGRectMake(0, -300, self.screen_width, self.view.frame.size.height);
         } completion:^(BOOL finished) {
             CGRect  ff;
@@ -696,7 +717,7 @@ NS_AVAILABLE_IOS(5_0){
     }
     else{
         self.secondView.hidden=YES;
-        [UIView animateWithDuration:2 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=CGRectMake(0,0 , self.screen_width, self.view.frame.size.height);
             self.secondView.hidden=YES;
            // self.profileTableView.hidden=YES;
@@ -977,28 +998,40 @@ NS_AVAILABLE_IOS(5_0){
                     if ([SingletonClass shareSingleton].intr_name.count>0) {
                         UIScrollView * scroll=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height)];
                         [cell.contentView addSubview:scroll];
-                        scroll.contentSize=CGSizeMake([SingletonClass shareSingleton].intr_name.count*120, cell.contentView.frame.size.height);
-                        
+                        scroll.contentSize=CGSizeMake([SingletonClass shareSingleton].intr_name.count*100, cell.contentView.frame.size.height);
+                        CGFloat height=50;
+                        CGFloat cellWdth=0;
                         for (int s=0; s<[SingletonClass shareSingleton].intr_name.count; s++) {
-                                CGFloat height=scroll.frame.size.height;
-                                CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:height];
+                            
+                                CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:50];
                                 UILabel * interestLbl=[[UILabel alloc]init];
-                                if (width>140) {
+                               /* if (width>140) {
                                     interestLbl.frame=CGRectMake (10+(s*50), 0, 200,scroll.frame.size.height);
                                 }
                                 else{
                                     interestLbl.frame=CGRectMake (40+(s*100), 0, 200,scroll.frame.size.height);
-                                }
+                                }*/
+                            cellWdth+=width;
+ //                           if (cellWdth>=300) {
+//                                interestLbl.frame=CGRectMake (10+(s*100), 3, width+20,30);
+ //                               cellWdth=0;
+  //                          }
+//                            else{
+                                interestLbl.frame=CGRectMake (10+(s*cellWdth), 3, width+20,30);
+                           // }
                           
                             interestLbl.text=[SingletonClass shareSingleton].intr_name[s];
                             NSLog(@"interest string %@",interestLbl.text);
                             interestLbl.textColor=[UIColor blackColor];
+                            interestLbl.backgroundColor=[UIColor colorWithRed:(CGFloat)224/255 green:(CGFloat)219/255 blue:(CGFloat)219/255 alpha:1.0];
                             interestLbl.textAlignment=NSTextAlignmentCenter;
                             interestLbl.font=[UIFont boldSystemFontOfSize:12];
                             [scroll addSubview:interestLbl];
+                           // [cell.contentView addSubview:interestLbl];
                             }
                         UITapGestureRecognizer * gesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(moveToInterestView:)];
                         [scroll addGestureRecognizer:gesture];
+                        //[cell.contentView addGestureRecognizer:gesture];
                         }
                     else{
                         cell.textLabel.text=@"Inetrests";
@@ -1106,6 +1139,24 @@ NS_AVAILABLE_IOS(5_0){
     
     if(tableView==self.profileTableView)
     {
+        /*if (indexPath.section==2) {
+            
+        
+        if ([SingletonClass shareSingleton].intr_name.count>0) {
+            CGFloat height=50;
+            CGFloat cellWdth=0;
+            
+            for (int s=0; s<[SingletonClass shareSingleton].intr_name.count; s++) {
+                
+                CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:50];
+                cellWdth+=width;
+                if (cellWdth>=300) {
+                    height+=50;
+                    return height;
+                }
+            }
+        }
+        }*/
         return row_hh;
     }
     return 45;
@@ -1310,13 +1361,16 @@ NS_AVAILABLE_IOS(5_0){
     NSError * error=nil;
     NSURLResponse * urlResponse=nil;
     
-    NSString * urlStr=[NSString stringWithFormat:@"http://taka.dating/getFullInterests/%@",[SingletonClass shareSingleton].userID];
-    urlStr=[urlStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSString * urlStr=[NSString stringWithFormat:@"http://23.238.24.26/user/get-all-interests"];
+    //urlStr=[urlStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     
     NSURL * url=[NSURL URLWithString:urlStr];
     
     NSMutableURLRequest * request =[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
-    
+    [request setHTTPMethod:@"POST"];
+     [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
     NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
     
     id parse =[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];

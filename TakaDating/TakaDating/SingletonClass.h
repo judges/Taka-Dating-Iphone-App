@@ -72,4 +72,7 @@
 @property(nonatomic,strong)NSMutableArray * encounterUsrImages;
 @property(nonatomic,strong)NSString * encounterUsrProfilePic;
 @property(nonatomic)NSString *enhereFor,*enwithWhom,*enFromAge,*enEndAge;
+
+
+@property(nonatomic,strong)NSMutableArray * selectedInterests ;
 @end

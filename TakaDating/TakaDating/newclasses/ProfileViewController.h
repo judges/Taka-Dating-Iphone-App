@@ -21,6 +21,7 @@
     BOOL facebookVerify,spVerify,viewAppear;
     CGSize windowSize;
     CGFloat row_hh,credts_hh,font_size;
+    UIImageView * isOnline;
 }
 
 @property(nonatomic)UIButton * settingButton;

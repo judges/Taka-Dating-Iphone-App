@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface LikedYouViewController : UIViewController<UICollectionViewDataSource,UIScrollViewDelegate,UICollectionViewDelegate,UIAccelerometerDelegate>
+@interface LikedYouViewController : UIViewController<UICollectionViewDataSource,UIScrollViewDelegate,UICollectionViewDelegate>
 {
     NSMutableArray * sex,* imageCount,* isOnline,*displayName,*useriId,*thumbanailUrl;
     CGSize windowSize;

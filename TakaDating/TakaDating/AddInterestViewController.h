@@ -12,7 +12,8 @@
 @interface AddInterestViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,UISearchBarDelegate>
 {
     CGSize windowSize;
-    NSMutableArray * subData;
+    NSMutableArray * subData,* subCat_id;
+    NSArray * sortedData,* sortedId;
     
 }
 @property(nonatomic)UITableView * addInterestTable;

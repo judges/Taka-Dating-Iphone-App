@@ -13,7 +13,7 @@
     NSMutableArray * privacyZeroPic,* privacyOnePic,* privacyTwoPic;
     CGFloat x,y,header_hh;
 }
-
+@property(nonatomic,strong)UIActivityIndicatorView* refreshActivityIndicator;
 @property (nonatomic) UIScrollView *scrollView;
 //@property (nonatomic) UICollectionView *topCollectionView;
 @property (nonatomic) UICollectionView *mainCollectionView;

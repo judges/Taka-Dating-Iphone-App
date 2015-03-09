@@ -849,6 +849,7 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
                 cell.detailTextLabel.text=_about;
             }
             if (indexPath.row==5) {
+                cell.detailTextLabel.text=_living;
                 
             }
             if (indexPath.row==2) {
@@ -858,30 +859,30 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
                 cell.detailTextLabel.text=_sexuality;
             }
             if (indexPath.row==4) {
-               
-            }
-            if (indexPath.row==6) {
-                cell.detailTextLabel.text=_living;
-            }
-            if (indexPath.row==7) {
-                cell.detailTextLabel.text=_kids;
-            }
-            if (indexPath.row==8) {
-                cell.detailTextLabel.text=_smoking;
-            }
-            if (indexPath.row==9) {
-                cell.detailTextLabel.text=_drinking;
-            }
-            if (indexPath.row==10) {
-                cell.detailTextLabel.text=_eduaction;
-            }
-            if (indexPath.row==11) {
-                cell.detailTextLabel.text=_languages;
                 
             }
-            if (indexPath.row==12) {
+            if (indexPath.row==6) {
+                cell.detailTextLabel.text=_kids;
+            }
+            if (indexPath.row==7) {
+                cell.detailTextLabel.text=_smoking;
+            }
+            if (indexPath.row==8) {
+                cell.detailTextLabel.text=_drinking;
+            }
+            if (indexPath.row==9) {
+                cell.detailTextLabel.text=_eduaction;
+            }
+            if (indexPath.row==10) {
+                cell.detailTextLabel.text=_languages;
+            }
+            if (indexPath.row==11) {
+                
                 cell.detailTextLabel.text=_profession;
-                }
+            }
+            if (indexPath.row==12) {
+                
+            }
         }
         if (indexPath.section==1) {
             if (indexPath.row==0) {
@@ -1052,12 +1053,12 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
                 _income=[self getIncome:[userInfo objectForKey:@"income"]];
                 _relationship=[self getRelationship:[userInfo objectForKey:@"relationshipStatus"]];
                 _sexuality=[self getSexuality:[userInfo objectForKey:@"sexuality"]];
-                _profession=[userInfo objectForKey:@"profession"];
-                if ([[userInfo objectForKey:@"languagesKnown"]isEqualToString:@"0"]) {
+                _languages=[userInfo objectForKey:@"languagesKnown"];
+                if ([[userInfo objectForKey:@"profession"]isEqualToString:@"0"]) {
                     _profession=@"";
                 }
                 else{
-                    _profession=[userInfo objectForKey:@"languagesKnown"];
+                    _profession=[userInfo objectForKey:@"profession"];
                 }
                 NSArray * intrestArr=[enParse objectForKey:@"userInterests"];
                 

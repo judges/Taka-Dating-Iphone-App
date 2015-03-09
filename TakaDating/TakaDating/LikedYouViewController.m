@@ -211,7 +211,7 @@
     return thumbanailUrl.count;
 }
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return 2;
+    return 1;
 }
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -417,6 +417,7 @@
         userProfileVC=nil;
     }
     userProfileVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
+    userProfileVC.index=[useriId objectAtIndex:indexPath.row];
     [self.navigationController pushViewController:userProfileVC animated:YES];
     
 }
@@ -504,6 +505,7 @@
     
     //if ([[parse objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
         NSArray * userLikesMe=[parse objectForKey:@"resultlikeby"];
+    if (userLikesMe.count>0) {
         NSMutableDictionary * dict=[[NSMutableDictionary alloc]init];
         for (int i=0; i<userLikesMe.count; i++) {
             dict=[userLikesMe objectAtIndex:i];
@@ -511,10 +513,10 @@
              //[imageCount addObject:[dict objectForKey:@"imagecount"]];
              [isOnline addObject:[dict objectForKey:@"isOnline"]];
              [displayName addObject:[dict objectForKey:@"displayName"]];
-             [useriId addObject:[dict objectForKey:@"userIdLikesBy"]];
+             [useriId addObject:[dict objectForKey:@"userIdLikesTo"]];
              [thumbanailUrl addObject:[dict objectForKey:@"thumbanailUrl"]];
         }
-   // }
+    }
     
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"likedYou" object:nil];
 }

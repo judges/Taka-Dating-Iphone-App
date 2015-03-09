@@ -49,7 +49,9 @@
 
 - (void)viewDidLoad
 {
-    [NSThread detachNewThreadSelector:@selector(divideImagesOnBasisPrivacy) toTarget:self withObject:nil];
+    
+    //[NSThread detachNewThreadSelector:@selector(divideImagesOnBasisPrivacy) toTarget:self withObject:nil];
+   
     self.view.frame=[SingletonClass shareSingleton].frame;
     NSLog(@"view frame %f",self.view.frame.size.height-268);
     [super viewDidLoad];
@@ -66,8 +68,25 @@
         header_hh=25;
     }
     
+    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 150, 40, 40)];
     
-    [self createCollectionView];
+    self.refreshActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    
+    self.refreshActivityIndicator.color = [UIColor blackColor];
+    
+    [self.view addSubview:self.refreshActivityIndicator];
+    self.refreshActivityIndicator.alpha = 1.0;
+    [self.refreshActivityIndicator startAnimating];
+    
+    dispatch_async(dispatch_get_global_queue(0, 0),^{
+        [self divideImagesOnBasisPrivacy];
+        dispatch_async(dispatch_get_main_queue(),^{
+            [self.refreshActivityIndicator stopAnimating];
+            [self createCollectionView];
+        });
+    });
+    
+    
     // Do any additional setup after loading the view from its nib.
 }
 

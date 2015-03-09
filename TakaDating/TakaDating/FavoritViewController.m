@@ -303,35 +303,59 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
-    
-    if (section==0) {
-        CGSize size = CGSizeMake(self.view.frame.size.width, 25);
-        return size;
+    CGSize size;
+   /* if (section==0) {
+         if (isProfilePic==YES) {
+        size = CGSizeMake(self.view.frame.size.width, 180);
+             return size;
+         }
+        
    }
     else if (section==1)
     {
        if (isProfilePic==NO) {
-        CGSize size = CGSizeMake(self.view.frame.size.width, 180);
+        size = CGSizeMake(self.view.frame.size.width, 180);
         return size;
        }
     }
     else if (section==2)
     {
         if (isProfilePic==NO) {
-            CGSize size = CGSizeMake(self.view.frame.size.width, 180);
+           size = CGSizeMake(self.view.frame.size.width, 25);
             return size;
             
         }
     }
     else if(section==3){
         if (isProfilePic==YES) {
-            CGSize size = CGSizeMake(self.view.frame.size.width, 180);
+             size = CGSizeMake(self.view.frame.size.width, 180);
             return size;
             
         }
+    }*/
+    if (section==0) {
+        if (isProfilePic==NO) {
+            size = CGSizeMake(self.view.frame.size.width, 180);
+            return size;
+
+        }
     }
-    CGSize size = CGSizeMake(self.view.frame.size.width, 25);
-    return size;
+   else if (section==1) {
+        if (isProfilePic==YES) {
+        size = CGSizeMake(self.view.frame.size.width, 180);
+        return size;
+        }
+
+    }
+    else  if(section==2)
+    {
+        if (isProfilePic==YES) {
+            size = CGSizeMake(self.view.frame.size.width, 180);
+            return size;
+        }
+    }
+        size = CGSizeMake(self.view.frame.size.width, 25);
+        return size;
     
 }
 
@@ -343,21 +367,24 @@
         
         if (indexPath.section==0) {
             reuseableView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
-//            if (thumbanailUrl.count<1) {
-//                [self createFirstSectionHeader:reuseableView];
-//            }
+            //if (thumbanailUrl.count<1) {
+           //     [self createFirstSectionHeader:reuseableView];
+           // }
+            if (thumbanailUrlUser.count<1) {
+                [self createSecondSectionHeader:reuseableView];
+            }
             
             
             
         }
-        else if(indexPath.section==1){
+        else if(indexPath.section==0){
             reuseableView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderViewSectionTwo" forIndexPath:indexPath];
             if (thumbanailUrlUser.count<1) {
                  [self createSecondSectionHeader:reuseableView];
             }
            
         }
-        else if(indexPath.section==2){
+        else if(indexPath.section==1){
            reuseableView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderViewSectionThree" forIndexPath:indexPath];
           [self  createThirdSectionHeader:reuseableView];
         }
@@ -367,7 +394,7 @@
         }*/
         
         
-        reuseableView.backgroundColor = [UIColor whiteColor];
+        reuseableView.backgroundColor = [UIColor blackColor];
         if (indexPath.section==0) {
             //textLabel.frame = CGRectMake(0, 100, self.view.frame.size.width, 25);
             reuseableView.headerTitleLabel.text = @"   Added you as a Favorite";
@@ -483,7 +510,7 @@
         if (!self.secTopLabel) {
             self.secTopLabel=[[UILabel alloc]init];
             self.secTopLabel.frame=CGRectMake(40, 80, 240, 30);
-            self.secTopLabel.textColor=[UIColor blackColor];
+            self.secTopLabel.textColor=[UIColor whiteColor];
             self.secTopLabel.font=[UIFont systemFontOfSize:12];
             self.secTopLabel.textAlignment=NSTextAlignmentCenter;
             self.secTopLabel.lineBreakMode=NSLineBreakByCharWrapping;
@@ -517,7 +544,7 @@
     if (!self.toplabel) {
         self.toplabel=[[UILabel alloc]init];
         self.toplabel.frame=CGRectMake(40, 80, 240, 30);
-        self.toplabel.textColor=[UIColor blackColor];
+        self.toplabel.textColor=[UIColor whiteColor];
         self.toplabel.font=[UIFont systemFontOfSize:12];
         self.toplabel.textAlignment=NSTextAlignmentCenter;
         self.toplabel.lineBreakMode=NSLineBreakByCharWrapping;
@@ -563,11 +590,11 @@
 -(void)createThirdSectionHeader:(CollectionHeaderTitleLabel *)areuseableView{
     
     UIView *backView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 150)];
-    backView.backgroundColor = [UIColor clearColor];
+    backView.backgroundColor = [UIColor blackColor];
     [areuseableView addSubview:backView];
 
     
-    if (isProfilePic==NO) {
+    if (isProfilePic==YES) {
         if (!self.addPhotoButton) {
             
             self.addPhotoButton=[[UIButton alloc]initWithFrame:CGRectMake(60, 120, 240, 30)];
@@ -581,7 +608,7 @@
         if (!self.toplabel) {
             self.toplabel=[[UILabel alloc]init];
             self.toplabel.frame=CGRectMake(40, 80, 240, 30);
-            self.toplabel.textColor=[UIColor blackColor];
+            self.toplabel.textColor=[UIColor whiteColor];
             self.toplabel.font=[UIFont systemFontOfSize:12];
             self.toplabel.textAlignment=NSTextAlignmentCenter;
             self.toplabel.lineBreakMode=NSLineBreakByCharWrapping;
@@ -622,7 +649,7 @@
         if (!self.thirdTopLabel) {
             self.thirdTopLabel=[[UILabel alloc]init];
             self.thirdTopLabel.frame=CGRectMake(40, 80, 240, 30);
-            self.thirdTopLabel.textColor=[UIColor blackColor];
+            self.thirdTopLabel.textColor=[UIColor whiteColor];
             self.thirdTopLabel.font=[UIFont systemFontOfSize:12];
             self.thirdTopLabel.textAlignment=NSTextAlignmentCenter;
             self.thirdTopLabel.lineBreakMode=NSLineBreakByCharWrapping;

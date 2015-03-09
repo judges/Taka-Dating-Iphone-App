@@ -87,6 +87,7 @@
 
 -(void)getDataFromPath:(NSString *)path withParamDataImage:(NSMutableDictionary *)dictParam andImage:(UIImage *)image withBlock:(RequestCompletionBlock)block
 {
+  
     if (block) {
         dataBlock=[block copy];
     }
@@ -100,8 +101,18 @@
         //NSURL *filePath = [NSURL fileURLWithPath:@"file://path/to/image.png"];
         [manager POST:path parameters:dictParam constructingBodyWithBlock:^(id<AFMultipartFormData> formData)
         {
+            int count=(int)[[NSUserDefaults standardUserDefaults]integerForKey:@"imageCount"];
+            if (!count) {
+                count=0;
+            }
+            
+            NSString * imageName=[NSString stringWithFormat:@"image_upload%d",count];
+            
 //            [formData appendPartWithFormData:imageToUpload name:@"image_upload"];
-            [formData appendPartWithFileData:imageToUpload name:@"image_upload" fileName:@"image_upload18.png" mimeType:@"png"];
+            [formData appendPartWithFileData:imageToUpload name:@"image_upload" fileName:imageName mimeType:@"png"];
+            count+=1;
+            [[NSUserDefaults standardUserDefaults]setInteger:count forKey:@"imageCount"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
             //[formData appendPartWithFormData:imageToUpload name:@"image_upload"];
         }
               success:^(AFHTTPRequestOperation *operation, id responseObject) {

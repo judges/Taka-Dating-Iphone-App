@@ -14,10 +14,11 @@
     UIScrollView * imageScroll;
     CGSize windowSize;
      CGFloat row_hh,height;
+    
      
 }
 
-
+@property(nonatomic,strong)UIActivityIndicatorView * refreshActivityIndicator;
 @property(nonatomic)UILabel * titleLabel;
 @property(nonatomic)UIButton *  cancelButton;
 @property(nonatomic,strong)UIView *parentView, *tabView,*bottomView,*firstView;
@@ -28,5 +29,9 @@
 @property(nonatomic,strong)UISwipeGestureRecognizer * swipe;
 @property (nonatomic, assign) CGFloat screen_width;
 @property(nonatomic)UIView * secondView;
-@property(nonatomic,assign)int index;
+@property(nonatomic,strong)NSString * index,* imageUrl;
+
+
+@property(nonatomic,strong) NSString * useriId,*sex,*income,*languages,*profession,*sexuality,*relationship,*eduaction,*drinking,*smoking,*kids,*living,*weight,*height,*bodyType,*about,*interestedIn,*displayName,*location,*hairColor,*eyeColor,*intrests,*imageId;;
+
 @end

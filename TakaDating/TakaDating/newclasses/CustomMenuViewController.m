@@ -557,7 +557,7 @@
                 else{
                     if ([SingletonClass shareSingleton].userImages.count<=0) {
                         // [NSThread detachNewThreadSelector:@selector(getProfileImages) toTarget:self withObject:nil];
-                        [self getProfileImages]; //---------- Error in service
+                       // [self getProfileImages]; //---------- Error in service
                     }
                     
                 }

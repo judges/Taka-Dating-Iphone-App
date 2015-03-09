@@ -116,7 +116,7 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     NSLog(@"images count in promote %lu",(unsigned long)[SingletonClass shareSingleton].userImages.count);
-    return [SingletonClass shareSingleton].userImages.count;
+    return [SingletonClass shareSingleton].profileImages.count;
 }
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
@@ -134,11 +134,22 @@
    //     customCellView.toggleButton.hidden=YES;
    // }
    // else{
-        NSURL * imageUrl;
-        if ([SingletonClass shareSingleton].userImages.count>0) {
+        NSString * imageUrl;
+        if ([SingletonClass shareSingleton].profileImages.count>0) {
            // imageUrl=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[[SingletonClass shareSingleton].userImages objectAtIndex:indexPath.row]]];
       //  }
-        [customCellView.profileImageView  setImageWithURL:[[SingletonClass shareSingleton].userImages objectAtIndex:indexPath.row]];
+            NSMutableDictionary * dict=[[SingletonClass shareSingleton].profileImages objectAtIndex:indexPath.row];
+            
+            
+            if ([[dict objectForKey:@"privacy"]isEqualToString:@"3"]) {
+                imageUrl=[NSString stringWithString:[dict objectForKey:@"imageLink"]];
+            }
+            else{
+                imageUrl=[NSString stringWithFormat:@"http://taka.dating/%@",[dict objectForKey:@"imageLink"]];
+            }
+            NSURL * url=[NSURL URLWithString:imageUrl];
+            
+        [customCellView.profileImageView  setImageWithURL:url];
     
        
     }

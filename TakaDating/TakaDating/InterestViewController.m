@@ -376,7 +376,7 @@
     }self.addInterestVC=[[AddInterestViewController alloc]initWithNibName:@"AddInterestViewController" bundle:nil];
     self.addInterestVC.subArray=subArray;
     self.addInterestVC.intr_id_arr=temp2;
-        AppDelegate * appdelegate=(AppDelegate*)[UIApplication sharedApplication].delegate;
+      //  AppDelegate * appdelegate=(AppDelegate*)[UIApplication sharedApplication].delegate;
         //[appdelegate.window addSubview:self.addInterestVC.view];
     [self.navigationController pushViewController:self.addInterestVC animated:YES];
     
@@ -405,13 +405,16 @@
 -(void)getAllInterest{
     NSError * error;
     NSURLResponse * resposne;
-    NSString * urlStr=[NSString stringWithFormat:@"http://taka.dating//user/getAllInterests/%@",[SingletonClass shareSingleton].userID];
+    NSString * urlStr=[NSString stringWithFormat:@"http://23.238.24.26/user/get-all-interests"];
     
-    urlStr=[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+   // urlStr=[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
     NSURL * url=[NSURL URLWithString:urlStr];
     
     NSMutableURLRequest * request=[NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
-    
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
     NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&resposne error:&error];
     if (data==nil) {
         NSLog(@"Data is not available");

@@ -7,6 +7,8 @@
 //
 
 #import "UserProfileViewController.h"
+#import "SingletonClass.h"
+#import "UIImageView+WebCache.h"
 
 @interface UserProfileViewController ()
 {
@@ -45,7 +47,7 @@
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.textColor = [UIColor whiteColor];
     self.titleLabel.font = [UIFont boldSystemFontOfSize:20];
-    self.titleLabel.text = @"Name";
+    self.titleLabel.text = @"";
     [headerview addSubview:self.titleLabel];
     //Add Cancel BUTTON
     self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -83,9 +85,34 @@
         self.sectionTwoData=[NSArray arrayWithObjects:@"Location",@"About Me",@"Relationship",@"Sexuality",@"Appearence",@"Living",@"Children",@"Smoking",@"Drinking",@"Education",@"I Speak",@"I Work as", nil];
         self.sectionTwoImages=[NSArray arrayWithObjects:@"location.png",@"about_me.png",@"add_interest.png",@"relationship.png",@"sexuality.png",@"apperance.png",@"living.png",@"kids.png",@"smoking.png",@"drinking.png",@"education.png",@"language.png",@"work.png", nil];
     }
-    [self createUI];
-    [self createScrollUI];
+    
+    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 180, 40, 40)];
+    
+    self.refreshActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    
+    self.refreshActivityIndicator.color = [UIColor blackColor];
+    
+    [self.view addSubview:self.refreshActivityIndicator];
+    [self.view bringSubviewToFront:self.refreshActivityIndicator];
+    self.refreshActivityIndicator.alpha = 1.0;
+ [self.refreshActivityIndicator startAnimating];
+        [self callRefreshControl];
+    
+    
+   
     // Do any additional setup after loading the view from its nib.
+}
+-(void)callRefreshControl{
+    dispatch_async(dispatch_get_global_queue(0, 0),^{
+       
+        [self callWebService];
+        dispatch_async(dispatch_get_main_queue(),^{
+            [self.refreshActivityIndicator stopAnimating];
+            [self createUI];
+            [self createScrollUI];
+        });
+    });
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -95,7 +122,7 @@
 
 #pragma mark-creatUI
 -(void)createUI{
-    
+    self.titleLabel.text=_displayName;
     self.screen_width=[UIScreen mainScreen].bounds.size.width;
     if(!self.parentView)
     {
@@ -108,10 +135,10 @@
         }
         else{
             if ([UIScreen mainScreen].bounds.size.height>500) {
-                self.parentView.frame=CGRectMake(0, 55, windowSize.width, self.view.frame.size.height-80);
+                self.parentView.frame=CGRectMake(0, 55, windowSize.width, windowSize.height-55);
             }
             else{
-                self.parentView.frame=CGRectMake(0, 55, windowSize.width, self.view.frame.size.height-175);
+                self.parentView.frame=CGRectMake(0, 55, windowSize.width, windowSize.height-55);
             }
             self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg.png"]];
            // self.parentView.backgroundColor=[UIColor yellowColor];
@@ -176,7 +203,7 @@
     // [photosBtn setTitle:@"photos" forState:UIControlStateNormal];
     
     photosBtn.titleLabel.font=[UIFont boldSystemFontOfSize:9];
-    [photosBtn setImage:[UIImage imageNamed:@"yes.png"] forState:UIControlStateNormal];
+    [photosBtn setImage:[UIImage imageNamed:@"accept.png"] forState:UIControlStateNormal];
     //[photosBtn addTarget:self action:@selector(photoButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     photosBtn.tag=2;
     [self.tabView addSubview:photosBtn];
@@ -218,7 +245,7 @@
     }
     else{
         profile.frame=CGRectMake(windowSize.width-280, 10, 60, 30);
-        photosBtn.frame=CGRectMake(windowSize.width-180, 10, 50, 30);
+        photosBtn.frame=CGRectMake(windowSize.width-180, 10, 30, 30);
         CreditsBtn.frame=CGRectMake(windowSize.width-100, 10, 50, 30);
         // OffBtn.frame=CGRectMake(windowSize.width-55, 10, 50, 30);
         
@@ -231,7 +258,7 @@
 
 -(void)createScrollUI{
     
-    NSArray * images1=[NSArray arrayWithObjects:@"imag1.jpg",@"imag2.jpg",nil];
+    //NSArray * images1=[NSArray arrayWithObjects:@"imag1.jpg",@"imag2.jpg",nil];
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         imageScroll=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.parentView.frame.size.width, self.parentView.frame.size.height-150)];
     }
@@ -261,12 +288,12 @@
             profileImg.frame=CGRectMake(x, 0, imageScroll.frame.size.width, imageScroll.frame.size.height);
         }
         profileImg.userInteractionEnabled=YES;
-        
-        profileImg.image=[UIImage imageNamed:[NSString stringWithString:[images1 objectAtIndex:i]]];
+        [profileImg setImageWithURL:[NSURL URLWithString:self.imageUrl]];
+        //profileImg.image=[UIImage imageNamed:[NSString stringWithString:[images1 objectAtIndex:i]]];
         // profileImg.image=[UIImage imageNamed:[NSString stringWithFormat:@"%@",]];
         [imageScroll addSubview:profileImg];
     }
-    imageScroll.contentSize=CGSizeMake(imageScroll.frame.size.width*2, imageScroll.frame.size.height);
+    imageScroll.contentSize=CGSizeMake(imageScroll.frame.size.width*1, imageScroll.frame.size.height);
     [self.parentView addSubview:imageScroll];
     
     UIView * view=[[UIView alloc]initWithFrame:CGRectMake(10, 20, 50, 25)];
@@ -282,7 +309,7 @@
     imageCount=[[UILabel alloc]initWithFrame:CGRectMake(40, 20, 25, 25)];
     imageCount.textColor=[UIColor whiteColor];
     imageCount.font=[UIFont systemFontOfSize:12];
-    imageCount.text=[NSString stringWithFormat:@"1/2"];
+    imageCount.text=[NSString stringWithFormat:@"1/1"];
     [self.parentView addSubview:imageCount];
 }
 
@@ -294,7 +321,7 @@
     CGFloat pageWidth = scrollView.frame.size.width;
     int page = floor((scrollView.contentOffset.x - pageWidth / 2) / pageWidth) + 1;
     page=page+1;
-    imageCount.text=[NSString stringWithFormat:@"%d/2",page];
+    imageCount.text=[NSString stringWithFormat:@"%d/1",page];
     NSLog(@"Scrolling - You are now on page %i",page);
 }
 
@@ -507,7 +534,7 @@ NS_AVAILABLE_IOS(5_0){
     UITableViewCell * cell=[tableView cellForRowAtIndexPath:indexPath];
     if(!cell)
     {
-        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
+        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
     //cell.imageView.image=[UIImage imageNamed:@"crm.png"];
     cell.textLabel.font=[UIFont boldSystemFontOfSize:12];
@@ -542,6 +569,48 @@ NS_AVAILABLE_IOS(5_0){
             }
             cell.textLabel.text=[self.sectionTwoData  objectAtIndex:indexPath.row];
             cell.imageView.image=[UIImage imageNamed:[NSString stringWithString:[self.sectionTwoImages objectAtIndex:indexPath.row]]];
+            
+            if (indexPath.row==0) {
+                cell.detailTextLabel.text=_location;
+            }
+            if (indexPath.row==1) {
+                cell.detailTextLabel.text=_about;
+            }
+            if (indexPath.row==5) {
+                cell.detailTextLabel.text=_living;
+
+            }
+            if (indexPath.row==2) {
+                cell.detailTextLabel.text=_relationship;
+            }
+            if (indexPath.row==3) {
+                cell.detailTextLabel.text=_sexuality;
+            }
+            if (indexPath.row==4) {
+                
+            }
+            if (indexPath.row==6) {
+                cell.detailTextLabel.text=_kids;
+                            }
+            if (indexPath.row==7) {
+                cell.detailTextLabel.text=_smoking;
+            }
+            if (indexPath.row==8) {
+                 cell.detailTextLabel.text=_drinking;
+            }
+            if (indexPath.row==9) {
+               cell.detailTextLabel.text=_eduaction;
+            }
+            if (indexPath.row==10) {
+                cell.detailTextLabel.text=_languages;
+            }
+            if (indexPath.row==11) {
+                
+                cell.detailTextLabel.text=_profession;
+            }
+            if (indexPath.row==12) {
+                
+            }
         }
         if (indexPath.section==1) {
             if (indexPath.row==0) {
@@ -596,11 +665,409 @@ NS_AVAILABLE_IOS(5_0){
 }
 
 
+#pragma  mark- Web service
+-(void)callWebService{
+    
+    NSError * error;
+    NSURLResponse * urlResponse;
+    
+    NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/mobi/profile-details"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    NSString * body=[NSString stringWithFormat:@"userId=%@&loggedId=%@",self.index,[SingletonClass shareSingleton].userID];
+    
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    id parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"json response of user details %@",parse);
+    if ([[parse objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        
+    
+    NSMutableDictionary * json=[NSMutableDictionary dictionary];
+        json=[parse objectForKey:@"userprofile"];
+    self.imageUrl=[NSString stringWithFormat:@"http://taka.dating/%@",[json objectForKey:@"thumbanailUrl"]];
+    
+    _sex=[json objectForKey:@"sex"];
+   // _userHereFor=[json objectForKey:@"hereFor"];
+    _useriId=[json objectForKey:@"userId"];
+    _displayName=[json objectForKey:@"displayName"];
+    _about=[json objectForKey:@"about"];
+    _location=[json objectForKey:@"location"];
+    _interestedIn=[json objectForKey:@"interestedIn"];
+    _bodyType=[self getbodyType:[json objectForKey:@"bodyType"]];
+    _hairColor=[self getHairColor:[json objectForKey:@"hairColor"]];
+    _eyeColor=[self getEyeColor:[json objectForKey:@"eyeColor"]];
+    _height=[json objectForKey:@"height"];
+    _weight=[json objectForKey:@"weight"];
+    _living=[self getLiving:[json objectForKey:@"living"]];
+    _kids=[self getKids:[json objectForKey:@"kids"]];
+    _smoking=[self getSmoking:[json objectForKey:@"smoking"]];
+    _drinking=[self getDrinking:[json objectForKey:@"drinking"]];
+    _eduaction=[self getEducation:[json objectForKey:@"education"]];
+    _income=[self getIncome:[json objectForKey:@"income"]];
+    _relationship=[self getRelationship:[json objectForKey:@"relationshipStatus"]];
+    _sexuality=[self getSexuality:[json objectForKey:@"sexuality"]];
+    _languages=[json objectForKey:@"languagesKnown"];
+    if ([[json objectForKey:@"profession"]isEqualToString:@"0"]) {
+        _profession=@"";
+    }
+    else{
+        _profession=[json objectForKey:@"profession"];
+    }
+    }
+
+    
+}
+
+
+-(NSString * )getSexuality:(NSString *)value
+{
+    int val=value.intValue;
+    NSString * sex=@"";
+    if (val==0) {
+        sex=@"Unfilled yet";
+        
+    }
+    else if (val==1)
+    {
+        sex=@"Straight";
+        
+    }
+    else if (val==3)
+    {
+        sex=@"Bisexual";
+    }
+    else if(val==2){
+        sex=@"Open Minded";
+    }
+    else if(val==4){
+        sex=@"Gay";
+    }
+    else{
+        sex=@"Lesbian";
+    }
+    return sex;
+    
+}
+
+
+
+-(NSString *)getRelationship:(NSString *)value{
+    int val=value.intValue;
+    NSString * relation=@"";
+    if (val==0) {
+        relation=@"Unfilled yet";
+        
+    }
+    else if (val==1)
+    {
+        relation=@"Single";
+        
+    }
+    else if (val==3)
+    {
+        relation=@"Taken";
+    }
+    else{
+        relation=@"Open";
+    }
+    return relation;
+}
+
+
+
+-(NSString *)getIncome:(NSString *)value{
+    int val=value.intValue;
+    NSString * income=@"";
+    if (val==0) {
+        income=@"Unfilled yet";
+    }
+    else if(val==1)
+    {
+        income=@"Low";
+    }
+    else if(val==2)
+    {
+        income=@"Average";
+    }
+    else
+    {
+        income=@"High";
+    }
+    return  income;
+}
+
+
+
+-(NSString *)getEducation:(NSString *)value{
+    int val=value.intValue;
+    NSString * edu=@"";
+    if (val==0) {
+        edu=@"Unfilled yet";
+        
+    }
+    else if (val==1)
+    {
+        edu=@"School only";
+        
+    }
+    else if (val==3)
+    {
+        edu=@"Trade/Technical";
+    }
+    else if(val==2){
+        edu=@"College/University";
+    }
+    else{
+        edu=@"Advanced Degree";
+    }
+    return edu;
+}
+
+
+-(NSString *)getDrinking:(NSString *)value{
+    int val=value.intValue;
+    NSString * drinking=@"";
+    if (val==0) {
+        drinking=@"Unfilled yet";
+        
+    }
+    else if (val==1)
+    {
+        drinking=@"No";
+        
+    }
+    else if (val==3)
+    {
+        drinking=@"With Company";
+    }
+    else if(val==2){
+        drinking=@"No, Never";
+    }
+    else{
+        drinking=@"Yes, Please";
+    }
+    return drinking;
+}
+
+
+
+-(NSString *)getSmoking:(NSString *)value{
+    int val= value.intValue;
+    NSString * smoking=@"";
+    if (val==0) {
+        smoking=@"Unfilled yet";
+    }
+    else if (val==1){
+        smoking=@"No";
+    }
+    else if (val==2)
+    {
+        smoking=@"No, Never";
+    }
+    else if (val==3)
+    {
+        smoking=@"Yes";
+    }
+    else if (val==4)
+    {
+        smoking=@"Social";
+    }
+    else
+    {
+        smoking=@"Chain Smoker, Oxygen is overrated";
+    }
+    
+    return smoking;
+}
+
+
+
+-(NSString *)getKids:(NSString *)value{
+    int val= value.intValue;
+    NSString * kid=@"";
+    if (val==0) {
+        kid=@"Unfilled yet";
+    }
+    else if(val==1)
+    {
+        kid=@"No, Never";
+    }
+    else if(val==2)
+    {
+        kid=@"Someday";
+    }
+    else if(val==3)
+    {
+        kid=@"Already Have";
+    }
+    else
+    {
+        kid=@"Empty nest";
+    }
+    return kid;
+}
 
 
 
 
+-(NSString *)getLiving:(NSString *)value{
+    NSString * living=@"";
+    int val= value.intValue;
+    if (val==0) {
+        living=@"Unfilled yet";
+    }
+    else if(val==1)
+    {
+        living=@"With Parents";
+    }
+    else if(val==2)
+    {
+        living=@"With Roomates";
+    }
+    else if(val==3)
+    {
+        living=@"Student Residence";
+    }
+    else if(val==4)
+    {
+        living=@"With Partner";
+    }
+    else{
+        living=@"Alone";
+    }
+    return  living;
+}
 
+
+-(NSString *)getEyeColor:(NSString *)value{
+    NSString * str=@"";
+    
+    int val= value.intValue;
+    if (val==0) {
+        str=@"others";
+    }
+    else if(val==1)
+    {
+        str=@"Brown";
+    }
+    else if(val==2)
+    {
+        str=@"Grey";
+    }
+    else if(val==3)
+    {
+        str=@"Green";
+    }
+    else if(val==4)
+    {
+        str=@"Blue";
+    }
+    else if(val==5)
+    {
+        str=@"Hazel";
+    }
+    else
+    {
+        str=@"Other";
+    }
+    
+    return str;
+    
+}
+
+
+
+-(NSString *)getHairColor:(NSString *)value{
+    NSString * str=@"";
+    
+    int val= value.intValue;
+    if (val==0) {
+        str=@"Unfilled yet";
+    }
+    else if(val==1)
+    {
+        str=@"Black";
+    }
+    else if(val==2)
+    {
+        str=@"Brown";
+    }
+    else if(val==3)
+    {
+        str=@"Red";
+    }
+    else if(val==4)
+    {
+        str=@"Grey";
+    }
+    else if(val==5)
+    {
+        str=@"White";
+    }
+    else if(val==6)
+    {
+        str=@"Shaved";
+    }
+    else if(val==7)
+    {
+        str=@"Dyed";
+    }
+    else
+    {
+        str=@"Bald";
+    }
+    
+    
+    return str;
+    
+}
+
+
+
+-(NSString *)getbodyType:(NSString *)bodytyp{
+    NSString * str=@"";
+    if ([bodytyp isEqualToString:@"0"]) {
+        str=@"Unfilled yet";
+    }
+    else if([bodytyp isEqualToString:@"1"])
+    {
+        str=@"Average";
+    }
+    else if([bodytyp isEqualToString:@"2"])
+    {
+        str=@"A few extra pounds";
+    }
+    else if([bodytyp isEqualToString:@"3"])
+    {
+        str=@"Slim";
+    }
+    else if([bodytyp isEqualToString:@"4"])
+    {
+        str=@"Athletic";
+    }
+    else if([bodytyp isEqualToString:@"5"])
+    {
+        str=@"Muscular";
+    }
+    else{
+        str=@"Big and beautiful";
+        
+    }
+    return  str;
+}
+
+
+
+
+#pragma mark- cancel button
 -(void)profileCancelButtonAction:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
 }

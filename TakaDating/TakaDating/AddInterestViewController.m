@@ -28,12 +28,13 @@
 {
     
     [super viewDidLoad];
+    [SingletonClass shareSingleton].selectedInterests=[NSMutableArray array];
     [self subCatData];
     NSLog(@"data of this class %@",self.subArray);
     self.selectedArray = [[NSMutableArray alloc] init];
     //self.subArray=[[NSMutableArray alloc]init];
        windowSize=[UIScreen mainScreen].bounds.size;
-    //self.tableData=[NSArray arrayWithObjects:@"One",@"Two",@"Three",@"Four",@"Five",@"Six",@"Seven",@"Eight",@"Nine",@"Ten", nil];
+    
     // Do any additional setup after loading the view from its nib.
     self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     
@@ -62,10 +63,29 @@
     self.cancelButton.clipsToBounds = YES;
     [self.cancelButton addTarget:self action:@selector(cancelButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.cancelButton];
+    
+    UIButton * saveButton=[UIButton  buttonWithType:UIButtonTypeCustom];
+    saveButton.frame=CGRectMake(windowSize.width-80, 25, 60, 25);
+    [saveButton setTitle:@"Save" forState:UIControlStateNormal];
+    [saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    saveButton.layer.borderColor = [UIColor redColor].CGColor;
+    saveButton.titleLabel.font = [UIFont systemFontOfSize:15];
+    saveButton.layer.borderWidth = 0.7;
+    saveButton.layer.cornerRadius = 4;
+    saveButton.clipsToBounds = YES;
+    [saveButton addTarget:self action:@selector(saveButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:saveButton];
 
     
     [self createUI] ;
     
+}
+
+-(void)saveButtonAction:(id)sender{
+    for (int i=0; i<self.selectedArray.count; i++) {
+        NSIndexPath * indexPath=[self.selectedArray objectAtIndex:i];
+        
+    }
 }
 
 -(void)subCatData{
@@ -75,7 +95,7 @@
     NSString * intr_id;
     for (int i=0;i<self.subArray.count; i++) {
        
-            dict =[self.subArray objectAtIndex:i];
+        dict =[self.subArray objectAtIndex:i];
         int k=[[self.intr_id_arr objectAtIndex:i]intValue];
         intr_id =[NSString stringWithFormat:@"%d",k];
         [subData addObject:[dict objectForKey:intr_id]];
@@ -130,10 +150,17 @@
     [cell.cellButton setImage:[UIImage imageNamed:@"select_normal.png"] forState:UIControlStateNormal];
     [cell.cellButton setImage:[UIImage imageNamed:@"select.png"] forState:UIControlStateSelected];
     cell.cellButton.tag=indexPath.row;
+    if ([[[SingletonClass  shareSingleton].intr_name objectAtIndex:indexPath.row]isEqualToString:cell.cellLabel.text]) {
+        
+        [self.selectedArray addObject:indexPath];
+        
+    }
+    
     @try {
         if ([self.selectedArray containsObject:indexPath]) {
             [cell.cellButton setImage:[UIImage imageNamed:@"select.png"]forState:UIControlStateSelected];
             [cell.cellButton setSelected:YES];
+           
         }
         else
         {
@@ -163,11 +190,22 @@
         [cell.cellButton setImage:[UIImage imageNamed:@"select_normal.png"]forState:UIControlStateNormal];
         [cell.cellButton setSelected:NO];
         [self.selectedArray removeObject:indexPath];
+      //  for (int i=0;subData.count; i++) {
+            for (int j=0; j<[SingletonClass shareSingleton].intr_name.count; j++) {
+                if ([[[SingletonClass shareSingleton].intr_name objectAtIndex:j]isEqualToString:[subData objectAtIndex:indexPath.row]]) {
+                    [[SingletonClass shareSingleton].intr_name removeObjectAtIndex:indexPath.row];
+                }
+            }
+       // }
+        NSLog(@" %@",[subData objectAtIndex:indexPath.row]);
     }
     else{
         [cell.cellButton setImage:[UIImage imageNamed:@"select.png"]forState:UIControlStateSelected];
         [cell.cellButton setSelected:YES];
         [self.selectedArray addObject:indexPath];
+        [[SingletonClass shareSingleton].intr_name addObject:[subData objectAtIndex:indexPath.row]];
+        NSLog(@" %@",[subData objectAtIndex:indexPath.row]);
+        
         
     }
 }
