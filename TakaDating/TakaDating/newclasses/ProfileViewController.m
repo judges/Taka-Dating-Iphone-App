@@ -574,7 +574,7 @@ NS_AVAILABLE_IOS(5_0){
 }
 #pragma mark- profile button action
 
--(void)profileButtonClick:(id)sender{
+-(void)profileButtonClick:(UIButton*)sender{
     [NSThread detachNewThreadSelector:@selector(getUserinterests) toTarget:self withObject:nil];
     int tagValue=(int)[sender tag];
     CGRect frame;
@@ -590,7 +590,7 @@ NS_AVAILABLE_IOS(5_0){
     [self animationMethod:tagValue frame:(CGRect)frame];
 }
 
--(void)photoButtonAction:(id)sender{
+-(void)photoButtonAction:(UIButton*)sender{
     CGRect frame;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         frame=CGRectMake(0, -windowSize.width/2, windowSize.width, windowSize.height);
@@ -603,7 +603,7 @@ NS_AVAILABLE_IOS(5_0){
       [self animationMethod:tagValue frame:(CGRect)frame];
 }
 
--(void)creditsButtonAction:(id)sender{
+-(void)creditsButtonAction:(UIButton*)sender{
     CGRect frame;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         frame=CGRectMake(0, -windowSize.width/2, windowSize.width, windowSize.height);
@@ -616,7 +616,7 @@ NS_AVAILABLE_IOS(5_0){
     [self animationMethod:tagValue frame:(CGRect)frame];
 }
 
--(void)superPowerButtonAction:(id)sender{
+-(void)superPowerButtonAction:(UIButton*)sender{
     CGRect frame;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         frame=CGRectMake(0, -windowSize.width/2, windowSize.width, windowSize.height);

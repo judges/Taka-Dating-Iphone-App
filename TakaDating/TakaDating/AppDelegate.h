@@ -9,12 +9,62 @@
 #import <UIKit/UIKit.h>
 #import <FacebookSDK/FacebookSDK.h>
 #import "SingletonClass.h"
+#import <CoreData/CoreData.h>
+#import "XMPPFramework.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+#import "GCDAsyncSocket.h"
+#import "XMPP.h"
+#import "XMPPLogging.h"
+#import "XMPPReconnect.h"
+#import "XMPPCapabilitiesCoreDataStorage.h"
+#import "XMPPRosterCoreDataStorage.h"
+#import "XMPPvCardAvatarModule.h"
+#import "XMPPvCardCoreDataStorage.h"
 
+extern NSString *const kXMPPmyJID;
+extern NSString *const kXMPPmyPassword;
+
+
+@interface AppDelegate : UIResponder <UIApplicationDelegate,XMPPStreamDelegate>
+{
+    XMPPStream *xmppStream;
+    XMPPReconnect *xmppReconnect;
+    XMPPRoster *xmppRoster;
+    XMPPRosterCoreDataStorage *xmppRosterStorage;
+    XMPPvCardCoreDataStorage *xmppvCardStorage;
+    XMPPvCardTempModule *xmppvCardTempModule;
+    XMPPvCardAvatarModule *xmppvCardAvatarModule;
+    XMPPCapabilities *xmppCapabilities;
+    XMPPCapabilitiesCoreDataStorage *xmppCapabilitiesStorage;
+    
+    NSString *password;
+    
+    BOOL customCertEvaluation;
+    
+    BOOL isXmppConnected;
+    
+    UIWindow *window;
+}
 
 @property (strong, nonatomic) UIWindow *window;
 @property(nonatomic,strong)NSString * accessToken;
 - (BOOL)openSessionWithAllowLoginUI:(NSInteger)isLoginReq;
 //- (BOOL)openSessionWithLoginUI:(NSInteger)isLoginReq;
+
+@property (nonatomic, strong, readonly) XMPPStream *xmppStream;
+@property (nonatomic, strong, readonly) XMPPReconnect *xmppReconnect;
+@property (nonatomic, strong, readonly) XMPPRoster *xmppRoster;
+@property (nonatomic, strong, readonly) XMPPRosterCoreDataStorage *xmppRosterStorage;
+@property (nonatomic, strong, readonly) XMPPvCardTempModule *xmppvCardTempModule;
+@property (nonatomic, strong, readonly) XMPPvCardAvatarModule *xmppvCardAvatarModule;
+@property (nonatomic, strong, readonly) XMPPCapabilities *xmppCapabilities;
+@property (nonatomic, strong, readonly) XMPPCapabilitiesCoreDataStorage *xmppCapabilitiesStorage;
+
+
+
+- (NSManagedObjectContext *)managedObjectContext_roster;
+- (NSManagedObjectContext *)managedObjectContext_capabilities;
+
+- (BOOL)connect;
+- (void)disconnect;
 @end

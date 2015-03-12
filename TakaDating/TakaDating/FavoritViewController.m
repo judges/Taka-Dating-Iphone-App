@@ -15,7 +15,7 @@
 #import "FavoriteCustomCell.h"
 #import "SingletonClass.h"
 #import "UIImageView+WebCache.h"
-
+#import "UserProfileViewController.h"
 
 @interface FavoritViewController ()
 
@@ -417,6 +417,13 @@
         
     }//End Header Kind Check
     return nil;
+}
+
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
+    
+    userDataVC.index=[useriId objectAtIndex:indexPath.row];
+    [self.navigationController pushViewController:userDataVC animated:YES];
 }
 
 -(void)toggleButtonAction:(id)sender{

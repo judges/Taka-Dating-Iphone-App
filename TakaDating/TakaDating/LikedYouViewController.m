@@ -359,6 +359,10 @@
     }//End Header Kind Check
     return nil;
 }
+
+
+
+
 -(void) createFirstSectionHeader:(CollectionHeaderTitleLabel *)areuseableView{
     
     UIView *backView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 100, 100)];

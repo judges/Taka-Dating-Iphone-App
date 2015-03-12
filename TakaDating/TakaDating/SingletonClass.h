@@ -69,7 +69,7 @@
 
 //Encounter class variables
 
-@property(nonatomic,strong)NSMutableArray * encounterUsrImages;
+@property(nonatomic,strong)NSMutableArray * encounterUsrImages,*messages;
 @property(nonatomic,strong)NSString * encounterUsrProfilePic;
 @property(nonatomic)NSString *enhereFor,*enwithWhom,*enFromAge,*enEndAge;
 

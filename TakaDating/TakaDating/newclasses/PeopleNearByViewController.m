@@ -13,6 +13,7 @@
 #import  "PromoteyourselfViewController.h"
 #import "SingletonClass.h"
 #import "UIImageView+WebCache.h"
+#import "UserProfileViewController.h"
 
 @interface PeopleNearByViewController ()
 {
@@ -126,7 +127,7 @@
         self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height-450) collectionViewLayout:flowLayOut];
 
     }else{
-        self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height+90) collectionViewLayout:flowLayOut];
+        self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height-55) collectionViewLayout:flowLayOut];
 
     }
     
@@ -330,9 +331,13 @@
     [self.scrollView setContentSize:CGSizeMake(x,scrol_hh)];
 }
 #pragma mark-
--(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
     
+    userDataVC.index=[[SingletonClass shareSingleton].viewerID objectAtIndex:indexPath.row];
+    [self.navigationController pushViewController:userDataVC animated:YES];
 }
+
 
 #pragma mark- scroll view delegate.
 

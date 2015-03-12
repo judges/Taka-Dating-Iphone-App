@@ -569,7 +569,6 @@ NS_AVAILABLE_IOS(5_0){
             }
             cell.textLabel.text=[self.sectionTwoData  objectAtIndex:indexPath.row];
             cell.imageView.image=[UIImage imageNamed:[NSString stringWithString:[self.sectionTwoImages objectAtIndex:indexPath.row]]];
-            
             if (indexPath.row==0) {
                 cell.detailTextLabel.text=_location;
             }
@@ -578,7 +577,7 @@ NS_AVAILABLE_IOS(5_0){
             }
             if (indexPath.row==5) {
                 cell.detailTextLabel.text=_living;
-
+                
             }
             if (indexPath.row==2) {
                 cell.detailTextLabel.text=_relationship;
@@ -591,15 +590,15 @@ NS_AVAILABLE_IOS(5_0){
             }
             if (indexPath.row==6) {
                 cell.detailTextLabel.text=_kids;
-                            }
+            }
             if (indexPath.row==7) {
                 cell.detailTextLabel.text=_smoking;
             }
             if (indexPath.row==8) {
-                 cell.detailTextLabel.text=_drinking;
+                cell.detailTextLabel.text=_drinking;
             }
             if (indexPath.row==9) {
-               cell.detailTextLabel.text=_eduaction;
+                cell.detailTextLabel.text=_eduaction;
             }
             if (indexPath.row==10) {
                 cell.detailTextLabel.text=_languages;

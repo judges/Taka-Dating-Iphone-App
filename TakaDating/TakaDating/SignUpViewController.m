@@ -420,7 +420,7 @@
         NSLog(@"fb date %@",fbDate);
         
         
-       /* NSDateComponents * components=[[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:fbDate toDate:currentDate options:0];
+        NSDateComponents * components=[[NSCalendar currentCalendar] components:NSCalendarUnitYear fromDate:fbDate toDate:currentDate options:0];
         NSInteger age=[components year];
         if (age>18) {
             NSString * fbDateStr=[dateFormate stringFromDate:fbDate];
@@ -573,7 +573,7 @@
     
 }
 #pragma mark- Radio Button Method
--(void)radioButtonAction:(id)sender{
+-(void)radioButtonAction:(UIButton*)sender{
     
     self.radio_Select=YES;
     switch ([sender tag]) {

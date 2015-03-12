@@ -159,7 +159,7 @@
 }
 
 #pragma mark-tabbarindex selection
--(void)selectIndexOfTabbar:(id)sender
+-(void)selectIndexOfTabbar:(UIButton*)sender
 {
    self.tabView.hidden=NO;
     if ([sender tag]==1) {

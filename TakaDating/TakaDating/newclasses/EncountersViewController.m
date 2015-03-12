@@ -626,7 +626,7 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
 
 #pragma mark- profile button action
 
--(void)profileButtonClick:(id)sender{
+-(void)profileButtonClick:(UIButton*)sender{
     int tagValue=(int)[sender tag];
     CGRect frame;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {

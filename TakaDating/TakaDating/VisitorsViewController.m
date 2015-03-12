@@ -13,6 +13,8 @@
 #import  "PromoteyourselfViewController.h"
 #import "SingletonClass.h"
 #import "UIImageView+WebCache.h"
+#import "UserProfileViewController.h"
+
 
 @interface VisitorsViewController ()
 {
@@ -339,15 +341,22 @@
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.section==0) {
+   /* if (indexPath.section==0) {
         if (indexPath.row==0) {
             if (!self.promoteVC) {
                 self.promoteVC=[[PromoteyourselfViewController alloc]initWithNibName:@"PromoteyourselfViewController" bundle:nil];
             }
             [self.navigationController pushViewController:self.promoteVC animated:YES];
         }
+    }*/
+    
+        UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
+        
+        userDataVC.index=[viewerID objectAtIndex:indexPath.row];
+        [self.navigationController pushViewController:userDataVC animated:YES];
     }
-}
+
+
 
 -(void)toggleButtonAction:(id)sender{
     

@@ -43,6 +43,9 @@
     return self;
 }
 
+-(AppDelegate*)appdelegate{
+    return (AppDelegate*)[UIApplication sharedApplication].delegate;
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -439,7 +442,13 @@ else{
         
         [self getAllDataFromService];
         
+        NSString * jibField=@"manju@takadating.com";
+        NSString * passwordField=@"123456";
         
+        [self setField:jibField forKey:kXMPPmyJID];
+        [self setField:passwordField forKey:kXMPPmyPassword];
+        
+        [[self appdelegate]connect];
         
         EncountersViewController *encounterViewController = [[EncountersViewController alloc] initWithNibName:@"EncountersViewController" bundle:nil];
         encounterViewController.title = @"Rendezvous";
@@ -486,6 +495,16 @@ else{
     }
     
 
+}
+
+- (void)setField:(NSString *)field forKey:(NSString *)key
+{
+    if (field != nil)
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:field forKey:key];
+    } else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {

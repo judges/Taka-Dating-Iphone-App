@@ -8,13 +8,23 @@
 
 #import <UIKit/UIKit.h>
 #import "MessageTableViewCell.h"
+#import <CoreData/CoreData.h>
+#import "XMPPFramework.h"
+#import "DDLog.h"
+#import "AppDelegate.h"
 
-@interface MessagesViewController : UIViewController<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate>
+
+
+@interface MessagesViewController : UIViewController<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
+
 {
-    BOOL editbuttonSelect,selectAll;
+    BOOL editbuttonSelect,selectAll,online;
     NSMutableArray *nameArr;
     CGFloat row_hh,secHeight;
     CGSize  windowSize;
+    NSFetchedResultsController *fetchedResultsController;
+    UITextField *    buddyField;
+
 }
 
 

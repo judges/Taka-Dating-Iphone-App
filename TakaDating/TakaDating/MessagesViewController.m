@@ -9,6 +9,14 @@
 #import "MessagesViewController.h"
 #import  "MessageDetailViewController.h"
 
+// Log levels: off, error, warn, info, verbose
+#if DEBUG
+static const int ddLogLevel = LOG_LEVEL_VERBOSE;
+#else
+static const int ddLogLevel = LOG_LEVEL_INFO;
+#endif
+
+
 
 @interface MessagesViewController ()
 @property(nonatomic,strong)MessageDetailViewController * mdVC;
@@ -24,6 +32,16 @@
         // Custom initialization
     }
     return self;
+}
+
+
+- (AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
+- (XMPPRoster *)xmppRoster {
+    return [[self appDelegate] xmppRoster];
 }
 
 - (void)viewDidLoad
@@ -151,6 +169,8 @@
  
     
     if (sender.selectedSegmentIndex==0) {
+        online=NO;
+        [self.messageTable reloadData];
         NSLog(@"index one selected");
     }
     else if (sender.selectedSegmentIndex==1)
@@ -158,21 +178,73 @@
         NSLog(@"index Two selected");
     }
     else{
+        online=YES;
+        [self.messageTable reloadData];
         NSLog(@"index three selected");
     }
 }
 
 #pragma mark- table delegate methods
+
+- (NSString *)tableView:(UITableView *)sender titleForHeaderInSection:(NSInteger)sectionIndex
+{
+    NSArray *sections = [[self fetchedResultsController] sections];
+    
+    if (sectionIndex < [sections count])
+    {
+        id <NSFetchedResultsSectionInfo> sectionInfo = sections[sectionIndex];
+        
+        int section = [sectionInfo.name intValue];
+       /* switch (section)
+        {
+            case 0  : return @"Available";
+            case 1  : return @"Away";
+            default : return @"Offline";
+        }*/
+    }
+    
+    return @"";
+}
+
+
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return row_hh;
 }
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return [[[self fetchedResultsController] sections] count];
+}
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return nameArr.count;
+    NSArray *sections = [[self fetchedResultsController] sections];
+    if (!online) {
+        if (section < [sections count])
+        {
+            id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
+            return sectionInfo.numberOfObjects;
+        }
+        
+    }
+    else{
+        NSArray *sections = [[self fetchedResultsController] sections];
+        
+        if (section < [sections count])
+        {
+            id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
+            
+            int sec = [sectionInfo.name intValue];
+            if (sec==0) {
+                return sectionInfo.numberOfObjects;
+            }
+        }
+        
+    }
+    
+    return 0;
 }
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 1;
-}
+//-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
+//    return 1;
+//}
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -216,24 +288,51 @@
         }
     }
     
-    cell.imgView.image=[UIImage imageNamed:@"imag1.jpg"];
-    cell.cellLabel.text=[nameArr objectAtIndex:indexPath.row];
-    cell.imgView.tag=indexPath.row;
+//    cell.imgView.image=[UIImage imageNamed:@"imag1.jpg"];
+//    cell.cellLabel.text=[nameArr objectAtIndex:indexPath.row];
+//    cell.imgView.tag=indexPath.row;
+    XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
     
+    cell.textLabel.text = user.displayName;
+    [self configurePhotoForCell:cell user:user];
     return  cell;
     
 }
 
+- (void)configurePhotoForCell:(UITableViewCell *)cell user:(XMPPUserCoreDataStorageObject *)user
+{
+    // Our xmppRosterStorage will cache photos as they arrive from the xmppvCardAvatarModule.
+    // We only need to ask the avatar module for a photo, if the roster doesn't have it.
+    
+    if (user.photo != nil)
+    {
+        cell.imageView.image = user.photo;
+    }
+    else
+    {
+        NSData *photoData = [[[self appDelegate] xmppvCardAvatarModule] photoDataForJID:user.jid];
+        
+        if (photoData != nil)
+            cell.imageView.image = [UIImage imageWithData:photoData];
+        else
+            cell.imageView.image = [UIImage imageNamed:@"defaultPerson"];
+    }
+}
+
+
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (editbuttonSelect==NO) {
+        XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
-    
+        
+       
       if(self.mdVC)
       {
           self.mdVC=nil;
       }
           self.mdVC=[[MessageDetailViewController alloc]initWithNibName:@"MessageDetailViewController" bundle:nil];
-    self.mdVC.titleStr=[nameArr objectAtIndex:indexPath.row];
+    self.mdVC.titleStr= user.displayName;
+    //self.mdVC.userId=
     [self.navigationController pushViewController:self.mdVC animated:YES];
     }
 
@@ -247,6 +346,54 @@
 -(void)deleteButtonAction:(id)sender{
     
 }
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark NSFetchedResultsController
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (NSFetchedResultsController *)fetchedResultsController
+{
+    if (fetchedResultsController == nil)
+    {
+        NSManagedObjectContext *moc = [[self appDelegate] managedObjectContext_roster];
+        
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"XMPPUserCoreDataStorageObject"
+                                                  inManagedObjectContext:moc];
+        
+        NSSortDescriptor *sd1 = [[NSSortDescriptor alloc] initWithKey:@"sectionNum" ascending:YES];
+        NSSortDescriptor *sd2 = [[NSSortDescriptor alloc] initWithKey:@"displayName" ascending:YES];
+        
+        NSArray *sortDescriptors = @[sd1, sd2];
+        
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+        [fetchRequest setEntity:entity];
+        [fetchRequest setSortDescriptors:sortDescriptors];
+        [fetchRequest setFetchBatchSize:10];
+        
+        fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                       managedObjectContext:moc
+                                                                         sectionNameKeyPath:@"sectionNum"
+                                                                                  cacheName:nil];
+        [fetchedResultsController setDelegate:self];
+        
+        
+        NSError *error = nil;
+        if (![fetchedResultsController performFetch:&error])
+        {
+            DDLogError(@"Error performing fetch: %@", error);
+        }
+        
+    }
+    
+    return fetchedResultsController;
+}
+
+- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
+{
+    [ self.messageTable reloadData];
+}
+
 
 - (void)didReceiveMemoryWarning
 {
