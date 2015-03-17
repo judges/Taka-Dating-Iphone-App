@@ -18,12 +18,13 @@
 @interface MessagesViewController : UIViewController<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
 
 {
-    BOOL editbuttonSelect,selectAll,online;
+    BOOL editbuttonSelect,selectAll,online,completion;
     NSMutableArray *nameArr;
     CGFloat row_hh,secHeight;
     CGSize  windowSize;
     NSFetchedResultsController *fetchedResultsController;
     UITextField *    buddyField;
+    NSMutableArray * profileImage, * userName;
 
 }
 
@@ -31,4 +32,5 @@
 @property(nonatomic)UISearchBar * searchbar;
 @property(nonatomic)UISegmentedControl * segment;
 @property(nonatomic)UITableView * messageTable;
+@property(nonatomic,strong)UIActivityIndicatorView * refreshActivity;
 @end

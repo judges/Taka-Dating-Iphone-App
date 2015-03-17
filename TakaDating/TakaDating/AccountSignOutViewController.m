@@ -9,9 +9,12 @@
 #import "AccountSignOutViewController.h"
 #import "SingletonClass.h"
 #import "AFNHelper.h"
+#import "ViewController.h"
 
 @interface AccountSignOutViewController ()
-
+{
+    ViewController *viewVC;
+}
 @end
 
 @implementation AccountSignOutViewController
@@ -180,7 +183,7 @@
         self.fogotPassword.frame=CGRectMake(windowSize.width/2-160, 300, 328, 62);
         self.deleteAccountButton.frame=CGRectMake(windowSize.width/2-200, 580, 328, 62);
          self.changePassword.frame=CGRectMake(windowSize.width/2-160, 400, 328, 62);
-         self.changeEmail.frame=CGRectMake(windowSize.width/2-140, 500, 328, 62);
+         self.changeEmail.frame=CGRectMake(windowSize.width/2-160, 500, 328, 62);
       
     }
 }
@@ -611,11 +614,37 @@
 #pragma  mark-deleteAccountButtonAction
 
 -(void)deleteAccountButtonAction:(id)sender{
-    if (!deleteVC) {
+   /* if (!deleteVC) {
         deleteVC=[[DeleteAccountViewController alloc]initWithNibName:@"DeleteAccountViewController" bundle:nil];
     }
     appdelegate=[UIApplication sharedApplication].delegate;
-    [appdelegate.window addSubview:deleteVC.view];
+    [appdelegate.window addSubview:deleteVC.view];*/
+    
+    
+    NSError * error=nil;
+    NSURLResponse * urlResponse=nil;
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/settings/delete/"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    NSString * body=[NSString stringWithFormat:@"=%@&=%@",[SingletonClass shareSingleton].emailID,[SingletonClass shareSingleton].password];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"parse %@",json);
+    if ([[json objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        viewVC=[[ViewController alloc]initWithNibName:@"ViewController" bundle:nil];
+        [self presentViewController:viewVC animated:YES completion:nil];
+    }
+    
+    
 }
 
 #pragma mark- cancel button

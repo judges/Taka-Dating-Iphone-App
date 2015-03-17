@@ -57,9 +57,14 @@
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(creatUI) name:@"FavouriteUI" object:nil];
     
-    
-    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 150, 40, 40)];
-    
+    CGRect frame;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        frame=CGRectMake(windowSize.width/2-20, 150, 40, 40);
+    }
+    else{
+        frame=CGRectMake(140, 150, 40, 40);
+    }
+    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:frame];
     self.refreshActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     
     self.refreshActivityIndicator.color = [UIColor blackColor];
@@ -155,7 +160,7 @@
     return 0;
 }
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return 2;
+    return 3;
 }
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 
@@ -167,7 +172,7 @@
      //UICollectionViewCell * cell=[collectionView cellForItemAtIndexPath:indexPath];
   CollectionCellView * customCellView=[[CollectionCellView alloc] initWithFrame:cell.bounds];
     
-    isProfilePic=YES;
+    //isProfilePic=YES;
          if(indexPath.section==0)
          {
              if (thumbanailUrl.count>0) {
@@ -304,55 +309,33 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section{
     CGSize size;
-   /* if (section==0) {
-         if (isProfilePic==YES) {
-        size = CGSizeMake(self.view.frame.size.width, 180);
-             return size;
-         }
-        
-   }
-    else if (section==1)
-    {
-       if (isProfilePic==NO) {
-        size = CGSizeMake(self.view.frame.size.width, 180);
-        return size;
-       }
+    CGFloat height;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        height=240;
     }
-    else if (section==2)
-    {
-        if (isProfilePic==NO) {
-           size = CGSizeMake(self.view.frame.size.width, 25);
-            return size;
-            
-        }
+    else{
+        height=180;
     }
-    else if(section==3){
-        if (isProfilePic==YES) {
-             size = CGSizeMake(self.view.frame.size.width, 180);
-            return size;
-            
-        }
-    }*/
     if (section==0) {
-        if (isProfilePic==NO) {
-            size = CGSizeMake(self.view.frame.size.width, 180);
+      //  if (isProfilePic==NO) {
+            size = CGSizeMake(0, 25);
             return size;
 
-        }
+       // }
     }
    else if (section==1) {
-        if (isProfilePic==YES) {
-        size = CGSizeMake(self.view.frame.size.width, 180);
+       // if (isProfilePic==NO) {
+        size = CGSizeMake(self.view.frame.size.width, height);
         return size;
-        }
+      //  }
 
     }
     else  if(section==2)
     {
-        if (isProfilePic==YES) {
-            size = CGSizeMake(self.view.frame.size.width, 180);
+        //if (isProfilePic==NO) {
+            size = CGSizeMake(self.view.frame.size.width, height);
             return size;
-        }
+       // }
     }
         size = CGSizeMake(self.view.frame.size.width, 25);
         return size;
@@ -370,21 +353,22 @@
             //if (thumbanailUrl.count<1) {
            //     [self createFirstSectionHeader:reuseableView];
            // }
-            if (thumbanailUrlUser.count<1) {
-                [self createSecondSectionHeader:reuseableView];
-            }
+//            if (thumbanailUrlUser.count<1) {
+//                [self createSecondSectionHeader:reuseableView];
+//            }
             
             
             
         }
-        else if(indexPath.section==0){
+       else if(indexPath.section==1){
             reuseableView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderViewSectionTwo" forIndexPath:indexPath];
             if (thumbanailUrlUser.count<1) {
                  [self createSecondSectionHeader:reuseableView];
+                
             }
            
         }
-        else if(indexPath.section==1){
+        else if(indexPath.section==2){
            reuseableView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderViewSectionThree" forIndexPath:indexPath];
           [self  createThirdSectionHeader:reuseableView];
         }
@@ -404,9 +388,9 @@
             reuseableView.headerTitleLabel.text = @"   Favorites";
         }
         else if(indexPath.section==2){
-            if (isProfilePic==NO) {
+            //if (isProfilePic==NO) {
                 reuseableView.headerTitleLabel.hidden=YES;
-            }
+            //}
            // reuseableView.headerTitleLabel.text = @"   Friends";
         }
         else{
@@ -495,19 +479,37 @@
 
 #pragma  mark- Section header
 -(void)createSecondSectionHeader:(CollectionHeaderTitleLabel *)areuseableView{
-    
-    UIView *backView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 150)];
-    backView.backgroundColor = [UIColor clearColor];
+    CGRect ff,labelff,buttonff;
+    NSString * button,* camera;
+    CGFloat font_size;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        ff=CGRectMake(0, 0, windowSize.width, 200);
+        button=@"setting_btn_bg_ipad.png";
+        camera=@"photo_icon_grey_ipad.png";
+        font_size=20;
+        labelff=CGRectMake(40, 80, windowSize.width-80, 60);
+         buttonff=CGRectMake(self.view.frame.size.width/2-100, 150, 167 , 32);
+    }
+    else{
+        button=@"setting_btn_bg.png";
+        camera=@"photo_icon_grey.png";
+        ff=CGRectMake(0, 0, 320, 150);
+        font_size=12;
+        labelff=CGRectMake(40, 80, 240, 30);
+        buttonff=CGRectMake(windowSize.width/2-80, 120, 167 , 32);
+    }
+    UIView *backView=[[UIView alloc]initWithFrame:ff];
+    backView.backgroundColor = [UIColor blackColor];
     [areuseableView addSubview:backView];
   
     
     if (isProfilePic==NO ) {
         if (!self.secaddPhotoButton) {
             
-            self.secaddPhotoButton=[[UIButton alloc]initWithFrame:CGRectMake(60, 120, 167 , 32)];
+            self.secaddPhotoButton=[[UIButton alloc]initWithFrame:buttonff];
             [self.secaddPhotoButton setTitle:@"Add photos" forState:UIControlStateNormal];
             [self.secaddPhotoButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            [self.secaddPhotoButton setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
+            [self.secaddPhotoButton setBackgroundImage:[UIImage imageNamed:button] forState:UIControlStateNormal];
             self.secaddPhotoButton.layer.cornerRadius=4;
             self.secaddPhotoButton.clipsToBounds=YES;
             [self.secaddPhotoButton addTarget:self action:@selector(addPhotoButtonAction:) forControlEvents:UIControlEventTouchUpInside];
@@ -516,9 +518,9 @@
         self.secaddPhotoButton.hidden=NO;
         if (!self.secTopLabel) {
             self.secTopLabel=[[UILabel alloc]init];
-            self.secTopLabel.frame=CGRectMake(40, 80, 240, 30);
+            self.secTopLabel.frame=labelff;
             self.secTopLabel.textColor=[UIColor whiteColor];
-            self.secTopLabel.font=[UIFont systemFontOfSize:12];
+            self.secTopLabel.font=[UIFont systemFontOfSize:font_size];
             self.secTopLabel.textAlignment=NSTextAlignmentCenter;
             self.secTopLabel.lineBreakMode=NSLineBreakByCharWrapping;
             self.secTopLabel.numberOfLines=0;
@@ -529,20 +531,20 @@
         self.secTopLabel.hidden=NO;
         //if (!self.imgView) {
             self.imgView=[[UIImageView alloc]init];
-            self.imgView.frame=CGRectMake(self.view.frame.size.width/2-30, 40, 40, 40);
-            self.imgView.image=[UIImage imageNamed:@"photo_icon_grey.png"];
+            self.imgView.frame=CGRectMake(windowSize.width/2-30, 40, 40, 40);
+            self.imgView.image=[UIImage imageNamed:camera];
             [backView addSubview:self.imgView];
        // }
     }
     else{
       // if (!self.promoteButton) {
            self.promoteButton.hidden=NO;
-           self.promoteButton=[[UIButton alloc]initWithFrame:CGRectMake(60, 120, 167 , 32)];
+           self.promoteButton=[[UIButton alloc]initWithFrame:buttonff];
            [self.promoteButton setTitle:@"Promote yourself" forState:UIControlStateNormal];
            [self.promoteButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
 
        
-        [self.promoteButton setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
+        [self.promoteButton setBackgroundImage:[UIImage imageNamed:button] forState:UIControlStateNormal];
            [self.promoteButton addTarget:self action:@selector(addMeHereButtonAction:) forControlEvents:UIControlEventTouchUpInside];
            [backView addSubview:self.promoteButton];
     //}
@@ -550,9 +552,9 @@
    
     if (!self.toplabel) {
         self.toplabel=[[UILabel alloc]init];
-        self.toplabel.frame=CGRectMake(40, 80, 240, 30);
+        self.toplabel.frame=labelff;
         self.toplabel.textColor=[UIColor whiteColor];
-        self.toplabel.font=[UIFont systemFontOfSize:12];
+        self.toplabel.font=[UIFont systemFontOfSize:font_size];
         self.toplabel.textAlignment=NSTextAlignmentCenter;
         self.toplabel.lineBreakMode=NSLineBreakByCharWrapping;
         self.toplabel.numberOfLines=0;
@@ -563,17 +565,18 @@
     self.toplabel.hidden=NO;
         for (int i=0; i<4; i++) {
             self.imgView=[[UIImageView alloc]init];
-            self.imgView.frame=CGRectMake(30+(i*60), 30, 40, 40);
-            self.imgView.image=[UIImage imageNamed:@"photo_icon_grey.png"];
+            self.imgView.frame=CGRectMake(windowSize.width/2-130+(i*60), 30, 40, 40);
+            self.imgView.image=[UIImage imageNamed:camera];
             [backView addSubview:self.imgView];
         }
         
     }
 }
 
--(void) createFirstSectionHeader:(CollectionHeaderTitleLabel *)areuseableView{
+/*-(void) createFirstSectionHeader:(CollectionHeaderTitleLabel *)areuseableView{
     
-    UIView *backView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 100, 100)];
+    
+    UIView *backView=[[UIView alloc]initWithFrame:ff];
     backView.backgroundColor = [UIColor blackColor];
     [areuseableView addSubview:backView];
     
@@ -593,44 +596,64 @@
     [areuseableView addSubview:self.scrollView];
     [self addHeaderDetails];
 }
-
+*/
 -(void)createThirdSectionHeader:(CollectionHeaderTitleLabel *)areuseableView{
-    
-    UIView *backView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 150)];
+  
+    CGRect ff,labelff,buttonff;
+    NSString * button_img,* camera;
+    CGFloat font_size;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        ff=CGRectMake(0, 0, windowSize.width, 200);
+        button_img=@"setting_btn_bg_ipad.png";
+        camera=@"photo_icon_grey_ipad.png";
+        font_size=20;
+        labelff=CGRectMake(40, 80, windowSize.width-80, 60);
+        buttonff=CGRectMake(windowSize.width/2-100, 150, 167 , 32);
+    }
+    else{
+        button_img=@"setting_btn_bg.png";
+        camera=@"photo_icon_grey.png";
+        ff=CGRectMake(0, 0, 320, 150);
+        font_size=12;
+        labelff=CGRectMake(40, 80, 240, 30);
+        buttonff=CGRectMake(windowSize.width/2-80, 120, 167 , 32);
+    }
+
+    UIView *backView=[[UIView alloc]initWithFrame:ff];
     backView.backgroundColor = [UIColor blackColor];
     [areuseableView addSubview:backView];
 
-    
-    if (isProfilePic==YES) {
+    isProfilePic=NO;
+    if (isProfilePic==NO) {
         if (!self.addPhotoButton) {
             
-            self.addPhotoButton=[[UIButton alloc]initWithFrame:CGRectMake(60, 120, 240, 30)];
+            self.addPhotoButton=[[UIButton alloc]initWithFrame:buttonff];
             [self.addPhotoButton setTitle:@"Add photos" forState:UIControlStateNormal];
             [self.addPhotoButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-            [self.addPhotoButton setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
+            [self.addPhotoButton setBackgroundImage:[UIImage imageNamed:button_img] forState:UIControlStateNormal];
             [self.addPhotoButton addTarget:self action:@selector(addPhotoButtonAction:) forControlEvents:UIControlEventTouchUpInside];
             [backView addSubview:self.addPhotoButton];
         }
         self.addPhotoButton.hidden=NO;
-        if (!self.toplabel) {
+      //  if (!self.toplabel) {
             self.toplabel=[[UILabel alloc]init];
-            self.toplabel.frame=CGRectMake(40, 80, 240, 30);
+            self.toplabel.frame=labelff;
             self.toplabel.textColor=[UIColor whiteColor];
-            self.toplabel.font=[UIFont systemFontOfSize:12];
+            self.toplabel.font=[UIFont systemFontOfSize:font_size];
             self.toplabel.textAlignment=NSTextAlignmentCenter;
             self.toplabel.lineBreakMode=NSLineBreakByCharWrapping;
             self.toplabel.numberOfLines=0;
             self.toplabel.text=@"You can't see Favorites if you don't have you profile pic.";
             [backView addSubview:self.toplabel];
             
-        }
+       // }
         self.toplabel.hidden=NO;
-        if (!self.imgView) {
+       // if (!self.imgView) {
             self.imgView=[[UIImageView alloc]init];
-            self.imgView.frame=CGRectMake(self.view.frame.size.width/2-20, 40, 40, 40);
-            self.imgView.image=[UIImage imageNamed:@"photo_icon_grey.png"];
+            self.imgView.frame=CGRectMake(windowSize.width/2-30, 40, 40, 40);
+            self.imgView.image=[UIImage imageNamed:camera];
             [backView addSubview:self.imgView];
-        }
+       // }
     }
     
 }

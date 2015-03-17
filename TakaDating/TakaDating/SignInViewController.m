@@ -372,7 +372,7 @@ else{
 }
 */
 
--(void)SignInButtonAction:(id)sender{
+-(void)SignInButtonAction:(UIButton*)sender{
     [SingletonClass shareSingleton].facebookLog=NO;
     NSString * errorMessage=[self validationFunction];
     if(errorMessage)
@@ -391,6 +391,12 @@ else{
             [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
             
             [request setHTTPMethod:@"POST"];
+            
+            [[NSUserDefaults standardUserDefaults]setObject:self.userText.text forKey:@"userEmail"];
+           [[NSUserDefaults standardUserDefaults]setObject:self.passwordText.text forKey:@"password"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            
+            
             NSString * requestBody=[NSString stringWithFormat:@"password=%@&userEmail=%@",self.passwordText.text,self.userText.text];
             [request setHTTPBody:[requestBody dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
             
@@ -442,7 +448,7 @@ else{
         
         [self getAllDataFromService];
         
-        NSString * jibField=@"manju@takadating.com";
+        NSString * jibField=[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID];
         NSString * passwordField=@"123456";
         
         [self setField:jibField forKey:kXMPPmyJID];
@@ -453,7 +459,7 @@ else{
         EncountersViewController *encounterViewController = [[EncountersViewController alloc] initWithNibName:@"EncountersViewController" bundle:nil];
         encounterViewController.title = @"Rendezvous";
         ProfileViewController *profileViewCopntroller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewController" bundle:nil];
-        profileViewCopntroller.title = @"Profile";
+        profileViewCopntroller.title = [SingletonClass shareSingleton].name;
         
         PeopleNearByViewController *nearByViewController = [[PeopleNearByViewController alloc] initWithNibName:@"PeopleNearByViewController" bundle:nil];
         nearByViewController.title = @"People Nearby";
@@ -558,6 +564,8 @@ else{
         [SingletonClass shareSingleton].bodyType=[NSString stringWithFormat:@"BodyType:%@",[self appearanceBodyType:[dict objectForKey:@"bodyType"]]];
    
     [SingletonClass shareSingleton].userID=[dict objectForKey:@"userId"];
+    [[NSUserDefaults standardUserDefaults]setObject: [SingletonClass shareSingleton].userID forKey:@"userId"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
     
     [SingletonClass shareSingleton ].dob=[dict objectForKey:@"dob"];
     NSLog(@"UserID %@",[SingletonClass shareSingleton].userID);
@@ -679,6 +687,9 @@ else{
     [SingletonClass shareSingleton].MessagesSetting=[dict objectForKey:@"MessagesSetting"];
     
     NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
+    if (imagesArr.count>0) {
+    
+
     NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
     NSMutableArray * dictarr=[[NSMutableArray alloc]init];
     NSMutableArray * arr=[[ NSMutableArray alloc]init];
@@ -692,13 +703,18 @@ else{
         }
         else{
             [dictarr addObject:[dict objectForKey:@"imageLink"]];
-            NSString * imageName=[NSString stringWithFormat:@"http://taka.dating/%@",[dict objectForKey:@"imageLink"]];
+            NSString * imageName=[NSString stringWithFormat:@"http://taka.dating%@",[dict objectForKey:@"imageLink"]];
             NSLog(@"image Name %@",imageName);
             [arr addObject:imageName];
         }
         
     }
-    [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]initWithArray:arr];
+        [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]initWithArray:arr];
+}
+    
+    [SingletonClass shareSingleton].profileImg=[NSString stringWithFormat:@"http://taka.dating%@",[parse objectForKey:@"profileimg"]];
+    
+    
     NSLog(@"user profile images %@",[SingletonClass shareSingleton].userImages);
     [SingletonClass shareSingleton].profileImages=(NSArray*)imagesArr;
     

@@ -45,9 +45,15 @@
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(selectButtonAction:) name:@"selectLikeButtonAction" object:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deselectButtonAction) name:@"deselectLikeButtonAction" object:nil];
+    CGRect frame;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        frame=CGRectMake(windowSize.width/2-40, 150, 40, 40);
+    }
+    else{
+        frame=CGRectMake(140, 150, 40, 40);
+    }
     
-    
-    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 150, 40, 40)];
+    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:frame];
     
     self.refreshActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     
@@ -100,9 +106,16 @@
 #pragma mark-Create UI
 
 -(void)createUI{
+    CGFloat font_size;
+    if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+        font_size=20;
+    }
+    else{
+        font_size=13;
+    }
     UILabel * label=[[UILabel alloc]init];
     label.frame=CGRectMake(windowSize.width/2-130, windowSize.height/2-140, windowSize.width/2+100, 50);
-    label.font=[UIFont systemFontOfSize:13];
+    label.font=[UIFont systemFontOfSize:font_size];
     label.text=@"Nobody can vote you until you have added a photo of yourself.";
     label.textAlignment=NSTextAlignmentCenter;
     label.textColor=[UIColor blackColor];
@@ -111,18 +124,20 @@
     [self.view addSubview:label];
     
     UIButton * addPhoto=[[UIButton alloc]init];
-    addPhoto.frame=CGRectMake(windowSize.width/2-80, windowSize.height/2-50,150, 30);
-    [addPhoto setTitle:@"Add photo" forState:UIControlStateNormal];
+    addPhoto.frame=CGRectMake(windowSize.width/2-80, windowSize.height/2-50,167, 32);
+    [addPhoto setTitle:@"Add photos" forState:UIControlStateNormal];
     [addPhoto setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-    addPhoto.titleLabel.font=[UIFont systemFontOfSize:12];
+    //addPhoto.titleLabel.font=[UIFont systemFontOfSize:12];
     addPhoto.clipsToBounds=YES;
     addPhoto.layer.cornerRadius=5;
-    addPhoto.backgroundColor=[UIColor blueColor];
+    
+    [addPhoto setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
     [self.view addSubview:addPhoto];
     
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-        addPhoto.frame=CGRectMake(windowSize.width/2-200, windowSize.height/2-200,150, 30);
-        label.frame=CGRectMake(windowSize.width/2-200, windowSize.height/2-140, windowSize.width/2+100, 50);
+        addPhoto.frame=CGRectMake(windowSize.width/2-100, windowSize.height/2-200,167, 32);
+        label.frame=CGRectMake(windowSize.width/2-250, windowSize.height/2-140, windowSize.width/2+100, 50);
+        [addPhoto setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg_ipad.png"] forState:UIControlStateNormal];
         
     }
     

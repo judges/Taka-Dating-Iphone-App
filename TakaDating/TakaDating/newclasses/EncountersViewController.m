@@ -50,23 +50,26 @@
     self.selectedIndex=1;
    
     self.sectionTwoImages=[NSArray arrayWithObjects:@"location.png",@"about_me.png",@"relationship.png",@"sexuality.png",@"apperance.png",@"living.png",@"kids.png",@"smoking.png",@"drinking.png",@"education.png",@"language.png",@"work.png", nil];
-    
+    CGRect frame;
     self.screen_width=[UIScreen mainScreen].bounds.size.width;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         row_hh=80;
          self.sectionTwoData=[NSArray arrayWithObjects:@"Location",@"About Me",@"Relationship",@"Sexuality",@"Appearence",@"Living",@"Children",@"Smoking",@"Drinking",@"Education",@"I Speak",@"I Work as", nil];
-       self.sectionTwoImages=[NSArray arrayWithObjects:@"location.png",@"about_me_ipad.png",@"interested_in_ipad.png",@"relationship_ipad.png",@"sexuality_ipad.png",@"apperance_ipad.png",@"living_ipad.png",@"kids_ipad.png",@"smoking_ipad.png",@"drinking_ipad.png",@"education_ipad.png",@"language_ipad.png",@"work_ipad.png", nil];
+       self.sectionTwoImages=[NSArray arrayWithObjects:@"location_ipad.png",@"about_me_ipad.png",@"interested_in_ipad.png",@"relationship_ipad.png",@"sexuality_ipad.png",@"apperance_ipad.png",@"living_ipad.png",@"kids_ipad.png",@"smoking_ipad.png",@"drinking_ipad.png",@"education_ipad.png",@"language_ipad.png",@"work_ipad.png", nil];
+        frame=CGRectMake(windowSize.width/2-40, 150, 80, 80);
+        
     }
     else{
         row_hh=40;
          self.sectionTwoData=[NSArray arrayWithObjects:@"Location",@"About Me",@"Relationship",@"Sexuality",@"Appearence",@"Living",@"Children",@"Smoking",@"Drinking",@"Education",@"I Speak",@"I Work as", nil];
         self.sectionTwoImages=[NSArray arrayWithObjects:@"location.png",@"about_me.png",@"add_interest.png",@"relationship.png",@"sexuality.png",@"apperance.png",@"living.png",@"kids.png",@"smoking.png",@"drinking.png",@"education.png",@"language.png",@"work.png", nil];
+        frame=CGRectMake(140, 150, 40, 40);
     }
   
     
     [self createUI];
     
-    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 150, 40, 40)];
+    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:frame];
     
     self.refreshActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     
@@ -208,7 +211,7 @@
         self.parentView.frame=[UIScreen mainScreen].bounds;
         
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-            self.parentView.frame=CGRectMake(0, 0, windowSize.width, windowSize.height);
+            self.parentView.frame=CGRectMake(0, 0, windowSize.width, windowSize.height-25);
             self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
         }
         else{
@@ -309,8 +312,8 @@
         
         [profile setImage:[UIImage imageNamed:@"profile_male_grey_ipad.png"] forState:UIControlStateNormal];
         
-        [photosBtn setImage:[UIImage imageNamed:@"yes_ipad.png"] forState:UIControlStateNormal];
-        [CreditsBtn setImage:[UIImage imageNamed:@"no_ipad.png"] forState:UIControlStateNormal];
+        [photosBtn setImage:[UIImage imageNamed:@"accept_ipad.png"] forState:UIControlStateNormal];
+        [CreditsBtn setImage:[UIImage imageNamed:@"decline_ipad.png"] forState:UIControlStateNormal];
        // [OffBtn setImage:[UIImage imageNamed:@"off_icon_grey_ipad.png"] forState:UIControlStateNormal];
         
         
@@ -337,6 +340,7 @@
     
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
             imageScroll=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.parentView.frame.size.width, self.parentView.frame.size.height-200)];
+           
         }
         else{
                 if ([UIScreen mainScreen].bounds.size.height>500) {
@@ -417,7 +421,7 @@
             tagLine.frame=CGRectMake(40, self.parentView.frame.size.height-200, self.parentView.frame.size.width, 30);
         }
         else{
-            tagLine.frame=CGRectMake(40, self.parentView.frame.size.height-160, 200, 30);
+            tagLine.frame=CGRectMake(40, self.parentView.frame.size.height-160, 230, 30);
         }
         tagLine.textColor=[UIColor blackColor];
         
@@ -543,7 +547,7 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
 -(void)swipeGesture:(CGRect)frame{
     if(self.parentView.frame.origin.y==0)
     {
-        [UIView animateWithDuration:1 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             
             if ([UIScreen mainScreen].bounds.size.height>500) {
                 
@@ -557,7 +561,7 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
         } completion:^(BOOL finished) {
             CGRect ff;
             if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-                ff=CGRectMake(0, windowSize.height/2+80, windowSize.width,(windowSize.height-windowSize.height/2+100));
+                ff=CGRectMake(0, windowSize.height/2+55, windowSize.width,(windowSize.height-windowSize.height/2-80));
             }
             else{
                 
@@ -689,20 +693,20 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
        )//&& self.selectedIndex!=tagValue)
     {
         
-        [UIView animateWithDuration:1 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=frame;//CGRectMake(0, -300, self.screen_width, self.view.frame.size.height);
         } completion:^(BOOL finished) {
             CGRect  ff;
             if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-                ff=CGRectMake(0, windowSize.height/2+80, windowSize.width,(windowSize.height-windowSize.height/2+100));
+                ff=CGRectMake(0, windowSize.height/2+55, windowSize.width,(windowSize.height-windowSize.height/2-80));
             }
             else{
                 
                 if ([UIScreen mainScreen].bounds.size.height>500) {
-                    ff=CGRectMake(0, 220, self.view.frame.size.width, 300);
+                    ff=CGRectMake(0, 220, windowSize.width, 300);
                 }
                 else{
-                    ff=CGRectMake(0, 125, self.view.frame.size.width, 450);
+                    ff=CGRectMake(0, 125, windowSize.width, 450);
                 }
             }
             if (tagValue!=4&&tagValue!=2) {
@@ -801,15 +805,38 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString * cellIdentifier=@"cell";
-    //UITableViewCell * cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
+    NSString * facebook_img,* side_arrow,* awards,*super_powers;
+    
     UITableViewCell * cell=[tableView cellForRowAtIndexPath:indexPath];
     if(!cell)
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
-    //cell.imageView.image=[UIImage imageNamed:@"crm.png"];
-    cell.textLabel.font=[UIFont boldSystemFontOfSize:12];
-     cell.detailTextLabel.font=[UIFont systemFontOfSize:12];
+   
+    
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        cell.textLabel.font=[UIFont boldSystemFontOfSize:22];
+        cell.detailTextLabel.font=[UIFont systemFontOfSize:20];
+        
+        facebook_img=@"fb_icon_ipad.png";
+        side_arrow=@"side_arrow_ipad.png";
+        super_powers=@"super_power_ipad.png";
+        awards=@"award_ipad.png";
+        
+    }
+    else{
+        facebook_img=@"fb_verify_icon.png";
+        side_arrow=@"side_arrow.png";
+        super_powers=@"super_power.png";
+        awards=@"award.png";
+        
+        cell.textLabel.font=[UIFont boldSystemFontOfSize:12];
+        cell.detailTextLabel.font=[UIFont systemFontOfSize:12];
+        
+    }
+    
+    
+   
     if(tableView==self.profileTableView)
     {
         if(indexPath.section==0)
@@ -820,12 +847,12 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
                 {
                     UIImageView * imgView=[[UIImageView alloc]init];
                     imgView.frame=CGRectMake(10+(i*50), 5, 50, 40);
-                    imgView.image=[UIImage imageNamed:@"award.png"];
+                    imgView.image=[UIImage imageNamed:awards];
                     imgView.layer.cornerRadius=12;
                     imgView.clipsToBounds=YES;
                     [cell.contentView addSubview:imgView];
                 }
-                UIImageView * image=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"side_arrow.png"]];
+                UIImageView * image=[[UIImageView alloc]initWithImage:[UIImage imageNamed:side_arrow]];
                 cell.accessoryView=image;
             }
         }
@@ -836,16 +863,20 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
             if (indexPath.row!=0) {
                 
                 //cell.accessoryType=UITableViewCellAccessoryDisclosureIndicator;
-                UIImageView * image=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"side_arrow.png"]];
+                UIImageView * image=[[UIImageView alloc]initWithImage:[UIImage imageNamed:side_arrow]];
                 cell.accessoryView=image;
             }
             cell.textLabel.text=[self.sectionTwoData  objectAtIndex:indexPath.row];
             cell.imageView.image=[UIImage imageNamed:[NSString stringWithString:[self.sectionTwoImages objectAtIndex:indexPath.row]]];
          
             if (indexPath.row==0) {
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                 cell.detailTextLabel.text=_location;
             }
             if (indexPath.row==1) {
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                 cell.detailTextLabel.text=_about;
             }
             if (indexPath.row==5) {
@@ -859,7 +890,8 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
                 cell.detailTextLabel.text=_sexuality;
             }
             if (indexPath.row==4) {
-                
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
             }
             if (indexPath.row==6) {
                 cell.detailTextLabel.text=_kids;
@@ -874,10 +906,13 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
                 cell.detailTextLabel.text=_eduaction;
             }
             if (indexPath.row==10) {
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                 cell.detailTextLabel.text=_languages;
             }
             if (indexPath.row==11) {
-                
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                 cell.detailTextLabel.text=_profession;
             }
             if (indexPath.row==12) {

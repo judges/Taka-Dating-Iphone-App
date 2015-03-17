@@ -67,4 +67,21 @@ extern NSString *const kXMPPmyPassword;
 
 - (BOOL)connect;
 - (void)disconnect;
+
+
+-(NSString*)appearanceDrinking:(NSString*)dict;
+-(NSString*)appearanceEducation:(NSString*)dict;
+-(NSString*)appearanceSmoking:(NSString*)dict;
+-(NSString*)appearanceKids:(NSString*)dict;
+-(NSString*)appearanceLving:(NSString*)dict;
+-(NSString*)appearanceRelationShip:(NSString*)dict;
+-(NSString*)appearancesexuality:(NSString*)dict;
+-(NSString*)appearanceBodyType:(NSString*)dict;
+-(NSString*)appearanceHairColor:(NSString*)dict;
+-(NSString*)appearanceEyeColor:(NSString*)dict;
+-(NSString*)appearanceIncome:(NSString*)dict;
+
+-(void)reacheabilit;
+
+-(void)getAllFacebookInfo:(id)sender;
 @end

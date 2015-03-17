@@ -33,8 +33,18 @@
     [super viewDidAppear:YES];
     self.navigationController.navigationBar.hidden = YES;
 }
+
+-(AppDelegate*)appdelegate{
+    return (AppDelegate*)[UIApplication sharedApplication].delegate;
+}
 - (void)viewDidLoad
 {
+    NSString * userId=[[NSUserDefaults standardUserDefaults]objectForKey:@"userID"];
+    if (userId) {
+        EncountersViewController * encounter=[[EncountersViewController alloc]initWithNibName:@"EncountersViewController" bundle:nil];
+        [self.navigationController pushViewController:encounter animated:YES];
+    }
+    else{
     [self getlocation];
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(afterLoginMoveToProfile) name:@"FacebookLogin" object:nil];
@@ -48,14 +58,17 @@
     else{
         if(self.windowSize.height>500)
         {
+            NSLog(@"WindowSize %f",self.windowSize.height);
             self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"screen1_568.png"]];
         }
         else{
+            NSLog(@"WindowSize %f",self.windowSize.height);
+
             self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"screen1_480.png"]];
         }
     }
     [self createUI];
-    
+    }
     
 }
 
@@ -116,10 +129,20 @@
 
 -(void)afterLoginMoveToProfile{
     [SingletonClass shareSingleton].facebookLog=YES;
+    
+    NSString * jibField=[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID];
+    NSString * passwordField=@"123456";
+    
+    [self setField:jibField forKey:kXMPPmyJID];
+    [self setField:passwordField forKey:kXMPPmyPassword];
+    
+    [[self appdelegate]connect];
+
+    
     EncountersViewController *encounterViewController = [[EncountersViewController alloc] initWithNibName:@"EncountersViewController" bundle:nil];
     encounterViewController.title = @"Encounter";
     ProfileViewController *profileViewCopntroller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewController" bundle:nil];
-    profileViewCopntroller.title = @"Profile";
+    profileViewCopntroller.title = [SingletonClass shareSingleton].name;
     
     PeopleNearByViewController *nearByViewController = [[PeopleNearByViewController alloc] initWithNibName:@"PeopleNearByViewController" bundle:nil];
     nearByViewController.title = @"People Nearby";
@@ -155,6 +178,18 @@
 
 }
 
+
+#pragma mark-
+
+- (void)setField:(NSString *)field forKey:(NSString *)key
+{
+    if (field != nil)
+    {
+        [[NSUserDefaults standardUserDefaults] setObject:field forKey:key];
+    } else {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+    }
+}
 -(void)signupAction{
     if (self.signUpVC) {
         self.signUpVC=nil;

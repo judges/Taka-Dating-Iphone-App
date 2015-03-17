@@ -22,14 +22,18 @@
         
         self.topLabel=[[UILabel alloc]init];
         self.topLabel.textColor=[UIColor blackColor];
+        self.topLabel.numberOfLines=0;
+        self.topLabel.lineBreakMode=NSLineBreakByCharWrapping;
         [self.containerView addSubview:self.topLabel];
         
         self.secLabel=[[UILabel alloc]init];
-       
+        self.secLabel.numberOfLines=0;
+        self.secLabel.lineBreakMode=NSLineBreakByCharWrapping;
         self.secLabel.textColor=[UIColor blackColor];
         [self.containerView addSubview:self.secLabel];
         
-        
+        self.imgView=[[UIImageView alloc]init];
+        [self.containerView addSubview:self.imgView];
 
     }
     return self;

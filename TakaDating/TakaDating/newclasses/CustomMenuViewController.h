@@ -16,6 +16,7 @@
     BOOL selectVisitors,selectMessage,selectFavorite,selectLike;
     NSArray * menuImgArr,* sectionArr;
     NSMutableArray * imagesArr;
+    CGFloat row_hh,hdr_hh;
 }
 
 @property(nonatomic,strong)UINavigationController * nav;

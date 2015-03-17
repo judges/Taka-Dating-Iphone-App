@@ -15,6 +15,8 @@
     NSArray * interests_iphone,* interests_ipad;
     id parse;
     NSArray * subArray;
+    CGSize windowSize;
+    CGFloat height,row_hight;
 }
 
 @property(nonatomic)NSArray * mostPopular,* browseByCat;

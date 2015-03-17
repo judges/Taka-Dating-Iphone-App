@@ -9,6 +9,9 @@
 #import <UIKit/UIKit.h>
 
 @interface SettingsViewController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+{
+    CGSize windowSize;
+}
 
 @property(nonatomic)UILabel *titleLabel;
 @property(nonatomic)UIButton * cancelButton;

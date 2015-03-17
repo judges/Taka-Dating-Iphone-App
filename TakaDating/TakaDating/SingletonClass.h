@@ -10,7 +10,7 @@
 
 @interface SingletonClass : NSObject
 @property(nonatomic,strong) NSString* aboutMe,*location,* name,*bodyType,*eyeColor,*hairColor,*appearance,* relation,* sexuality,*Living,*children,*smoking,* education,* dirinking,* height,* weight, * income,*profession,*userID,*inetrestedIn;
-@property (nonatomic,strong) NSString *interest,*interestedIn,*withPeople,*dob,*languages,*thumbURL,*favoriteMemberId,*awards;
+@property (nonatomic,strong) NSString *interest,*interestedIn,*withPeople,*dob,*languages,*thumbURL,*favoriteMemberId,*awards,*password;
 @property(nonatomic,assign)int hereFor,with,sex;
 
 //profile setting privacy variables
@@ -73,6 +73,9 @@
 @property(nonatomic,strong)NSString * encounterUsrProfilePic;
 @property(nonatomic)NSString *enhereFor,*enwithWhom,*enFromAge,*enEndAge;
 
+//Custom menu Variabe
+@property(nonatomic,strong)NSString * profileImg;
 
+//Insterests updating
 @property(nonatomic,strong)NSMutableArray * selectedInterests ;
 @end

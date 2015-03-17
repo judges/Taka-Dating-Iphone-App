@@ -44,15 +44,11 @@
     UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
     UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
-    [self.headerView.layer insertSublayer:layer atIndex:0];
-    self.headerView.layer.shadowRadius = 5.0;
-    self.headerView.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.headerView.layer.shadowOpacity = 0.6;
-    self.headerView.layer.shadowOffset = CGSizeMake(0.0f,5.0f);
-    self.headerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.headerView.bounds].CGPath;
+    
     [self.view.layer insertSublayer:layer atIndex:1];
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 20, self.view.frame.size.width-200, 35)];
+    self.titleLabel = [[UILabel alloc] init ];
+    self.titleLabel.frame= CGRectMake(size.width/2-60, 20, size.width-200, 35);
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.textColor = [UIColor whiteColor];
     self.titleLabel.font = [UIFont boldSystemFontOfSize:20];
@@ -60,7 +56,7 @@
     [self.view addSubview:self.titleLabel];
     //Add Cancel BUTTON
     self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.cancelButton.frame = CGRectMake(15, 25, 60, 25);
+    self.cancelButton.frame = CGRectMake(size.width/2-145, 25, 60, 25);
     [self.cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.cancelButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
@@ -72,7 +68,7 @@
     [self.view addSubview:self.cancelButton];
     
     self.saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.saveButton.frame = CGRectMake(250, 25, 60, 25);
+    self.saveButton.frame = CGRectMake(size.width/2-70, 25, 60, 25);
     [self.saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.saveButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [self.saveButton setTitle:@"Save" forState:UIControlStateNormal];
@@ -81,6 +77,17 @@
     self.saveButton.layer.cornerRadius = 4;
     self.saveButton.clipsToBounds = YES;
     [self.view addSubview:self.saveButton];
+
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+         layer.frame = CGRectMake(0, 0,size.width, 75);
+         self.cancelButton.frame = CGRectMake(size.width/2-350, 25, 120, 40);
+        self.saveButton.frame = CGRectMake(size.width-150, 25, 120, 40);
+        self.titleLabel.frame= CGRectMake(size.width/2-270, 20, size.width-200, 35);
+        
+         self.titleLabel.font = [UIFont boldSystemFontOfSize:30];
+        self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+        self.saveButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+    }
     
     
   /*  if ([SingletonClass shareSingleton].photosOfUser.count<=0) {
@@ -98,11 +105,21 @@
 }
 
 -(void)createUI{
+    CGFloat height,minus;;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        height=75;
+        minus=480;
+    }
+    else{
+        height=55;
+        minus=55;
+    }
+    
     UICollectionViewFlowLayout * collectionFlowLayout=[[UICollectionViewFlowLayout alloc]init];
     collectionFlowLayout.minimumInteritemSpacing=(float)2.0;
     collectionFlowLayout.minimumLineSpacing=(float)2.0;
     collectionFlowLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
-    self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 55, self.view.frame.size.width, self.view.bounds.size.height-55) collectionViewLayout:collectionFlowLayout];
+    self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, height, size.width, size.height-minus) collectionViewLayout:collectionFlowLayout];
     self.automaticallyAdjustsScrollViewInsets = NO;
     //self.mainCollectionView.contentInset = UIEdgeInsetsMake(0, 0, 10, 0);
     [self.mainCollectionView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
@@ -113,6 +130,8 @@
     [self.mainCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
     
     [self.view addSubview:self.mainCollectionView];
+    
+    
 }
 -(void)cancelButtonAction{
     [SingletonClass shareSingleton].photosOfUser=nil;
@@ -137,7 +156,9 @@
 }
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        return CGSizeMake(150,150);
+    }
     return CGSizeMake(73, 73);
 }
 

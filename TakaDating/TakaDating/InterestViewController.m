@@ -36,20 +36,26 @@
 
     //Most Popular array data is from webservice
      //self.mostPopular=[NSArray arrayWithObjects:@"Most Popular",@"Music",@"Movies and TV Shows",@"Fashion and Beauty",@"Sprots",@"Food and Drink",@"Profession",@"Books and Culture",@"Travel", nil];
-    interests_iphone=[NSArray arrayWithObjects:@"interest_icon.png",@"music_icon.png",@"movie_tv_shows.png",@"fashion_beauty.png",@"sports.png",@"food_drink_icon.png",@"profession_icon.png",@"books_culture_icon.png",@"travel_icon.png", nil];
-    
+    if (UI_USER_INTERFACE_IDIOM()!=UIUserInterfaceIdiomPad) {
+        interests_iphone=[NSArray arrayWithObjects:@"interest_icon.png",@"music_icon.png",@"movie_tv_shows.png",@"fashion_beauty.png",@"sports.png",@"food_drink_icon.png",@"profession_icon.png",@"books_culture_icon.png",@"travel_icon.png", nil];
+    }
+    else{
+    interests_iphone=[NSArray arrayWithObjects:@"interest_icon_ipad.png",@"music_icon_ipad.png",@"movie_tv_shows.png",@"fashion_beauty_ipad.png",@"sports_ipad.png",@"food_drink_icon_ipad.png",@"profession_icon_ipad.png",@"books_culture_icon_ipad.png",@"travel_icon_ipad.png", nil];
+    }
 //    self.browseByCat=[NSArray arrayWithObjects:@"Food & Drink",@"Music",@"Movies & TV Shows",@"Fashion & Beauty",@"Sports",@"Travel",@"Profession",@"Games",@"Hobbies",@"Books & Culture",@"Other", nil];
     
+    windowSize=[UIScreen mainScreen].bounds.size;
     self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     
     CAGradientLayer *layer = [CAGradientLayer layer];
-    layer.frame = CGRectMake(0, 0, self.view.frame.size.width, 55);
+    layer.frame = CGRectMake(0, 0, windowSize.width, 55);
     UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
     UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 20, self.view.frame.size.width-200, 35)];
+    self.titleLabel = [[UILabel alloc] init];
+self.titleLabel.frame=CGRectMake(windowSize.width/2-60, 20, windowSize.width-200, 35);
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.textColor = [UIColor whiteColor];
     self.titleLabel.font = [UIFont boldSystemFontOfSize:20];
@@ -57,7 +63,7 @@
     [self.view addSubview:self.titleLabel];
     //Add Cancel BUTTON
     self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.cancelButton.frame = CGRectMake(15, 25, 60, 25);
+    self.cancelButton.frame = CGRectMake(windowSize.width/2-145, 25, 60, 25);
     [self.cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.cancelButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
@@ -69,6 +75,36 @@
     [self.view addSubview:self.cancelButton];
     
     
+    UIButton * saveButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    saveButton.frame=CGRectMake(windowSize.width-70, 25, 60, 25);
+    [saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [saveButton setTitle:@"Update" forState:UIControlStateNormal];
+    saveButton.titleLabel.font = [UIFont systemFontOfSize:15];
+    saveButton.layer.borderColor = [UIColor redColor].CGColor;
+    saveButton.layer.borderWidth = 0.7;
+    saveButton.layer.cornerRadius = 4;
+    saveButton.clipsToBounds = YES;
+    [saveButton addTarget:self action:@selector(saveButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:saveButton];
+
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        layer.frame = CGRectMake(0, 0, windowSize.width, 75);
+        self.titleLabel.frame=CGRectMake(windowSize.width/2-270, 20, windowSize.width-200, 35);
+        self.cancelButton.frame = CGRectMake(windowSize.width/2-350, 25, 120, 40);
+         saveButton.frame=CGRectMake(windowSize.width-150, 25, 120, 40);
+        
+         self.titleLabel.font = [UIFont boldSystemFontOfSize:30];
+        self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+        saveButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+        height=75;
+        row_hight=85;
+    }
+    else{
+        height=55;
+        row_hight=50;
+    }
+    
+    
     [self createUI];
     // Do any additional setup after loading the view from its nib.
 }
@@ -76,13 +112,17 @@
     
     
     self.intersetTable=[[UITableView alloc]init];
-    if ([UIScreen mainScreen].bounds.size.height>500) {
-        self.intersetTable.frame=CGRectMake(0, 55, self.view.frame.size.width, self.view.frame.size.height-55);
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        self.intersetTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height);
     }
     else{
-        self.intersetTable.frame=CGRectMake(0, 55, self.view.frame.size.width, self.view.frame.size.height-145);
+        if ([UIScreen mainScreen].bounds.size.height>500) {
+        self.intersetTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height);
     }
-    
+    else{
+        self.intersetTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height-145);
+    }
+    }
     self.intersetTable.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     self.intersetTable.separatorColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     self.intersetTable.delegate=self;
@@ -91,8 +131,11 @@
     
     
     UIView * sectionView=[[UIView alloc]init];
-    sectionView.frame=CGRectMake(0, 0, 320, 60);
+    sectionView.frame=CGRectMake(0, 0, windowSize.width, 60);
     sectionView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+        sectionView.frame=CGRectMake(0, 0, windowSize.width, 120);
+    }
     
     self.searchbar =[[UISearchBar alloc]initWithFrame:CGRectMake(10, 30, 300, 20)];
     self.searchbar.layer.cornerRadius=7;
@@ -102,7 +145,7 @@
     
     self.searchbar.backgroundColor=[UIColor whiteColor];
     self.searchbar.searchBarStyle=UISearchBarStyleProminent;
-    [sectionView addSubview:self.searchbar];
+    //[sectionView addSubview:self.searchbar];
     self.intersetTable.tableHeaderView=sectionView ;
     //---------
 
@@ -110,7 +153,9 @@
 
 #pragma mark-tableView Delegate Methods
 
-
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return row_hight;
+}
 
 -(NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section{
     NSString * str;
@@ -128,7 +173,7 @@
 
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    NSInteger rows=0;
+   // NSInteger rows=0;
     /*if(section==0)
     {
         rows= self.mostPopular.count;
@@ -153,11 +198,21 @@
         [cell.cellButton addTarget:self action:@selector(cellButtonAction:) forControlEvents:UIControlEventTouchDragInside];
          }
     }
-    cell.containerView.frame=CGRectMake(0, 0, cell.frame.size.width, 50);
-    cell.cellLabel.font=[UIFont systemFontOfSize:15];
-    cell.cellLabel.textColor=[UIColor blackColor];
-    cell.cellLabel.frame=CGRectMake(60, 10, 180, 30);
-    cell.imgView.frame=CGRectMake(15, 15, 20, 20);
+    if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+        
+        cell.containerView.frame=CGRectMake(0, 0, windowSize.width, row_hight);
+        cell.cellLabel.font=[UIFont boldSystemFontOfSize:20];
+        cell.cellLabel.textColor=[UIColor blackColor];
+        cell.cellLabel.frame=CGRectMake(100, 25, windowSize.width/2, 30);
+        cell.imgView.frame=CGRectMake(25, 25, 40, 40);
+    }
+    else{
+        cell.containerView.frame=CGRectMake(0, 0, windowSize.width, row_hight);
+        cell.cellLabel.font=[UIFont systemFontOfSize:15];
+        cell.cellLabel.textColor=[UIColor blackColor];
+        cell.cellLabel.frame=CGRectMake(60, 10, 180, 30);
+        cell.imgView.frame=CGRectMake(15, 15, 20, 20);
+    }
    
     
     
@@ -426,5 +481,42 @@
     
 }
 
+#pragma mark- send Button action
+-(void)saveButtonAction:(UIButton*)sender{
+    
+    NSString * interests;
+    
+    for (int i=0; i<[SingletonClass shareSingleton].intr_cat_id.count; i++) {
+        if (i==0) {
+            interests =[NSString stringWithFormat:@"%@",[[SingletonClass shareSingleton].intr_cat_id objectAtIndex:i]];
+        }
+        else{
+            interests =[NSString stringWithFormat:@",%@",[[SingletonClass shareSingleton].intr_cat_id objectAtIndex:i]];
+        }
+    }
+    
+    
+    NSError * error=nil;
+    NSURLResponse * urlResponse=nil;
+    
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/user/interest-update"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    NSString * body=[NSString stringWithFormat:@"userId=%@&interests=%@",[SingletonClass shareSingleton].userID,interests];
+    
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    
+    if (data==nil) {
+        return;
+    }
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"Update interests %@",json);
+}
 
 @end

@@ -28,6 +28,9 @@
         [self.cellButton setImage:[UIImage imageNamed:@"select_normal.png"] forState:UIControlStateNormal];
         [self.cellButton setImage:[UIImage imageNamed:@"select.png"] forState:UIControlStateSelected];
         [self.containerView addSubview:self.cellButton];
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+             self.cellLabel.font=[UIFont boldSystemFontOfSize:20];
+        }
     }
     return self;
 }

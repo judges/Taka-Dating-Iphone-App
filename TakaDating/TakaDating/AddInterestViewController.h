@@ -14,6 +14,7 @@
     CGSize windowSize;
     NSMutableArray * subData,* subCat_id;
     NSArray * sortedData,* sortedId;
+    CGFloat row_hh,height;
     
 }
 @property(nonatomic)UITableView * addInterestTable;

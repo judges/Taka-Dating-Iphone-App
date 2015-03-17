@@ -32,6 +32,6 @@
 @property(nonatomic,strong)NSString * index,* imageUrl;
 
 
-@property(nonatomic,strong) NSString * useriId,*sex,*income,*languages,*profession,*sexuality,*relationship,*eduaction,*drinking,*smoking,*kids,*living,*weight,*height,*bodyType,*about,*interestedIn,*displayName,*location,*hairColor,*eyeColor,*intrests,*imageId;;
+@property(nonatomic,strong) NSString * useriId,*sex,*income,*languages,*profession,*sexuality,*relationship,*eduaction,*drinking,*smoking,*kids,*living,*weight,*height,*bodyType,*about,*interestedIn,*displayName,*location,*hairColor,*eyeColor,*intrests,*imageId,*appearance;;
 
 @end

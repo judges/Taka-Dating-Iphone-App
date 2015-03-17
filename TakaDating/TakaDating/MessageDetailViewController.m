@@ -82,7 +82,7 @@
 
 -(void)createUI{
     self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    
+    CGSize windowSize=[UIScreen mainScreen].bounds.size;
     
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, self.view.frame.size.width, 55);
@@ -122,16 +122,30 @@
     [self.profileButton addTarget:self action:@selector(profileButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.profileButton];
     
+   
+    
+    messageField =[[UITextField alloc]init];
+    messageField.frame=CGRectMake(0, windowSize.height-55,windowSize.width, 50);
+    messageField.layer.borderColor=[[UIColor blackColor]CGColor];
+    messageField.layer.borderWidth=1.0;
+    [self.view addSubview:messageField];
+    messageField.delegate=self;
+    messages = [[NSMutableArray alloc ] init];
+}
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
     tView =[[UITableView alloc]init];
     CGSize windowSize=[UIScreen mainScreen].bounds.size;
-    tView.frame=CGRectMake(0, 55,windowSize.width , windowSize.height-55);
+    tView.frame=CGRectMake(0, 55,windowSize.width , windowSize.height-110);
     tView.delegate=self;
+    tView.dataSource=self;
+    tView.separatorStyle=UITableViewCellSelectionStyleNone;
+    tView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    [tView setShowsHorizontalScrollIndicator:NO];
     [self.view addSubview:tView];
-
-
 }
 
-
+#pragma mark-
 #pragma mark- send message
 - (void)sendMessage {
     
@@ -182,9 +196,9 @@
     NSIndexPath *topIndexPath = [NSIndexPath indexPathForRow:[SingletonClass shareSingleton].messages.count-1                                                               inSection:0];
     
     [tView scrollToRowAtIndexPath:topIndexPath
-                 atScrollPosition:UITableViewScrollPositionMiddle
+                atScrollPosition:UITableViewScrollPositionMiddle
                          animated:YES];
-}
+    }
 
 
 
@@ -195,6 +209,7 @@
         self.profileVC=nil;
     }
     self.profileVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
+    self.profileVC.index=self.userId;
     [self.navigationController pushViewController:self.profileVC animated:YES];
    // [self presentViewController:self.profileVC animated:YES completion:nil];
 }
@@ -205,13 +220,18 @@
 
 #pragma mark -Chat UI
 #pragma mark Table Delegates
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+/*- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     NSLog(@"message count %d",[[SingletonClass shareSingleton].messages count]);
     return [[SingletonClass shareSingleton].messages count];
+}*/
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    NSLog(@"message count %lu",(unsigned long)[[SingletonClass shareSingleton].messages count]);
+    return [[SingletonClass shareSingleton].messages count];
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     /*This method sets up the table-view.*/
     
     static NSString* cellIdentifier = @"messagingCell";
@@ -294,6 +314,7 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
+    [self sendMessage];
     return YES;
 }
 

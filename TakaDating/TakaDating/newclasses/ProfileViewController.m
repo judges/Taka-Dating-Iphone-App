@@ -20,6 +20,8 @@
 #import  "UIImageView+WebCache.h"
 #import  "InetrestedINViewController.h"
 #import "ISpeakLanguageViewController.h"
+#import "AwardSectionViewController.h"
+
 
 
 
@@ -29,6 +31,7 @@
     UIImageView * profileImg;
     PhotoViewController * photoVC;
     ISpeakLanguageViewController *  labguages;
+    AwardSectionViewController * awardVC;
 }
 @property(nonatomic,strong)SettingViewController * settingVC;
 @property(nonatomic,strong)InterestViewController * interestVC;
@@ -127,7 +130,7 @@
         self.parentView.frame=[UIScreen mainScreen].bounds;
         
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-            self.parentView.frame=CGRectMake(0, 0, windowSize.width, windowSize.height);
+            self.parentView.frame=CGRectMake(0, 0, windowSize.width, windowSize.height-25);
             self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
         }
         else{
@@ -257,11 +260,14 @@
 -(void)createScrollUI{
     
     //NSArray * images=[NSArray arrayWithObjects:@"imag1.jpg",@"imag2.jpg",@"imag3.jpg",@"imag4.jpg",@"imag5.jpg",nil];
+    NSString * camera,*online;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         
         imageScroll=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.parentView.frame.size.width, self.parentView.frame.size.height-150)];
+        online=@"online_icon_ipad.png";
     }
     else{
+        online=@"online_icon.png";
         if ([UIScreen mainScreen].bounds.size.height>500) {
 
             imageScroll=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.parentView.frame.size.width, self.parentView.frame.size.height-100)];
@@ -343,7 +349,7 @@
     [self.parentView addSubview:imageCount];
     
     isOnline=[[UIImageView alloc]init];
-    isOnline.image=[UIImage imageNamed:@"online_icon.png"];
+    isOnline.image=[UIImage imageNamed:online];
     [self.parentView addSubview:isOnline];
     UILabel *  ProfileName=[[UILabel alloc]init];
     
@@ -364,7 +370,7 @@
         tagLine.frame=CGRectMake(40, self.parentView.frame.size.height-200, self.parentView.frame.size.width, 30);
     }
     else{
-    tagLine.frame=CGRectMake(40, self.parentView.frame.size.height-160, 200, 30);
+    tagLine.frame=CGRectMake(40, self.parentView.frame.size.height-160, 230, 30);
     }
     tagLine.textColor=[UIColor blackColor];
     NSString * str;
@@ -469,12 +475,12 @@ NS_AVAILABLE_IOS(5_0){
         } completion:^(BOOL finished) {
             CGRect ff;
             if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-                ff=CGRectMake(0, windowSize.height/2+80, windowSize.width,(windowSize.height-windowSize.height/2+100));
+                ff=CGRectMake(0, windowSize.height/2+55, windowSize.width,(windowSize.height-windowSize.height/2-80));
             }
             else{
            
             if ([UIScreen mainScreen].bounds.size.height>500) {
-                ff=CGRectMake(0, 220, windowSize.width, 300);
+                ff=CGRectMake(0, 220, windowSize.width, 450);
             }
             else{
                 ff=CGRectMake(0, 125, windowSize.width, 450);
@@ -517,7 +523,7 @@ NS_AVAILABLE_IOS(5_0){
         }
         self.profileTableView=[[UITableView alloc]init];
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-            self.profileTableView.frame=CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height-190);
+            self.profileTableView.frame=CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height);
         }
         else{
                if ([UIScreen mainScreen].bounds.size.height<500) {
@@ -646,8 +652,12 @@ NS_AVAILABLE_IOS(5_0){
     }
     
     //superPower = [[SuperPowerViewController alloc] initWithNibName:@"SuperPowerViewController" bundle:nil];
-    superPower=[[SuperPowerViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height-150)];
-    
+    if (UI_USER_INTERFACE_IDIOM()!=UIUserInterfaceIdiomPad) {
+        superPower=[[SuperPowerViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height)];
+    }
+    else{
+        superPower=[[SuperPowerViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height+45)];
+    }
     [self addChildViewController:superPower];
   
     [self.secondView addSubview:superPower.view];
@@ -669,7 +679,12 @@ NS_AVAILABLE_IOS(5_0){
    // NSLog(@"%f",[SingletonClass shareSingleton].frame);
     
   // photoVC = [[PhotoViewController alloc] initWithNibName:@"PhotoViewController" bundle:nil];
-     photoVC=[[PhotoViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height-150)];
+    if (UI_USER_INTERFACE_IDIOM()!=UIUserInterfaceIdiomPad) {
+        photoVC=[[PhotoViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height)];
+    }
+    else{
+        photoVC=[[PhotoViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height+45)];
+    }
    
     [self addChildViewController:photoVC];
     
@@ -690,20 +705,35 @@ NS_AVAILABLE_IOS(5_0){
         } completion:^(BOOL finished) {
             CGRect  ff;
             if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-                ff=CGRectMake(0, windowSize.height/2+80, windowSize.width,(windowSize.height-windowSize.height/2+100));
+                ff=CGRectMake(0, windowSize.height/2+55, windowSize.width,(windowSize.height-windowSize.height/2-80));
             }
             else{
                 
                 if ([UIScreen mainScreen].bounds.size.height>500) {
-                    ff=CGRectMake(0, 220, self.view.frame.size.width, 300);
+                    ff=CGRectMake(0, 220, windowSize.width, 300);
                 }
                 else{
-                  ff=CGRectMake(0, 125, self.view.frame.size.width, 450);
+                    ff=CGRectMake(0, 125, windowSize.width, 450);
                 }
             }
             if (tagValue!=4&&tagValue!=2) {
-
-                [self createTableView:ff tagvalue: tagValue];
+                CGRect frame;
+                if (UI_USER_INTERFACE_IDIOM()!=UIUserInterfaceIdiomPad) {
+                    
+                
+                if (windowSize.height>500) {
+                    frame=CGRectMake(0, 220, windowSize.width, 300);
+                     [self createTableView:frame tagvalue: tagValue];
+                }
+                else{
+                      [self createTableView:ff tagvalue: tagValue];
+                }
+            }
+                else{
+                
+                        [self createTableView:ff tagvalue: tagValue];
+                }
+                
             }
             else if(tagValue==4){
                 [self createSuperPowerView:ff];
@@ -718,7 +748,7 @@ NS_AVAILABLE_IOS(5_0){
     else{
         self.secondView.hidden=YES;
         [UIView animateWithDuration:0.5 animations:^{
-            self.parentView.frame=CGRectMake(0,0 , self.screen_width, self.view.frame.size.height);
+            self.parentView.frame=CGRectMake(0,0 , self.screen_width, windowSize.height);
             self.secondView.hidden=YES;
            // self.profileTableView.hidden=YES;
            // photoVC.view.hidden=YES;
@@ -741,7 +771,7 @@ NS_AVAILABLE_IOS(5_0){
             return 0;
         }
     }
-    return row_hh+20;
+        return row_hh+20;
     
 }
 
@@ -805,6 +835,7 @@ NS_AVAILABLE_IOS(5_0){
 
         cell.textLabel.font=[UIFont boldSystemFontOfSize:12];
         cell.detailTextLabel.font=[UIFont systemFontOfSize:12];
+        
     }
         if(tableView==self.profileTableView)
         {
@@ -885,7 +916,9 @@ NS_AVAILABLE_IOS(5_0){
                         cell.detailTextLabel.text=@"No answer";
                     }
                     else{
-                            cell.detailTextLabel.text=[SingletonClass shareSingleton].aboutMe;
+                        cell.detailTextLabel.numberOfLines=0;
+                        cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
+                        cell.detailTextLabel.text=[SingletonClass shareSingleton].aboutMe;
                     }
                 }
                 if (indexPath.row==5) {
@@ -894,10 +927,14 @@ NS_AVAILABLE_IOS(5_0){
                         cell.detailTextLabel.text=@"No answer";
                     }
                     else{
+                        cell.detailTextLabel.numberOfLines=0;
+                        cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                         cell.detailTextLabel.text=[SingletonClass shareSingleton].appearance;
                     }
                 }
                 if (indexPath.row==2) {
+                    cell.detailTextLabel.numberOfLines=0;
+                    cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                     if(![SingletonClass shareSingleton].interestedIn)
                     {
                         cell.detailTextLabel.text=@"No answer";
@@ -970,6 +1007,8 @@ NS_AVAILABLE_IOS(5_0){
                     }
                 }
                 if (indexPath.row==11) {
+                    cell.detailTextLabel.numberOfLines=0;
+                    cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                     if(![SingletonClass shareSingleton].languages )
                     {
                         cell.detailTextLabel.text=@"No answer";
@@ -981,6 +1020,8 @@ NS_AVAILABLE_IOS(5_0){
                     
                 }
                 if (indexPath.row==12) {
+                    cell.detailTextLabel.numberOfLines=0;
+                    cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                     if ([SingletonClass shareSingleton].profession!=NULL) {
                            NSString *  work=[NSString stringWithFormat:@"%@ %@",[SingletonClass shareSingleton].profession,[SingletonClass shareSingleton].income];
                         cell.detailTextLabel.text=work;
@@ -992,34 +1033,74 @@ NS_AVAILABLE_IOS(5_0){
                 }
 
             }
-            if (indexPath.section==2) {
+            if (indexPath.section==2)
+            {
                 
                 if (indexPath.row==0) {
-                    if ([SingletonClass shareSingleton].intr_name.count>0) {
+                    
+                    UIView * backView=[[UIView alloc]init];
+                    backView.frame=CGRectMake(0, 0,320, cell.contentView.frame.size.height);
+                    //backView.backgroundColor=[UIColor redColor];
+                    [cell.contentView addSubview:backView];
+                    UIButton * btn1=[[UIButton alloc]init];
+                    btn1.frame=CGRectMake(20, 20, cell.contentView.frame.size.width/2-40, 40);
+                    [btn1 setTitle:@"interest1" forState:UIControlStateNormal];
+                    [btn1 setBackgroundColor:[UIColor clearColor]];
+                    btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                    btn1.layer.borderWidth=0.7;
+                    btn1.layer.cornerRadius=7;
+                    btn1.clipsToBounds=YES;
+                    [btn1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                    [btn1 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
+                    [backView addSubview:btn1];
+                    
+                    UIButton * btn2=[[UIButton alloc]init];
+                    btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 20, cell.contentView.frame.size.width/2-40, 40);
+                    [btn2 setTitle:@"interest2" forState:UIControlStateNormal];
+                    [btn2 setBackgroundColor:[UIColor clearColor]];
+                    btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                    [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                    btn2.layer.borderWidth=0.7;
+                    btn2.layer.cornerRadius=7;
+                    btn2.clipsToBounds=YES;
+                    [btn2 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
+                    [backView addSubview:btn2];
+                    
+                    UILabel * lable=[[UILabel alloc]init];
+                    lable.frame=CGRectMake(cell.frame.size.width/2-140, 80, cell.frame.size.width-40, 20);
+                    lable.text=@"Tell about your interests";
+                    [backView addSubview:lable];
+                    
+                    /*int y=20;
+                    if ([SingletonClass shareSingleton].intr_name.count>5) {
                         UIScrollView * scroll=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height)];
                         [cell.contentView addSubview:scroll];
-                        scroll.contentSize=CGSizeMake([SingletonClass shareSingleton].intr_name.count*100, cell.contentView.frame.size.height);
+                        scroll.contentSize=CGSizeMake(cell.frame.size.width, cell.contentView.frame.size.height);
                         CGFloat height=50;
                         CGFloat cellWdth=0;
+                        UILabel * interestLbl=[[UILabel alloc]init];
+
                         for (int s=0; s<[SingletonClass shareSingleton].intr_name.count; s++) {
+                            if (s==0) {
+                                
                             
                                 CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:50];
-                                UILabel * interestLbl=[[UILabel alloc]init];
-                               /* if (width>140) {
-                                    interestLbl.frame=CGRectMake (10+(s*50), 0, 200,scroll.frame.size.height);
-                                }
-                                else{
-                                    interestLbl.frame=CGRectMake (40+(s*100), 0, 200,scroll.frame.size.height);
-                                }*/
+                              
+                            
                             cellWdth+=width;
- //                           if (cellWdth>=300) {
-//                                interestLbl.frame=CGRectMake (10+(s*100), 3, width+20,30);
- //                               cellWdth=0;
-  //                          }
-//                            else{
-                                interestLbl.frame=CGRectMake (10+(s*cellWdth), 3, width+20,30);
-                           // }
-                          
+ 
+                                interestLbl.frame=CGRectMake (20, 3, width+20,30);
+                            }
+                            else
+                            {
+                                CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:50];
+                                
+                                cellWdth+=width;
+                                
+                                interestLbl.frame=CGRectMake (10+(s*cellWdth), 3+y, width+20,30);
+                            }
+                        
+                        
                             interestLbl.text=[SingletonClass shareSingleton].intr_name[s];
                             NSLog(@"interest string %@",interestLbl.text);
                             interestLbl.textColor=[UIColor blackColor];
@@ -1027,23 +1108,23 @@ NS_AVAILABLE_IOS(5_0){
                             interestLbl.textAlignment=NSTextAlignmentCenter;
                             interestLbl.font=[UIFont boldSystemFontOfSize:12];
                             [scroll addSubview:interestLbl];
-                           // [cell.contentView addSubview:interestLbl];
+                           
                             }
                         UITapGestureRecognizer * gesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(moveToInterestView:)];
                         [scroll addGestureRecognizer:gesture];
-                        //[cell.contentView addGestureRecognizer:gesture];
+                       
                         }
                     else{
                         cell.textLabel.text=@"Inetrests";
                         cell.imageView.image=[UIImage imageNamed:@"interest_icon.png"];
-                    }
+                    }*/
                 }
-            }
+            
             
             return  cell;
         }
        
-    
+        }
     
     
    
@@ -1139,8 +1220,10 @@ NS_AVAILABLE_IOS(5_0){
     
     if(tableView==self.profileTableView)
     {
-        /*if (indexPath.section==2) {
+        if (indexPath.section==2)
+        {
             
+           
         
         if ([SingletonClass shareSingleton].intr_name.count>0) {
             CGFloat height=50;
@@ -1148,17 +1231,29 @@ NS_AVAILABLE_IOS(5_0){
             
             for (int s=0; s<[SingletonClass shareSingleton].intr_name.count; s++) {
                 
-                CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:50];
+                CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:80];
                 cellWdth+=width;
                 if (cellWdth>=300) {
-                    height+=50;
+                    height+=80;
                     return height;
                 }
             }
         }
-        }*/
+        }
+        if (indexPath.section==3) {
+            if (indexPath.row==5) {
+                CGFloat width=[self findLength:[SingletonClass shareSingleton].appearance andHeight:50];
+                if (width>320) {
+                    return 80;
+                }
+                
+            }
+           
+        }
         return row_hh;
     }
+    
+        
     return 45;
 }
 
@@ -1313,6 +1408,13 @@ NS_AVAILABLE_IOS(5_0){
         }
         
     }
+    if (indexPath.section==1) {
+        if (awardVC) {
+            awardVC=nil;
+        }
+       awardVC =[[AwardSectionViewController alloc]initWithNibName:@"AwardSectionViewController" bundle:nil];
+        [self.navigationController pushViewController:awardVC animated:YES];
+    }
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section{
@@ -1346,7 +1448,7 @@ NS_AVAILABLE_IOS(5_0){
 }
 
 #pragma mark- move to interest class
--(void)moveToInterestView:(UITapGestureRecognizer *)sender{
+-(void)moveToInterestView{
     
     if (self.interestVC) {
         self.interestVC=nil;

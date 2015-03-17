@@ -52,9 +52,10 @@
 
 -(void)naviHeader
 {
+    windowSize=[UIScreen mainScreen].bounds.size;
     self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     self.headerView=[[UIView alloc]init];
-    self.headerView.frame=CGRectMake(0, 0, self.view.frame.size.width, 55);
+    self.headerView.frame=CGRectMake(0, 0, windowSize.width, 55);
    
     [self.view addSubview:self.headerView];
     
@@ -70,7 +71,8 @@
     self.headerView.layer.shadowOffset = CGSizeMake(0.0f,5.0f);
     self.headerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.headerView.bounds].CGPath;
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 20, self.view.frame.size.width-200, 35)];
+    self.titleLabel = [[UILabel alloc] init];
+     self.titleLabel.frame= CGRectMake(windowSize.width/2-60, 20, windowSize.width-200, 35);
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.textColor = [UIColor whiteColor];
     self.titleLabel.font = [UIFont boldSystemFontOfSize:20];
@@ -78,7 +80,7 @@
     [self.headerView addSubview:self.titleLabel];
     //Add Cancel BUTTON
     self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.cancelButton.frame = CGRectMake(15, 25, 60, 25);
+    self.cancelButton.frame = CGRectMake(windowSize.width/2-145, 25, 60, 25);
     [self.cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.cancelButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
@@ -90,7 +92,7 @@
     [self.headerView addSubview:self.cancelButton];
     
     self.saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.saveButton.frame = CGRectMake(250, 25, 60, 25);
+    self.saveButton.frame = CGRectMake(windowSize.width-70, 25, 60, 25);
     [self.saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.saveButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [self.saveButton setTitle:@"Save" forState:UIControlStateNormal];
@@ -101,6 +103,26 @@
     [self.saveButton addTarget:self action:@selector(saveButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview:self.saveButton];
     
+    if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+        self.headerView.frame=CGRectMake(0, 0, windowSize.width, 75);
+        layer.frame = CGRectMake(0, 0, windowSize.width, 75);
+        self.titleLabel.frame= CGRectMake(100, 20, windowSize.width-200, 35);
+         self.cancelButton.frame = CGRectMake(15, 25, 120, 40);
+        self.saveButton.frame = CGRectMake(windowSize.width-150, 25, 120, 40);
+        
+        self.titleLabel.font = [UIFont boldSystemFontOfSize:30];
+        self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+         self.saveButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+        height=75;
+        row_hh=85;
+        font_size=20;
+    }
+    else{
+        font_size=12;
+        row_hh=45;
+        height=55;
+    }
+    
 
     
     
@@ -108,15 +130,21 @@
     }
 -(void)createUI{
     
+    
     if(!self.appearenceTable)
     {
         self.appearenceTable=[[UITableView alloc]init];
-        if([UIScreen mainScreen].bounds.size.height>500)
-        {
-            self.appearenceTable.frame=CGRectMake(0, 55, self.view.frame.size.width, self.view.frame.size.height-50);
+        if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+             self.appearenceTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height-55);
         }
         else{
-            self.appearenceTable.frame=CGRectMake(0, 55, self.view.frame.size.width, self.view.frame.size.height-145);
+        if([UIScreen mainScreen].bounds.size.height>500)
+        {
+            self.appearenceTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height-50);
+        }
+        else{
+            self.appearenceTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height-145);
+        }
         }
         self.appearenceTable.delegate=self;
         self.appearenceTable.dataSource=self;
@@ -183,7 +211,10 @@
 }
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
     
-    return 45.0;
+    return row_hh-20;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return row_hh;
 }
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     UITableViewCell * cell=[tableView cellForRowAtIndexPath:indexPath];
@@ -192,28 +223,38 @@
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
     }
-     cell.textLabel.font=[UIFont boldSystemFontOfSize:12];
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        imgView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"checkmark_ipad.png"]];
+    }
+     cell.textLabel.font=[UIFont boldSystemFontOfSize:font_size];
     if(indexPath.section==0)
     {
         if (indexPath.row==0) {
             
         
-//        if(!self.heightText)
-//        {
+
          
             self.heightText=[[UITextField alloc]init];
             self.heightText.frame=CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height);
-            //self.heightText.placeholder=@" No answer";
             
-            self.heightText.font=[UIFont systemFontOfSize:12];
-           // self.heightText.backgroundColor=[UIColor redColor];
-            //self.heightText.textAlignment=NSTextAlignmentCenter;
+            
+            self.heightText.font=[UIFont systemFontOfSize:font_size];
+          
             self.heightText.delegate=self;
             [cell.contentView addSubview:self.heightText];
-       // }
-            if (heightStr) {
-            self.heightText.text=heightStr;
-        }
+       
+            NSString * height1=[[SingletonClass shareSingleton].height stringByReplacingOccurrencesOfString:@"Height:" withString:@""];
+            height1=[height1 stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+            
+
+            
+            
+            if (height1) {
+                self.heightText.text=height1;
+            }
+//            if (heightStr) {
+//            self.heightText.text=heightStr;
+//        }
             
         self.heightText.hidden=NO;
     }
@@ -223,37 +264,75 @@
     {
         if (indexPath.row==0) {
         
-//        if(!self.weightText)
-//        {
+
             
             self.weightText=[[UITextField alloc]init];
             self.weightText.frame=CGRectMake(0, 0, cell.frame.size.width, cell.frame.size.height);
-            //self.weightText.placeholder=@" No answer";
-            //self.weightText.textAlignment=NSTextAlignmentCenter;
-             self.weightText.font=[UIFont systemFontOfSize:12];
-            //self.weightText.backgroundColor=[UIColor redColor];
+           ;
+             self.weightText.font=[UIFont systemFontOfSize:font_size];
+            
             self.weightText.delegate=self;
             [cell.contentView addSubview:self.weightText];
-        //}
-        if (weightStr) {
-            self.weightText.text=weightStr;
-        }
+            NSString * weight=[[SingletonClass shareSingleton].weight stringByReplacingOccurrencesOfString:@"Weight:" withString:@""];
+            weight=[weight stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
+            if (weight) {
+                self.weightText.text=weight;
+            }
+//        if (weightStr) {
+//            self.weightText.text=weightStr;
+//        }
         self.weightText.hidden=NO;
         }
         return  cell;
     }
     else if (indexPath.section==2)
     {
+        NSString * sexuality=[[SingletonClass shareSingleton].bodyType stringByReplacingOccurrencesOfString:@"BodyType:" withString:@""];
+        sexuality=[sexuality stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         cell.textLabel.text=[self.bodyType objectAtIndex:indexPath.row];
-        return cell;
+        if ([sexuality isEqualToString:cell.textLabel.text]) {
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                cell.accessoryView=imgView;
+            }
+            else{
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            }
+        }return cell;
     }
     else if (indexPath.section==3)
     {
         cell.textLabel.text=[self.eyeColor objectAtIndex:indexPath.row];
+        
+        NSString * sexuality=[[SingletonClass shareSingleton].eyeColor stringByReplacingOccurrencesOfString:@"EyeColor:" withString:@""];
+        sexuality=[sexuality stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+
+        if ([sexuality isEqualToString:cell.textLabel.text]) {
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                cell.accessoryView=imgView;
+            }
+            else{
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            }
+     
+        }
         return cell;
     }
     else{
         cell.textLabel.text=[self.hairColor objectAtIndex:indexPath.row];
+        
+        NSString * sexuality=[[SingletonClass shareSingleton].hairColor stringByReplacingOccurrencesOfString:@"HairColor:" withString:@""];
+        sexuality=[sexuality stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        
+        if ([sexuality isEqualToString:cell.textLabel.text]) {
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                cell.accessoryView=imgView;
+            }
+            else{
+                cell.accessoryType = UITableViewCellAccessoryCheckmark;
+            }
+           
+        }
         return cell;
     }
     
@@ -279,12 +358,24 @@
         UITableViewCell *old = [tableView cellForRowAtIndexPath:selectedIndex];
         old.accessoryType = UITableViewCellAccessoryNone;
         [old setSelected:FALSE animated:TRUE];
-        
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            imgView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"checkmark_ipad.png"]];
+            old.accessoryView=nil;
+        }
+        else{
+            old.accessoryType = UITableViewCellAccessoryNone;
+        }
         
         
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         [cell setSelected:TRUE animated:TRUE];
-        
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            imgView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"checkmark_ipad.png"]];
+            cell.accessoryView=imgView;
+        }
+        else{
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
         
         selectedIndex = indexPath;
         
@@ -300,12 +391,25 @@
         UITableViewCell *old = [tableView cellForRowAtIndexPath:selected2];
         old.accessoryType = UITableViewCellAccessoryNone;
         [old setSelected:FALSE animated:TRUE];
-        
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            imgView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"checkmark_ipad.png"]];
+            old.accessoryView=nil;
+        }
+        else{
+            old.accessoryType = UITableViewCellAccessoryNone;
+        }
+
         
         
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         [cell setSelected:TRUE animated:TRUE];
-        
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            imgView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"checkmark_ipad.png"]];
+            cell.accessoryView=imgView;
+        }
+        else{
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
         
         selected2 = indexPath;
           [SingletonClass shareSingleton].eyeColor=[NSString stringWithFormat:@" EyeColor : %@",[self.eyeColor objectAtIndex:selected2.row]];
@@ -320,12 +424,24 @@
         UITableViewCell *old = [tableView cellForRowAtIndexPath:selected3];
         old.accessoryType = UITableViewCellAccessoryNone;
         [old setSelected:FALSE animated:TRUE];
-        
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            imgView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"checkmark_ipad.png"]];
+            old.accessoryView=nil;
+        }
+        else{
+            old.accessoryType = UITableViewCellAccessoryNone;
+        }
         
         
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         [cell setSelected:TRUE animated:TRUE];
-        
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            imgView=[[UIImageView alloc]initWithImage:[UIImage imageNamed:@"checkmark_ipad.png"]];
+            cell.accessoryView=imgView;
+        }
+        else{
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
         
         selected3 = indexPath;
          [SingletonClass shareSingleton].hairColor=[NSString stringWithFormat:@" HairColor : %@",[self.hairColor objectAtIndex:selected3.row]];

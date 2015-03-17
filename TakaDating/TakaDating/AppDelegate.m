@@ -21,7 +21,7 @@
 #import "DDTTYLogger.h"
 
 #import "SingletonClass.h"
-
+#import "EncountersViewController.h"
 #import <CFNetwork/CFNetwork.h>
 
 
@@ -137,6 +137,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
 {
     DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
@@ -255,11 +256,19 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
 -(BOOL)fbIdexistsInDB{
     NSError * error;
     NSURLResponse * urlReponse;
-    NSString * fbid= [[NSUserDefaults standardUserDefaults]objectForKey:ConnectedFacebookUserID];
-    NSString * urlStr=[NSString stringWithFormat:@"http://taka.dating/facebook/%@",fbid];
-    urlStr=[urlStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    BOOL returnValue;
+ 
+    NSString * urlStr=[NSString stringWithFormat:@"http://23.238.24.26/authentication/fblogin/"];
     NSURL  * url=[NSURL URLWithString:urlStr];
     NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    
+    NSString * body=[NSString stringWithFormat:@"faceId=%@",[SingletonClass shareSingleton].userID];
+    [request setHTTPBody:[body
+                         dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
     NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlReponse error:&error];
     
     if (data==nil) {
@@ -267,14 +276,503 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
         return NO;
     }
     id parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
-    if ([[parse objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
-        return  YES;
-    }
-    else{
+    NSLog(@"Parse facebook %@",parse);
+    if([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]])
+    {
+    NSDictionary * dict=[parse objectForKey:@"userdata"];
+    NSString * loc=[dict objectForKey:@"location"];
+    [SingletonClass shareSingleton].location=loc;
+    
+    NSString * name=[dict objectForKey:@"displayName"];
+    [SingletonClass shareSingleton].name=name;
+    
+    [SingletonClass shareSingleton].bodyType=[NSString stringWithFormat:@"BodyType:%@",[self appearanceBodyType:[dict objectForKey:@"bodyType"]]];
+    
+    [SingletonClass shareSingleton].userID=[dict objectForKey:@"userId"];
+    [[NSUserDefaults standardUserDefaults]setObject: [SingletonClass shareSingleton].userID forKey:@"userId"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    
+    [SingletonClass shareSingleton ].dob=[dict objectForKey:@"dob"];
+    NSLog(@"UserID %@",[SingletonClass shareSingleton].userID);
+    
+    [SingletonClass shareSingleton].hairColor=[NSString stringWithFormat:@"HairColor:%@",[self appearanceHairColor:[dict objectForKey:@"hairColor"]]];
+    
+    [SingletonClass shareSingleton].eyeColor=[NSString stringWithFormat:@"EyeColor:%@",[self appearanceEyeColor:[dict objectForKey:@"eyeColor"]]];
+    NSLog(@"eyecolor %@",[SingletonClass shareSingleton].eyeColor);
+    
+    
+    [SingletonClass shareSingleton].income=[NSString stringWithFormat:@"Income:%@",[self appearanceIncome:[dict objectForKey:@"income"]]];
+    
+    
+    [SingletonClass shareSingleton].height=[NSString stringWithFormat:@"Height:%@",[dict objectForKey:@"height"]];
+    
+    
+    [SingletonClass shareSingleton].weight=[NSString stringWithFormat:@"Weight:%@",[dict objectForKey:@"weight"]];
+    [SingletonClass shareSingleton].appearance=[NSString stringWithFormat:@"%@,%@,%@,%@,%@",[SingletonClass shareSingleton].height,[SingletonClass shareSingleton].weight,[SingletonClass shareSingleton].bodyType,[SingletonClass shareSingleton].hairColor,[SingletonClass shareSingleton].eyeColor];
+    NSLog(@" appearance %@",[SingletonClass shareSingleton].appearance);
+    [SingletonClass shareSingleton].Living=[NSString stringWithFormat:@"Living:%@",[self appearanceLving:[dict objectForKey:@"living"]]];
+    
+    [SingletonClass shareSingleton].children=[NSString stringWithFormat:@"Kids:%@",[self appearanceKids:[dict objectForKey:@"kids"]]];
+    
+    [SingletonClass shareSingleton].smoking=[NSString stringWithFormat:@"Smoking:%@",[self appearanceSmoking:[dict objectForKey:@"smoking"]]];
+    
+    [SingletonClass shareSingleton].dirinking=[NSString stringWithFormat:@"Drinking:%@",[self appearanceDrinking:[dict objectForKey:@"drinking"]]];
+    
+    [SingletonClass shareSingleton].education=[NSString stringWithFormat:@"Education:%@",[self appearanceEducation:[dict objectForKey:@"education"]]];
+    
+    [SingletonClass shareSingleton].relation=[NSString stringWithFormat:@"Relationship:%@",[self appearanceRelationShip:[dict objectForKey:@"relationshipStatus"]]];
+    
+    //    NSLog(@"Relation %@",[SingletonClass shareSingleton].relation);
+    
+    [SingletonClass shareSingleton].languages=[dict objectForKey:@"languagesKnown"];
+    NSLog(@"Relation %@",[SingletonClass shareSingleton].languages);
+    [SingletonClass shareSingleton].sexuality=[NSString stringWithFormat:@"sexuality:%@",[self appearancesexuality:[dict objectForKey:@"education"]]];
+    
+    [SingletonClass shareSingleton].profession=[NSString stringWithFormat:@"Profession:%@",[dict objectForKey:@"profession"]];
+    
+    [SingletonClass shareSingleton].aboutMe =[dict objectForKey:@"about"];
+    
+    
+    [SingletonClass shareSingleton].hereFor =[[dict objectForKey:@"hereFor"] intValue];
+    
+    
+    [SingletonClass shareSingleton].sex =[[dict objectForKey:@"sex"]intValue];
+    
+    
+    
+    [SingletonClass shareSingleton].interestedIn=[dict objectForKey:@"interestedIn"];
+    // NSLog(@"interested in %@",[SingletonClass shareSingleton].interestedIn);
+    //Profile setting data
+    NSString * profileSetting=[dict objectForKey:@"profileSettings"];
+    
+    NSString *  data= [profileSetting stringByReplacingOccurrencesOfString:@"\\" withString:@""];
+    
+    NSError * error=nil;
+    
+    NSData * Data=[NSData dataWithBytes:[data UTF8String] length:[data length]];
+    NSDictionary * dataDict=[NSJSONSerialization JSONObjectWithData:Data options:NSJSONReadingMutableLeaves error:&error];
+    if (error) {
         return NO;
     }
+    
+    
+    NSDictionary * privacy=[dataDict objectForKey:@"privacy"];//privacy information
+    NSLog(@"privacy %@", privacy);
+    [SingletonClass shareSingleton].onlineStatus=[privacy objectForKey:@"onlineStatus"];
+    [SingletonClass shareSingleton].distance=[privacy objectForKey:@"distance"];
+    [SingletonClass shareSingleton].viewProfile=[privacy objectForKey:@"viewProfile"];
+    [SingletonClass shareSingleton].browsing=[privacy objectForKey:@"browsing"];
+    [SingletonClass shareSingleton].securityLevel=[privacy objectForKey:@"securityLevel"];
+    [SingletonClass shareSingleton].publicSearch=[privacy objectForKey:@"publicSearch"];
+    [SingletonClass shareSingleton].find=[privacy objectForKey:@"find"];
+    
+    NSDictionary * photosDict=[dataDict objectForKey:@"photos"];
+    [SingletonClass shareSingleton].comment=[photosDict objectForKey:@"comment"];
+    [SingletonClass shareSingleton].watermark_on=[photosDict objectForKey:@"watermark_on"];
+    
+    NSDictionary * languageDict=[dataDict objectForKey:@"language"];
+    [SingletonClass shareSingleton].language=[languageDict objectForKey:@"language"];
+    
+    NSString * notification=[dict objectForKey:@"notifications"];
+    
+    NSString *  newNotification= [notification stringByReplacingOccurrencesOfString:@"\\" withString:@""];
+    
+    
+    
+    NSData * notifyData=[NSData dataWithBytes:[newNotification UTF8String] length:[newNotification length]];
+    NSDictionary * emailDict=[NSJSONSerialization JSONObjectWithData:notifyData options:NSJSONReadingMutableLeaves error:&error];
+    NSDictionary * email=[emailDict objectForKey:@"Email"];
+    NSDictionary * mobile=[emailDict objectForKey:@"Mobile"];
+    if (error) {
+        return NO;
+    }
+    
+    [SingletonClass shareSingleton].newmsgEmail=[email objectForKey:@"newmsgEmail"];
+    [SingletonClass shareSingleton].profvisitEmail=[email objectForKey:@"profvisitEmail"];
+    [SingletonClass shareSingleton].alertEmail=[email objectForKey:@"alertEmail"];
+    [SingletonClass shareSingleton].peopleEmail=[email objectForKey:@"peopleEmail"];
+    [SingletonClass shareSingleton].newsEmail=[email objectForKey:@"newsEmail"];
+    [SingletonClass shareSingleton].giftEmail=[email objectForKey:@"giftEmail"];
+    [SingletonClass shareSingleton].rateEmail=[email objectForKey:@"rateEmail"];
+    [SingletonClass shareSingleton].favEmail=[email objectForKey:@"favEmail"];
+    
+    // mobile data
+    
+    [SingletonClass shareSingleton].newmsgMobile=[mobile objectForKey:@"newmsgMobile"];
+    [SingletonClass shareSingleton].profvisitMobile=[mobile objectForKey:@"profvisitMobile"];
+    [SingletonClass shareSingleton].peopleMobile=[mobile objectForKey:@"peopleMobile"];
+    [SingletonClass shareSingleton].alertMobile=[mobile objectForKey:@"alertMobile"];
+    [SingletonClass shareSingleton].newsMobile=[mobile objectForKey:@"newsMobile"];
+    [SingletonClass shareSingleton].giftMobile=[mobile objectForKey:@"giftMobile"];
+    [SingletonClass shareSingleton].rateMobile=[mobile objectForKey:@"rateMobile"];
+    [SingletonClass shareSingleton].favMobile=[mobile objectForKey:@"favMobile"];
+    
+    
+    [SingletonClass shareSingleton].InvisibleModeSetting=[dict objectForKey:@"InvisibleModeSetting"];
+    [SingletonClass shareSingleton].MessagesSetting=[dict objectForKey:@"MessagesSetting"];
+    
+   /* NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
+    if (imagesArr.count>0) {
+        
+        
+        NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
+        NSMutableArray * dictarr=[[NSMutableArray alloc]init];
+        NSMutableArray * arr=[[ NSMutableArray alloc]init];
+        
+        for (int i=0; i<imagesArr.count; i++) {
+            dict =[imagesArr objectAtIndex:i];
+            if ([[dict objectForKey:@"privacy"]isEqualToString:@"3"]){
+                NSString * imageName=[NSString stringWithString:[dict objectForKey:@"imageLink"]];
+                [arr addObject:imageName];
+                
+            }
+            else{
+                [dictarr addObject:[dict objectForKey:@"imageLink"]];
+                NSString * imageName=[NSString stringWithFormat:@"http://taka.dating%@",[dict objectForKey:@"imageLink"]];
+                NSLog(@"image Name %@",imageName);
+                [arr addObject:imageName];
+            }
+            
+        }
+        [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]initWithArray:arr];
+    }*/
+    
+    [SingletonClass shareSingleton].profileImg=[NSString stringWithFormat:@"http://taka.dating%@",[parse objectForKey:@"profileimg"]];
+    
+    
+  //  NSLog(@"user profile images %@",[SingletonClass shareSingleton].userImages);
+   // [SingletonClass shareSingleton].profileImages=(NSArray*)imagesArr;
+        returnValue=YES;
 }
 
+    else{
+        returnValue = NO;
+        //return NO;
+    }
+    return returnValue;
+}
+
+#pragma mark- Appearence
+    -(NSString *)appearanceBodyType:(NSString *)value{
+        NSString * bodyType=@"";
+        
+        int val= value.intValue;
+        if (val==0) {
+            bodyType=@"Unfilled yet";
+        }
+        else if(val==1)
+        {
+            bodyType=@"Average";
+        }
+        else if(val==2)
+        {
+            bodyType=@"A few extra pounds";
+        }
+        else if(val==3)
+        {
+            bodyType=@"Slim";
+        }
+        else if(val==4)
+        {
+            bodyType=@"Athletic";
+        }
+        else if(val==5)
+        {
+            bodyType=@"Muscular";
+        }
+        else
+        {
+            bodyType=@"Big and beautiful";
+        }
+        
+        return bodyType;
+    }
+    
+    -(NSString *)appearanceHairColor:(NSString *)value{
+        NSString * hairColor=@"";
+        
+        int val= value.intValue;
+        if (val==0) {
+            hairColor=@"Unfilled yet";
+        }
+        else if(val==1)
+        {
+            hairColor=@"Black";
+        }
+        else if(val==2)
+        {
+            hairColor=@"Brown";
+        }
+        else if(val==3)
+        {
+            hairColor=@"Red";
+        }
+        else if(val==4)
+        {
+            hairColor=@"Grey";
+        }
+        else if(val==5)
+        {
+            hairColor=@"White";
+        }
+        else if(val==6)
+        {
+            hairColor=@"Shaved";
+        }
+        else if(val==7)
+        {
+            hairColor=@"Dyed";
+        }
+        else
+        {
+            hairColor=@"Bald";
+        }
+        
+        
+        return hairColor;
+        
+    }
+    -(NSString *)appearanceKids:(NSString *)value{
+        int val= value.intValue;
+        NSString * kids=@"";
+        if (val==0) {
+            kids=@"Unfilled yet";
+        }
+        else if(val==1)
+        {
+            kids=@"No, Never";
+        }
+        else if(val==2)
+        {
+            kids=@"Someday";
+        }
+        else if(val==3)
+        {
+            kids=@"Already Have";
+        }
+        else
+        {
+            kids=@"Empty nest";
+        }
+        return kids;
+    }
+    
+    -(NSString *)appearanceEyeColor:(NSString *)value{
+        NSString * eyeColor=@"";
+        
+        int val= value.intValue;
+        if (val==0) {
+            eyeColor=@"others";
+        }
+        else if(val==1)
+        {
+            eyeColor=@"Brown";
+        }
+        else if(val==2)
+        {
+            eyeColor=@"Grey";
+        }
+        else if(val==3)
+        {
+            eyeColor=@"Green";
+        }
+        else if(val==4)
+        {
+            eyeColor=@"Blue";
+        }
+        else if(val==5)
+        {
+            eyeColor=@"Hazel";
+        }
+        else
+        {
+            eyeColor=@"Other";
+        }
+        
+        return eyeColor;
+        
+    }
+    -(NSString *)appearanceIncome:(NSString *)value{
+        int val=value.intValue;
+        NSString * income=@"";
+        if (val==0) {
+            income=@"Unfilled yet";
+        }
+        else if(val==1)
+        {
+            income=@"Low";
+        }
+        else if(val==2)
+        {
+            income=@"Average";
+        }
+        else
+        {
+            income=@"High";
+        }
+        return  income;
+    }
+    
+    -(NSString *)appearanceLving:(NSString *)value{
+        NSString * living=@"";
+        int val= value.intValue;
+        if (val==0) {
+            living=@"Unfilled yet";
+        }
+        else if(val==1)
+        {
+            living=@"With Parents";
+        }
+        else if(val==2)
+        {
+            living=@"With Roomates";
+        }
+        else if(val==3)
+        {
+            living=@"Student Residence";
+        }
+        else if(val==4)
+        {
+            living=@"With Partner";
+        }
+        else{
+            living=@"Alone";
+        }
+        return  living;
+    }
+    -(NSString *)appearanceSmoking:(NSString *)value{
+        int val= value.intValue;
+        NSString * smoking=@"";
+        if (val==0) {
+            smoking=@"Unfilled yet";
+        }
+        else if (val==1){
+            smoking=@"No";
+        }
+        else if (val==2)
+        {
+            smoking=@"No, Never";
+        }
+        else if (val==3)
+        {
+            smoking=@"Yes";
+        }
+        else if (val==4)
+        {
+            smoking=@"Social";
+        }
+        else
+        {
+            smoking=@"Chain Smoker, Oxygen is overrated";
+        }
+        
+        return smoking;
+    }
+    
+    -(NSString *)appearanceDrinking:(NSString *)value{
+        int val=value.intValue;
+        NSString * drinking=@"";
+        if (val==0) {
+            drinking=@"Unfilled yet";
+            
+        }
+        else if (val==1)
+        {
+            drinking=@"No";
+            
+        }
+        else if (val==3)
+        {
+            drinking=@"With Company";
+        }
+        else if(val==2){
+            drinking=@"No, Never";
+        }
+        else{
+            drinking=@"Yes, Please";
+        }
+        return drinking;
+    }
+    
+    -(NSString *)appearanceEducation:(NSString *)value{
+        int val=value.intValue;
+        NSString * edu=@"";
+        if (val==0) {
+            edu=@"Unfilled yet";
+            
+        }
+        else if (val==1)
+        {
+            edu=@"School only";
+            
+        }
+        else if (val==3)
+        {
+            edu=@"Trade/Technical";
+        }
+        else if(val==2){
+            edu=@"College/University";
+        }
+        else{
+            edu=@"Advanced Degree";
+        }
+        return edu;
+    }
+    -(NSString *)appearanceRelationShip:(NSString *)value{
+        int val=value.intValue;
+        NSString * relation=@"";
+        if (val==0) {
+            relation=@"Unfilled yet";
+            
+        }
+        else if (val==1)
+        {
+            relation=@"Single";
+            
+        }
+        else if (val==3)
+        {
+            relation=@"Taken";
+        }
+        else{
+            relation=@"Open";
+        }
+        return relation;
+    }
+    
+-(NSString * )appearancesexuality:(NSString *)value
+    {
+        int val=value.intValue;
+        NSString * sex=@"";
+        if (val==0) {
+            sex=@"Unfilled yet";
+            
+        }
+        else if (val==1)
+        {
+            sex=@"Straight";
+            
+        }
+        else if (val==3)
+        {
+            sex=@"Bisexual";
+        }
+        else if(val==2){
+            sex=@"Open Minded";
+        }
+        else if(val==4){
+            sex=@"Gay";
+        }
+        else{
+            sex=@"Lesbian";
+        }
+        return sex;
+        
+    }
+
+    
+    
+    
 #pragma mark-get All Facebook user info
 
 -(void)getAllFacebookInfo:(id<FBGraphUser>) user{

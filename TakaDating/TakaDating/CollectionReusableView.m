@@ -63,7 +63,7 @@
             self.headerTitleLabel.frame =CGRectMake(20, 50, frame.size.width-40, 40);
             self.bottomLabel.frame=CGRectMake(20, 80, frame.size.width-50, 20);
              self.footerTitleLabel.frame=CGRectMake(20, 60, frame.size.width-50, 30);
-              self.footerButton.frame=CGRectMake(20, 10, frame.size.width-50, 30);
+              self.footerButton.frame=CGRectMake(frame.size.width/2-60, 10, 167, 30);
             
             self.headerTitleLabel.font = [UIFont systemFontOfSize:20];
              self.bottomLabel.font = [UIFont boldSystemFontOfSize:20];

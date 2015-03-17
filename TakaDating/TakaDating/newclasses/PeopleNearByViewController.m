@@ -55,9 +55,15 @@
     [super viewDidLoad];
    
     [self createUI];
-    
-    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 150, 40, 40)];
-    self.refreshActivityIndicator.alpha = 1.0;
+    CGRect  frame;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        frame=CGRectMake(windowSize.width/2, 150, 40, 40);
+    }
+    else{
+        frame=CGRectMake(140, 150, 40, 40);
+    }
+    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:frame];
+        self.refreshActivityIndicator.alpha = 1.0;
     self.refreshActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     self.refreshActivityIndicator.color = [UIColor blackColor];
     [self.view addSubview:self.refreshActivityIndicator];
@@ -124,7 +130,7 @@
     flowLayOut.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-        self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height-450) collectionViewLayout:flowLayOut];
+        self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height-55) collectionViewLayout:flowLayOut];
 
     }else{
         self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height-55) collectionViewLayout:flowLayOut];

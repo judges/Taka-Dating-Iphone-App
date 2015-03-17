@@ -9,12 +9,19 @@
 #import "UserProfileViewController.h"
 #import "SingletonClass.h"
 #import "UIImageView+WebCache.h"
+#import "MessageDetailViewController.h"
+#import "XMPPFramework.h"
+#import "AppDelegate.h"
+#import "XMPPJID.h"
+#import "XMPPRoster.h"
 
 @interface UserProfileViewController ()
 {
     UIImageView * profileImg;
 }
 @end
+
+
 
 @implementation UserProfileViewController
 
@@ -72,21 +79,24 @@
     
     self.sectionTwoImages=[NSArray arrayWithObjects:@"location.png",@"about_me.png",@"relationship.png",@"sexuality.png",@"apperance.png",@"living.png",@"kids.png",@"smoking.png",@"drinking.png",@"education.png",@"language.png",@"work.png", nil];
     
+    CGRect ff;
     self.screen_width=[UIScreen mainScreen].bounds.size.width;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         row_hh=80;
         height=75;
         self.sectionTwoData=[NSArray arrayWithObjects:@"Location",@"About Me",@"Relationship",@"Sexuality",@"Appearence",@"Living",@"Children",@"Smoking",@"Drinking",@"Education",@"I Speak",@"I Work as", nil];
-        self.sectionTwoImages=[NSArray arrayWithObjects:@"location.png",@"about_me_ipad.png",@"interested_in_ipad.png",@"relationship_ipad.png",@"sexuality_ipad.png",@"apperance_ipad.png",@"living_ipad.png",@"kids_ipad.png",@"smoking_ipad.png",@"drinking_ipad.png",@"education_ipad.png",@"language_ipad.png",@"work_ipad.png", nil];
+        self.sectionTwoImages=[NSArray arrayWithObjects:@"location_ipad.png",@"about_me_ipad.png",@"interested_in_ipad.png",@"relationship_ipad.png",@"sexuality_ipad.png",@"apperance_ipad.png",@"living_ipad.png",@"kids_ipad.png",@"smoking_ipad.png",@"drinking_ipad.png",@"education_ipad.png",@"language_ipad.png",@"work_ipad.png", nil];
+        ff=CGRectMake(windowSize.width/2-30, 180, 40, 40);
     }
     else{
         height=55;
         row_hh=40;
         self.sectionTwoData=[NSArray arrayWithObjects:@"Location",@"About Me",@"Relationship",@"Sexuality",@"Appearence",@"Living",@"Children",@"Smoking",@"Drinking",@"Education",@"I Speak",@"I Work as", nil];
         self.sectionTwoImages=[NSArray arrayWithObjects:@"location.png",@"about_me.png",@"add_interest.png",@"relationship.png",@"sexuality.png",@"apperance.png",@"living.png",@"kids.png",@"smoking.png",@"drinking.png",@"education.png",@"language.png",@"work.png", nil];
+      ff=CGRectMake(140, 180, 40, 40);
     }
     
-    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 180, 40, 40)];
+    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:ff];
     
     self.refreshActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
     
@@ -130,18 +140,17 @@
         self.parentView.frame=[UIScreen mainScreen].bounds;
         
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-            self.parentView.frame=CGRectMake(0, 75, windowSize.width, windowSize.height-80);
+            self.parentView.frame=CGRectMake(0, 75, windowSize.width, windowSize.height-25);
             self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
         }
         else{
             if ([UIScreen mainScreen].bounds.size.height>500) {
-                self.parentView.frame=CGRectMake(0, 55, windowSize.width, windowSize.height-55);
+                self.parentView.frame=CGRectMake(0, 55, windowSize.width, self.view.frame.size.height);
             }
             else{
-                self.parentView.frame=CGRectMake(0, 55, windowSize.width, windowSize.height-55);
+                self.parentView.frame=CGRectMake(0, 55, windowSize.width, self.view.frame.size.height-80);
             }
             self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg.png"]];
-           // self.parentView.backgroundColor=[UIColor yellowColor];
         }
         
         
@@ -157,7 +166,7 @@
         self.tabView=[[UIView alloc]init];
         self.tabView.backgroundColor=[UIColor clearColor];
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-            self.tabView.frame=CGRectMake(0, self.parentView.frame.size.height-80, windowSize.width, 80);
+            self.tabView.frame=CGRectMake(0, self.parentView.frame.size.height-130, windowSize.width, 80);
         }
         else{
             if([UIScreen mainScreen].bounds.size.height>500)
@@ -165,18 +174,17 @@
                 self.tabView.frame=CGRectMake(0, 465, 320, 50);
             }
             else{
-                self.tabView.frame=CGRectMake(0, self.parentView.frame.size.height-50, 320, 50);
+                self.tabView.frame=CGRectMake(0, 375, 320, 50);
             }
         }
+        
         CAGradientLayer * tabLayer=[CAGradientLayer layer];
-       tabLayer.frame=CGRectMake(0, 0, self.tabView.frame.size.width, self.tabView.frame.size.height);
+        tabLayer.frame=CGRectMake(0, 0, self.tabView.frame.size.width, self.tabView.frame.size.height);
         UIColor * firstColor=[UIColor colorWithRed:(CGFloat)38/255 green:(CGFloat)38/255 blue:(CGFloat)38/255 alpha:1.0];
         UIColor  * secondColor=[UIColor colorWithRed:(CGFloat)0/255 green:(CGFloat)0/255 blue:(CGFloat)0/255 alpha:1.0];
         tabLayer.colors=[NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secondColor CGColor], nil];
         [self.tabView.layer insertSublayer:tabLayer atIndex:0];
-
-        
-       // self.tabView.backgroundColor=[UIColor blackColor];
+        //self.tabView.backgroundColor=[UIColor blackColor];
         [self.parentView addSubview:self.tabView];
     }
     self.tabView.hidden=YES;
@@ -204,7 +212,7 @@
     
     photosBtn.titleLabel.font=[UIFont boldSystemFontOfSize:9];
     [photosBtn setImage:[UIImage imageNamed:@"accept.png"] forState:UIControlStateNormal];
-    //[photosBtn addTarget:self action:@selector(photoButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+  //  [photosBtn addTarget:self action:@selector(yesButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     photosBtn.tag=2;
     [self.tabView addSubview:photosBtn];
     
@@ -214,7 +222,7 @@
     CreditsBtn.titleLabel.font=[UIFont boldSystemFontOfSize:9];
     [CreditsBtn setImage:[UIImage imageNamed:@"chat_blue_bg.png"] forState:UIControlStateNormal];
     CreditsBtn.tag=3;
-    //  [CreditsBtn addTarget:self action:@selector(superPowerButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [CreditsBtn addTarget:self action:@selector(chatButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.tabView addSubview:CreditsBtn];
     
@@ -233,7 +241,7 @@
         
         [profile setImage:[UIImage imageNamed:@"profile_male_grey_ipad.png"] forState:UIControlStateNormal];
         
-        [photosBtn setImage:[UIImage imageNamed:@"yes_ipad.png"] forState:UIControlStateNormal];
+        [photosBtn setImage:[UIImage imageNamed:@"accept_ipad.png"] forState:UIControlStateNormal];
         [CreditsBtn setImage:[UIImage imageNamed:@"chat_blue_bg_ipad.png"] forState:UIControlStateNormal];
         // [OffBtn setImage:[UIImage imageNamed:@"off_icon_grey_ipad.png"] forState:UIControlStateNormal];
         
@@ -246,7 +254,7 @@
     else{
         profile.frame=CGRectMake(windowSize.width-280, 10, 60, 30);
         photosBtn.frame=CGRectMake(windowSize.width-180, 10, 30, 30);
-        CreditsBtn.frame=CGRectMake(windowSize.width-100, 10, 50, 30);
+        CreditsBtn.frame=CGRectMake(windowSize.width-100, 10, 30, 30);
         // OffBtn.frame=CGRectMake(windowSize.width-55, 10, 50, 30);
         
     }
@@ -343,8 +351,184 @@ NS_AVAILABLE_IOS(5_0){
 
 #pragma mark- gesutre recognizer
 
+#pragma mark- gesutre recognizer
+
 -(void)handleSwipeGesture:(UISwipeGestureRecognizer *)swipe{
     
+    NSLog(@"%f",self.parentView.frame.origin.y);
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        CGRect frame=CGRectMake(0, -windowSize.width/2, windowSize.width, windowSize.height);
+        [self swipeGesture:frame];
+    }
+    else{
+        CGRect frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
+        [self swipeGesture:frame];
+    }
+    
+}
+
+-(void)swipeGesture:(CGRect)frame{
+    if(self.parentView.frame.origin.y==height)
+    {
+        [UIView animateWithDuration:1 animations:^{
+            
+            if ([UIScreen mainScreen].bounds.size.height>500) {
+                
+                // self.parentView.frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
+                self.parentView.frame=frame;
+            }
+            else{
+                //self.parentView.frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
+                self.parentView.frame=frame;
+            }
+        } completion:^(BOOL finished) {
+            CGRect ff;
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                ff=CGRectMake(0, windowSize.height/2+55, windowSize.width,(windowSize.height-windowSize.height/2-80));
+            }
+            else{
+                
+                if ([UIScreen mainScreen].bounds.size.height>500) {
+                    ff=CGRectMake(0, 220, windowSize.width, 350);
+                }
+                else{
+                    ff=CGRectMake(0, 125, windowSize.width, 450);
+                }
+            }
+            int tagValue=1;
+            [self createTableView:ff tagvalue: tagValue];
+            self.swipe.direction = UISwipeGestureRecognizerDirectionDown;
+        }];
+    }
+    else{
+        
+        [UIView animateWithDuration:1 animations:^{
+            self.parentView.frame=CGRectMake(0,height ,self.screen_width, self.view.frame.size.height);
+            self.secondView.hidden=YES;
+        } completion:^(BOOL finished) {
+            self.swipe.direction=UISwipeGestureRecognizerDirectionUp;
+            
+        }];
+    }
+    
+}
+
+
+
+#pragma mark-TableView Creation
+-(void)createTableView:(CGRect)frame tagvalue:(int) tagvalue{
+    
+    if(self.secondView)
+    {
+        self.secondView=nil;
+    }
+    self.secondView=[[UIView alloc]initWithFrame:frame];
+    self.secondView.backgroundColor=[UIColor clearColor];
+    [self.view addSubview:self.secondView];
+    
+    if (tagvalue==1) {
+        self.creditsTableView=nil;
+        if(self.profileTableView)
+        {
+            self.profileTableView=nil;
+        }
+        self.profileTableView=[[UITableView alloc]init];
+        if ([UIScreen mainScreen].bounds.size.height<500) {
+            self.profileTableView.frame=CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height-150);
+        }
+        else{
+            self.profileTableView.frame=CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height);
+        }
+        if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+            self.profileTableView.frame=CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height+50);
+        }
+        self.profileTableView.delegate=self;
+        self.profileTableView.dataSource=self;
+        self.profileTableView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)176/255 blue:(CGFloat)176/255 alpha:1.0];
+        
+        [self.profileTableView setShowsVerticalScrollIndicator:NO];
+        [self.secondView addSubview:self.profileTableView];
+        
+    }
+}
+
+
+
+#pragma mark- profile button action
+
+-(void)profileButtonClick:(UIButton*)sender{
+    int tagValue=(int)[sender tag];
+    CGRect frame;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        frame=CGRectMake(0, -windowSize.width/2, windowSize.width, windowSize.height);
+    }
+    else{
+        frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
+        
+    }
+    
+    
+    [self animationMethod:tagValue frame:(CGRect)frame];
+}
+
+
+#pragma  mark- animation
+
+-(void)animationMethod:(int)tagValue frame:(CGRect)frame{
+    
+    
+    if((self.parentView.frame.origin.y==height)//|| self.state==YES)
+       )//&& self.selectedIndex!=tagValue)
+    {
+        
+        [UIView animateWithDuration:1 animations:^{
+            self.parentView.frame=frame;//CGRectMake(0, -300, self.screen_width, self.view.frame.size.height);
+        } completion:^(BOOL finished) {
+            CGRect  ff;
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                ff=CGRectMake(0, windowSize.height/2+55, windowSize.width,(windowSize.height-windowSize.height/2-80));
+            }
+            else{
+                
+                if ([UIScreen mainScreen].bounds.size.height>500) {
+                    ff=CGRectMake(0, 220, windowSize.width, 350);
+                }
+                else{
+                    ff=CGRectMake(0, 125, windowSize.width, 450);
+                }
+            }
+            if (tagValue!=4&&tagValue!=2) {
+                
+                [self createTableView:ff tagvalue: tagValue];
+            }
+            self.swipe.direction = UISwipeGestureRecognizerDirectionDown;
+        }];
+        self.state=YES;
+    }
+    else{
+        self.secondView.hidden=YES;
+        [UIView animateWithDuration:1 animations:^{
+            self.parentView.frame=CGRectMake(0,height , self.screen_width, self.view.frame.size.height);
+            self.secondView.hidden=YES;
+            // self.profileTableView.hidden=YES;
+            // photoVC.view.hidden=YES;
+            // self.creditsTableView.hidden=YES;
+            //  superPower.view.hidden=YES;
+        } completion:^(BOOL finished) {
+            self.swipe.direction=UISwipeGestureRecognizerDirectionUp;
+            
+        }];
+        self.state=NO;
+    }    self.selectedIndex=tagValue;
+    
+}
+
+
+
+
+
+/*-(void)handleSwipeGesture:(UISwipeGestureRecognizer *)swipe{
+ 
     NSLog(@"%f",self.parentView.frame.origin.y);
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         CGRect frame=CGRectMake(0, -windowSize.width/2, windowSize.width, windowSize.height);
@@ -427,7 +611,7 @@ NS_AVAILABLE_IOS(5_0){
             self.profileTableView.frame=CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height-150);
         }
         else{
-            self.profileTableView.frame=CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height);
+            self.profileTableView.frame=CGRectMake(0, 100, self.secondView.frame.size.width, self.secondView.frame.size.height-20);
         }
         self.profileTableView.delegate=self;
         self.profileTableView.dataSource=self;
@@ -500,7 +684,7 @@ NS_AVAILABLE_IOS(5_0){
         self.state=NO;
     }    self.selectedIndex=tagValue;
     
-}
+}*/
 
 #pragma mark- table view delegate methods
 
@@ -530,14 +714,21 @@ NS_AVAILABLE_IOS(5_0){
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     static NSString * cellIdentifier=@"cell";
-    //UITableViewCell * cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-    UITableViewCell * cell=[tableView cellForRowAtIndexPath:indexPath];
+        UITableViewCell * cell=[tableView cellForRowAtIndexPath:indexPath];
     if(!cell)
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
-    //cell.imageView.image=[UIImage imageNamed:@"crm.png"];
-    cell.textLabel.font=[UIFont boldSystemFontOfSize:12];
+   
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+         cell.textLabel.font=[UIFont boldSystemFontOfSize:22];
+        cell.detailTextLabel.font=[UIFont systemFontOfSize:20];
+    }
+    else{
+         cell.textLabel.font=[UIFont boldSystemFontOfSize:12];
+        cell.detailTextLabel.font=[UIFont systemFontOfSize:12];
+    }
+   
     if(tableView==self.profileTableView)
     {
         if(indexPath.section==0)
@@ -570,9 +761,13 @@ NS_AVAILABLE_IOS(5_0){
             cell.textLabel.text=[self.sectionTwoData  objectAtIndex:indexPath.row];
             cell.imageView.image=[UIImage imageNamed:[NSString stringWithString:[self.sectionTwoImages objectAtIndex:indexPath.row]]];
             if (indexPath.row==0) {
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                 cell.detailTextLabel.text=_location;
             }
             if (indexPath.row==1) {
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                 cell.detailTextLabel.text=_about;
             }
             if (indexPath.row==5) {
@@ -586,7 +781,9 @@ NS_AVAILABLE_IOS(5_0){
                 cell.detailTextLabel.text=_sexuality;
             }
             if (indexPath.row==4) {
-                
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
+                cell.detailTextLabel.text=_appearance;
             }
             if (indexPath.row==6) {
                 cell.detailTextLabel.text=_kids;
@@ -601,10 +798,13 @@ NS_AVAILABLE_IOS(5_0){
                 cell.detailTextLabel.text=_eduaction;
             }
             if (indexPath.row==10) {
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                 cell.detailTextLabel.text=_languages;
             }
             if (indexPath.row==11) {
-                
+                cell.detailTextLabel.numberOfLines=0;
+                cell.detailTextLabel.lineBreakMode=NSLineBreakByCharWrapping;
                 cell.detailTextLabel.text=_profession;
             }
             if (indexPath.row==12) {
@@ -720,8 +920,9 @@ NS_AVAILABLE_IOS(5_0){
     else{
         _profession=[json objectForKey:@"profession"];
     }
+         _appearance=[NSString stringWithFormat:@"Heighr:%@ Weight%@ Bodytype:%@ Eyecolor:%@ Haircolor:%@",_height,_weight,_bodyType,_eyeColor,_hairColor ];
     }
-
+    
     
 }
 
@@ -1069,6 +1270,27 @@ NS_AVAILABLE_IOS(5_0){
 #pragma mark- cancel button
 -(void)profileCancelButtonAction:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark- Chat 
+-(void)chatButtonAction:(UIButton*)sender{
+    MessageDetailViewController * mdVC=[[MessageDetailViewController alloc]initWithNibName:@"MessageDetailViewController" bundle:nil];
+    [self addBuddy];
+    [self.navigationController pushViewController:mdVC animated:YES];
+}
+
+- (AppDelegate *)appDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
+
+- (XMPPRoster *)xmppRoster {
+    return [[self appDelegate] xmppRoster];
+}
+
+-(void)addBuddy{
+    XMPPJID *newBuddy = [XMPPJID jidWithString:_displayName];
+    [self.xmppRoster addUser:newBuddy withNickname:@""];
 }
 /*
 #pragma mark - Navigation

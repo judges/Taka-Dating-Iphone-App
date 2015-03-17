@@ -197,7 +197,7 @@
             }
            
             selectedIndex=indexPath;
-            selectedRow=[NSString stringWithFormat:@"%d",indexPath.row];
+            selectedRow=[NSString stringWithFormat:@"%ld",(long)indexPath.row];
         }
         
     }

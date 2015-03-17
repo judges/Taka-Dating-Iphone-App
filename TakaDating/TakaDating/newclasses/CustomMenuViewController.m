@@ -19,6 +19,7 @@
 #import "LikedYouViewController.h"
 #import "PeopleNearByViewController.h"
 #import "CustomTableCell.h"
+#import "UIImageView+WebCache.h"
 
 
 @interface CustomMenuViewController ()
@@ -55,8 +56,13 @@
     
     for (UIViewController *viewController in _viewControllers) {
         [self addChildViewController:viewController];
-        viewController.view.frame = CGRectMake(0, 55,[UIScreen mainScreen].bounds.size.width , [UIScreen mainScreen].bounds.size.height-55);
-        
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            viewController.view.frame = CGRectMake(0,75 ,[UIScreen mainScreen].bounds.size.width , [UIScreen mainScreen].bounds.size.height-55);
+
+        }
+        else{
+                viewController.view.frame = CGRectMake(0,55 ,[UIScreen mainScreen].bounds.size.width , [UIScreen mainScreen].bounds.size.height-55);
+        }
         [viewController didMoveToParentViewController:self];
     }
     
@@ -66,7 +72,13 @@
     
     for (UIViewController *viewController in self.secondSectionViewControllers ) {
         [self addChildViewController:viewController];
-        viewController.view.frame = CGRectMake(0, 55,[UIScreen mainScreen].bounds.size.width , [UIScreen mainScreen].bounds.size.height-55);
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+             viewController.view.frame = CGRectMake(0, 75,[UIScreen mainScreen].bounds.size.width , [UIScreen mainScreen].bounds.size.height-55);
+            
+        }
+        else{
+            viewController.view.frame = CGRectMake(0, 55,[UIScreen mainScreen].bounds.size.width , [UIScreen mainScreen].bounds.size.height-55);
+        }
         [viewController didMoveToParentViewController:self];
     }
 }
@@ -107,8 +119,7 @@
     self.nav=[[UINavigationController alloc]init];
     //---------
     
-    menuImgArr=[NSArray arrayWithObjects:@"profile_male.png",@"people_nearby.png",@"encounter.png",nil];
-    sectionArr=[NSArray arrayWithObjects:@"setting_message_icon.png",@"visitor_icon.png", @"favorite_icon.png",@"liked_you_icon.png",nil];
+   
     //---------
 	// Do any additional setup after loading the view.
     //self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)224/255 green:(CGFloat)64/255 blue:(CGFloat)5/255 alpha:1];
@@ -126,20 +137,29 @@
     
     //Add Header View
     CGFloat hh;
-   
+    CGFloat fontSize,hdrFont;
     CGRect frame_b,frame_button;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        
+        menuImgArr=[NSArray arrayWithObjects:@"",@"people_nearby_ipad.png",@"invite_iPad.png",nil];
+        sectionArr=[NSArray arrayWithObjects:@"setting_message_icon_ipad.png",@"visitor_icon_ipad.png", @"favorite_icon_ipad.png",@"liked_you_icon_ipad.png",nil];
         self.mainsubView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
         hh = 92;
-      
-        frame_button=CGRectMake(self.view.frame.size.width-120, 20, 100, 30);
-        frame_b = CGRectMake(25, 20, 50, 30);
+        fontSize=20;
+        hdrFont=30;
+        frame_button=CGRectMake(self.view.frame.size.width-120, 25, 100, 30);
+        frame_b = CGRectMake(25, 25, 50, 30);
+        row_hh=80;
+        hdr_hh=60;
     }
     else{
+        menuImgArr=[NSArray arrayWithObjects:@"",@"people_nearby.png",@"invite.png",nil];
+        sectionArr=[NSArray arrayWithObjects:@"setting_message_icon.png",@"visitor_icon.png", @"favorite_icon.png",@"liked_you_icon.png",nil];
         self.mainsubView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_568.png"]];
-        
+        fontSize=15;
+        hdrFont=25;
         hh = 55;
+        row_hh=40;
+        hdr_hh=30;
        frame_button= CGRectMake(self.view.frame.size.width-70, 20, 60, 25);
         frame_b = CGRectMake(10, 20, 30, 25);
     }
@@ -180,7 +200,7 @@
     self.headerTitleLabel.backgroundColor = [UIColor clearColor];
     self.headerTitleLabel.textColor = [UIColor whiteColor];
     self.headerTitleLabel.textAlignment = NSTextAlignmentCenter;
-    self.headerTitleLabel.font = [UIFont boldSystemFontOfSize:15];
+    self.headerTitleLabel.font = [UIFont boldSystemFontOfSize:hdrFont];
     [self.headerView addSubview:self.headerTitleLabel];
    
     //============================
@@ -205,6 +225,7 @@
     self.setting.layer.borderColor=[[UIColor redColor]CGColor];
     self.setting.layer.borderWidth=0.7;
     self.setting.layer.cornerRadius=4;
+    self.setting.titleLabel.font=[UIFont systemFontOfSize:fontSize];
     self.setting.clipsToBounds=YES;
     [ self.setting addTarget:self action:@selector(settingButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview: self.setting];
@@ -216,6 +237,7 @@
     self.filter1.layer.borderColor=[[UIColor redColor]CGColor];
     self.filter1.layer.borderWidth=0.7;
     self.filter1.layer.cornerRadius=4;
+    self.filter1.titleLabel.font=[UIFont systemFontOfSize:fontSize];
     self.filter1.clipsToBounds=YES;
     [ self.filter1 addTarget:self action:@selector(FilterEncounterAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview: self.filter1];
@@ -227,6 +249,7 @@
     self.filter2.layer.borderColor=[[UIColor redColor]CGColor];
     self.filter2.layer.borderWidth=0.7;
     self.filter2.layer.cornerRadius=4;
+    self.filter2.titleLabel.font=[UIFont systemFontOfSize:fontSize];
     self.filter2.clipsToBounds=YES;
     [ self.filter2 addTarget:self action:@selector(PeopleNearEncounterAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview: self.filter2];
@@ -239,6 +262,7 @@
     self.edit.layer.borderColor=[[UIColor redColor]CGColor];
     self.edit.layer.borderWidth=0.7;
     self.edit.layer.cornerRadius=4;
+    self.edit.titleLabel.font=[UIFont systemFontOfSize:fontSize];
     self.edit.clipsToBounds=YES;
     [ self.edit addTarget:self action:@selector(editButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview: self.edit];
@@ -250,6 +274,7 @@
     self.cancel.layer.borderColor=[[UIColor redColor]CGColor];
     self.cancel.layer.borderWidth=0.7;
     self.cancel.layer.cornerRadius=4;
+    self.cancel.titleLabel.font=[UIFont systemFontOfSize:fontSize];
     self.cancel.clipsToBounds=YES;
     [ self.cancel addTarget:self action:@selector(cancelButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview: self.cancel];
@@ -262,6 +287,7 @@
     self.select.layer.borderColor=[[UIColor redColor]CGColor];
     self.select.layer.borderWidth=0.7;
     self.select.layer.cornerRadius=4;
+    self.select.titleLabel.font=[UIFont systemFontOfSize:fontSize];
     self.select.clipsToBounds=YES;
     [ self.select addTarget:self action:@selector(selectButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview: self.select];
@@ -274,6 +300,7 @@
     self.deselect.layer.borderColor=[[UIColor redColor]CGColor];
     self.deselect.layer.borderWidth=0.7;
     self.deselect.layer.cornerRadius=4;
+    self.deselect.titleLabel.font=[UIFont systemFontOfSize:fontSize];
     self.deselect.clipsToBounds=YES;
     [ self.deselect addTarget:self action:@selector(deselectButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.headerView addSubview: self.deselect];
@@ -331,6 +358,7 @@
 -(void) createMenuTableView{
     if (!self.menuTableView) {
         self.selectedIndex = 2;
+        
         self.menuTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width/2+90, self.screen_height) style:UITableViewStylePlain];
         //self.menuTableView.backgroundColor =  [UIColor colorWithRed:(CGFloat)112/255 green:(CGFloat)147/255 blue:(CGFloat)148/255 alpha:1];
         
@@ -374,7 +402,12 @@
     }
     else{
         [UIView animateWithDuration:.5 animations:^{
-            self.mainsubView.frame = CGRectMake(250, 0, self.view.frame.size.width, self.screen_height);
+            if (UI_USER_INTERFACE_IDIOM()==UI_USER_INTERFACE_IDIOM()) {
+                self.mainsubView.frame = CGRectMake(320, 0, self.view.frame.size.width, self.screen_height);
+            }
+            else{
+                self.mainsubView.frame = CGRectMake(250, 0, self.view.frame.size.width, self.screen_height);
+            }
         }completion:^(BOOL finish){
             
             self.swipeGesture.direction = UISwipeGestureRecognizerDirectionLeft;
@@ -406,7 +439,11 @@
     if (section == 0) {
         return 0;
     }
-    return 30;
+    return hdr_hh;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return row_hh;
 }
 
 -(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section{
@@ -438,7 +475,14 @@
     
     [cell.contentView.layer insertSublayer:layer atIndex:0];
     cell.textLabel.textColor = [UIColor whiteColor];
-    cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0f];
+    
+    cell.transform=CGAffineTransformMakeTranslation(cell.bounds.size.width*-1, 0);
+    [UIView animateWithDuration:0.5 animations:^{
+        cell.transform=CGAffineTransformIdentity;
+    }];
+    
+    
+   // cell.textLabel.font = [UIFont boldSystemFontOfSize:14.0f];
   
       // CGRect frame = CGRectMake(cell.frame.origin.x, cell.frame.size.height-2, cell.frame.size.width, 2);
 //    UIImageView *dividerImageView = [[UIImageView alloc] initWithFrame:frame];
@@ -454,33 +498,58 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
+    NSString * encounter,* pplner,* invite;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        cell.textLabel.font=[UIFont systemFontOfSize:25];
+        encounter=@"encounter_ipad.png";
+        pplner=@"people_nearby_ipad.png";
+        invite=@"invite_ipad.png";
+    }
+    else{
+        encounter=@"encounter.png";
+        pplner=@"people_nearby.png";
+        invite=@"invite.png";
+         cell.textLabel.font=[UIFont systemFontOfSize:14];
+    }
+    
+    
+    
     //Check Section
         if (indexPath.section==0) {
         if (indexPath.row<self.viewControllers.count) {
             
             if (indexPath.row==0) {
                 cell.textLabel.text = [NSString stringWithFormat:@"  %@",[(UIViewController *)[self.viewControllers objectAtIndex:2] title]];
+                NSURL * url=[NSURL URLWithString:[SingletonClass shareSingleton].profileImg];
+                [cell.imageView setImageWithURL:url];
             }
-            else if (indexPath.row==2) {
+        }
+             if (indexPath.row==2) {
+            cell.imageView.image=[UIImage imageNamed:encounter];
                  cell.textLabel.text = [NSString stringWithFormat:@"  %@",[(UIViewController *)[self.viewControllers objectAtIndex:0] title]];
             }
-            else
+           /* else
             {
-    
+                  cell.imageView.image=[UIImage imageNamed:[menuImgArr objectAtIndex:indexPath.row]];
             cell.textLabel.text = [NSString stringWithFormat:@"  %@",[(UIViewController *)[self.viewControllers objectAtIndex:indexPath.row] title]];
+            }*/
+            //else
+       // }
+            if(indexPath.row==1){
+                cell.imageView.image=[UIImage imageNamed:pplner];
+                cell.textLabel.text = [NSString stringWithFormat:@"  %@",[(UIViewController *)[self.viewControllers objectAtIndex:1] title]];
             }
-            //if (indexPath.row==0) {
-              //  cell.imageView.image=[UIImage imageNamed:@"profile_male.png"];
-           // }
-           // else{
-                cell.imageView.image=[UIImage imageNamed:[menuImgArr objectAtIndex:indexPath.row]];
-            //}
-        }
-        else
-        {
-            cell.textLabel.text = @"  Invite";
-            cell.imageView.image=[UIImage imageNamed:@"invite.png"];
-        }
+            else if(indexPath.row==3){
+                cell.textLabel.text = @"  Invite";
+                cell.imageView.image=[UIImage imageNamed:invite];
+            }
+
+      //  else
+//            if (indexPath.row==3)
+//        {
+//            cell.textLabel.text = @"  Invite";
+//            cell.imageView.image=[UIImage imageNamed:@"invite.png"];
+//        }
     }
     else{
         
@@ -616,6 +685,10 @@
             if (indexPath.row==2) {
                 [[NSNotificationCenter defaultCenter]postNotificationName:@"FavouriteUI" object:nil userInfo:nil];
             }
+            if (indexPath.row==0) {
+               
+                 [[NSNotificationCenter defaultCenter]postNotificationName:@"fetchUserList" object:nil userInfo:nil];
+            }
             // [self getSelectedViewControllers:newViewController];
            
             [UIView animateWithDuration:.5 animations:^{
@@ -652,25 +725,20 @@
     NSLog(@"Selected view frame = %f",self.selectedViewController.view.frame.size.width);
     //NSLog(@"Selected View Height = %f",self.selectedViewController.view.frame.size.height);
     self.headerTitleLabel.text = self.selectedViewController.title;
-    if ([self.headerTitleLabel.text isEqualToString:@"Profile"]) {
-        self.setting.hidden=NO;
-        self.filter1.hidden=YES;
-        self.filter2.hidden=YES;
-        self.edit.hidden=YES;
-    }
+   
     if ([self.headerTitleLabel.text isEqualToString:@"Rendezvous"]) {
         self.setting.hidden=YES;
         self.filter1.hidden=NO;
         self.filter2.hidden=YES;
         self.edit.hidden=YES;
     }
-    if ([self.headerTitleLabel.text isEqualToString:@"People Nearby"]) {
+ else if ([self.headerTitleLabel.text isEqualToString:@"People Nearby"]) {
         self.setting.hidden=YES;
         self.filter1.hidden=YES;
         self.filter2.hidden=NO;
         self.edit.hidden=YES;
     }
-    if ([self.headerTitleLabel.text isEqualToString:@"Messages"]) {
+   else  if ([self.headerTitleLabel.text isEqualToString:@"Messages"]) {
         self.setting.hidden=YES;
         self.filter1.hidden=YES;
         self.filter2.hidden=YES;
@@ -678,7 +746,7 @@
         editMessage=YES;
         selectMessage=YES;
     }
-    if ([self.headerTitleLabel.text isEqualToString:@"Visitors"]) {
+    else if ([self.headerTitleLabel.text isEqualToString:@"Visitors"]) {
         self.setting.hidden=YES;
         self.filter1.hidden=YES;
         self.filter2.hidden=YES;
@@ -686,7 +754,7 @@
         editVisitors=YES;
         selectVisitors=YES;
     }
-    if ([self.headerTitleLabel.text isEqualToString:@"Favorite"]) {
+  else  if ([self.headerTitleLabel.text isEqualToString:@"Favorite"]) {
         self.setting.hidden=YES;
         self.filter1.hidden=YES;
         self.filter2.hidden=YES;
@@ -695,7 +763,7 @@
         selectFavorite=YES;
         
     }
-    if ([self.headerTitleLabel.text isEqualToString:@"Liked you"]) {
+   else  if ([self.headerTitleLabel.text isEqualToString:@"Liked you"]) {
         self.setting.hidden=YES;
         self.filter1.hidden=YES;
         self.filter2.hidden=YES;
@@ -704,6 +772,14 @@
         selectFavorite=YES;
         
     }
+   
+      else if  (!([self.headerTitleLabel.text isEqualToString:@"Liked you"]|| [self.headerTitleLabel.text isEqualToString:@"Favorite"]|| [self.headerTitleLabel.text isEqualToString:@"Visitors"]|| [self.headerTitleLabel.text isEqualToString:@"Messages"]|| [self.headerTitleLabel.text isEqualToString:@"People Nearby"]|| [self.headerTitleLabel.text isEqualToString:@"Rendezvous"])) {
+           self.setting.hidden=NO;
+           self.filter1.hidden=YES;
+           self.filter2.hidden=YES;
+           self.edit.hidden=YES;
+       }
+    
 
     [self.mainsubView addSubview:self.selectedViewController.view];
       //  [self.contentContainerView addSubview:self.selectedViewController.view];

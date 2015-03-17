@@ -8,6 +8,8 @@
 
 #import "MessagesViewController.h"
 #import  "MessageDetailViewController.h"
+#import "UIImageView+WebCache.h"
+#import "AddphotosViewController.h"
 
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
@@ -48,6 +50,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
     [super viewDidLoad];
     nameArr=[[NSMutableArray alloc]initWithObjects:@"One",@"Two",@"Three",@"Four",@"Five", nil];
+    self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     
     windowSize =[UIScreen mainScreen].bounds.size;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(editButtonAction) name:@"editButtonAction" object:nil];
@@ -56,9 +59,38 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
      [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(deselectButtonAction) name:@"deselectButtonAction" object:nil];
    
-    [self createUI];
+    
+    
+    self.refreshActivity=[[UIActivityIndicatorView alloc]init];
+    self.refreshActivity.frame=CGRectMake(windowSize.width/2-20,windowSize.height/2-20, 50, 50);
+    self.refreshActivity.activityIndicatorViewStyle=UIActivityIndicatorViewStyleWhiteLarge;
+    self.refreshActivity.color=[UIColor blackColor];
+    [self.view addSubview:self.refreshActivity];
+    [self.view bringSubviewToFront:self.refreshActivity];
+    [self.refreshActivity setAlpha:1.0];
+     [self.refreshActivity startAnimating];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(fetchUserList) name:@"fetchUserList" object:nil];
+    
     
     // Do any additional setup after loading the view from its nib.
+}
+
+#pragma mark-
+-(void)fetchUserList{
+   
+     dispatch_async(dispatch_get_main_queue(),^{
+         [self fetchAllDatauserDataFromServer];
+       dispatch_async(dispatch_get_main_queue(),^{
+         [self.refreshActivity stopAnimating];
+           
+           [self createUI];
+    
+      });
+    });
+   
+   
+     [[NSNotificationCenter defaultCenter]removeObserver:self];
 }
 
 #pragma mark-editbutton action
@@ -90,17 +122,55 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 -(void)createUI{
     self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    
-    UIView * sectionView=[[UIView alloc]init];
+    CGFloat fontSize;
+      CGRect   frame,srchFrame;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-        sectionView.frame=CGRectMake(0, 0, windowSize.width, 150);
+        fontSize=20;
+        frame=CGRectMake(windowSize.width/2-290, windowSize.height/2-50, windowSize.width-140, 60);
     }
     else{
-            sectionView.frame=CGRectMake(0, 0, windowSize.width, 60);
+        frame=CGRectMake(windowSize.width/2-140, windowSize.height/2-50, windowSize.width-40, 60);
+        fontSize=14;
     }
-    
-    sectionView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    CGRect   frame,srchFrame;
+   
+  
+    if ([self fetchedResultsController].sections.count<=0) {// need to check if profile pic exists
+        UIImageView * chatBigImg=[[UIImageView alloc]init];
+        chatBigImg.frame=CGRectMake(windowSize.width/2-60, windowSize.height/2-200, 125, 125);
+        chatBigImg.image=[UIImage imageNamed:@"chat_big_icon.png"];
+        [self.view addSubview:chatBigImg];
+        
+        UILabel * chatLbl=[[UILabel alloc]init];
+        chatLbl.frame=frame;
+        chatLbl.text=@"You do not have messages yet. Add photos of yourself. People with photos get way more messages.";
+        chatLbl.textColor=[UIColor blackColor];
+        chatLbl.font=[UIFont boldSystemFontOfSize:fontSize];
+        chatLbl.numberOfLines=0;
+        [chatLbl setLineBreakMode:NSLineBreakByCharWrapping];
+        [self.view addSubview:chatLbl];
+        chatLbl.textAlignment=NSTextAlignmentCenter;
+        
+        
+        UIButton * addPhoto=[UIButton buttonWithType:UIButtonTypeCustom];
+        addPhoto.frame=CGRectMake(windowSize.width/2-50, windowSize.height/2+20, 120, 32);
+        [addPhoto setTitle:@"Add Photos" forState:UIControlStateNormal];
+        [addPhoto setTitleColor:[UIColor whiteColor ] forState:UIControlStateNormal];
+        [addPhoto setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
+        [addPhoto addTarget:self action:@selector(movetoAddPhotoView:) forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:addPhoto];
+    }
+    else{
+        
+        UIView * sectionView=[[UIView alloc]init];
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            sectionView.frame=CGRectMake(0, 0, windowSize.width, 150);
+        }
+        else{
+            sectionView.frame=CGRectMake(0, 0, windowSize.width, 60);
+        }
+        
+        sectionView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+        
     if (!self.messageTable) {
         self.messageTable=[[UITableView alloc]init];
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
@@ -155,6 +225,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
             subview.tintColor = [subview isSelected] ? [UIColor colorWithRed:135.0/255.0 green:10.0/255.0 blue:2.0/255.0 alpha:1.0] : [UIColor blackColor];
        }
         self.messageTable.tableHeaderView=sectionView ;
+    }
     }
 }
 
@@ -212,21 +283,24 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return [[[self fetchedResultsController] sections] count];
-}
+    NSLog(@"count %lu",(unsigned long)[self fetchedResultsController].sections.count);
+    //return [[[self fetchedResultsController] sections] count];
+    return 1;
+    }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSArray *sections = [[self fetchedResultsController] sections];
     if (!online) {
         if (section < [sections count])
         {
-            id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
-            return sectionInfo.numberOfObjects;
+          //  id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
+           // return sectionInfo.numberOfObjects;
+            return userName.count;
         }
         
     }
     else{
-        NSArray *sections = [[self fetchedResultsController] sections];
+       NSArray *sections = [[self fetchedResultsController] sections];
         
         if (section < [sections count])
         {
@@ -237,6 +311,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
                 return sectionInfo.numberOfObjects;
             }
         }
+        
+      
         
     }
     
@@ -288,14 +364,16 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         }
     }
     
-//    cell.imgView.image=[UIImage imageNamed:@"imag1.jpg"];
-//    cell.cellLabel.text=[nameArr objectAtIndex:indexPath.row];
-//    cell.imgView.tag=indexPath.row;
-    XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+
+  //  XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
     
-    cell.textLabel.text = user.displayName;
-    [self configurePhotoForCell:cell user:user];
+    cell.cellLabel.text = [userName objectAtIndex:indexPath.row];
+    NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating%@",[profileImage objectAtIndex:indexPath.row]]];
+    [cell.imgView setImageWithURL:url];
+   // [self configurePhotoForCell:cell user:user];
     return  cell;
+   
+   
     
 }
 
@@ -330,9 +408,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
       {
           self.mdVC=nil;
       }
-          self.mdVC=[[MessageDetailViewController alloc]initWithNibName:@"MessageDetailViewController" bundle:nil];
-    self.mdVC.titleStr= user.displayName;
-    //self.mdVC.userId=
+          //self.mdVC=[[MessageDetailViewController alloc]initWithNibName:@"MessageDetailViewController" bundle:nil];
+        self.mdVC=[[MessageDetailViewController alloc]initWithUser:user.displayName];
+        self.mdVC.titleStr= [userName objectAtIndex:indexPath.row];
+        self.mdVC.userId=user.displayName;
     [self.navigationController pushViewController:self.mdVC animated:YES];
     }
 
@@ -342,6 +421,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 }
 
 
+-(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
+    XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    NSLog(@"%@",user.jidStr);
+    XMPPJID *newBuddy = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@",user.jidStr]];
+    [self.xmppRoster removeUser:newBuddy];
+}
 
 -(void)deleteButtonAction:(id)sender{
     
@@ -394,6 +479,52 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     [ self.messageTable reloadData];
 }
 
+#pragma mark- move to Add photo Class.
+
+-(void)movetoAddPhotoView:(UIButton*)sender{
+    AddphotosViewController * addPhoto=[[AddphotosViewController alloc]initWithNibName:@"AddphotosViewController" bundle:nil];
+    [self.navigationController pushViewController:addPhoto animated:YES];
+}
+
+#pragma mark- get all data of user list from server
+
+-(void)fetchAllDatauserDataFromServer{
+    NSError * error=nil;
+    NSURLResponse * urlResponse=nil;
+    
+    profileImage=[[NSMutableArray alloc]init];
+    userName=[[NSMutableArray alloc]init];
+    NSLog(@"xmmp Roster Friends list %lu",(unsigned long)[self fetchedResultsController].sections.count);
+    for (int i=0; i<[self fetchedResultsController].sections.count; i++) {
+        NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/mobi/profile-details"];
+        
+        NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+        [request setHTTPMethod:@"POST"];
+        [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+        NSIndexPath * indexPath=[NSIndexPath indexPathForRow:i inSection:0];
+        
+        XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        
+        NSString * body=[NSString stringWithFormat:@"userId=%@&loggedId=%@",user.displayName,[SingletonClass shareSingleton].userID];
+        
+        [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+        
+        NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        if (data==nil) {
+            return;
+        }
+        id parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        NSLog(@"json response of user details %@",parse);
+        if (![[parse objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+            NSLog(@"No data in parse");
+        }
+        else{
+                NSMutableDictionary * dict=[parse objectForKey:@"userprofile"];
+                [profileImage addObject:[dict objectForKey:@"thumbanailUrl"]];
+                [userName addObject:[dict objectForKey:@"displayName"]];
+        }
+    }
+}
 
 - (void)didReceiveMemoryWarning
 {

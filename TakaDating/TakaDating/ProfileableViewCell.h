@@ -11,5 +11,6 @@
 @interface ProfileableViewCell : UITableViewCell
 @property (nonatomic,strong)UIView * containerView;
 @property(nonatomic,strong)UILabel * topLabel,* secLabel;
+@property(nonatomic,strong)UIImageView * imgView;
 
 @end

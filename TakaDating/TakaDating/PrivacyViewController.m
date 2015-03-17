@@ -30,7 +30,7 @@
     self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     
     CAGradientLayer *layer = [CAGradientLayer layer];
-    layer.frame = CGRectMake(0, 0, self.view.frame.size.width, 55);
+    layer.frame = CGRectMake(0, 0, w.width, 55);
     UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
     UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
@@ -38,7 +38,7 @@
     
     //Adding title Label
     self.titleLabel=[[UILabel alloc]init];
-    self.titleLabel.frame=CGRectMake(120, 25, 100, 25);
+    self.titleLabel.frame=CGRectMake(w.width/2-40, 25, 100, 25);
     self.titleLabel.text=@"Privacy";
     self.titleLabel.textColor=[UIColor whiteColor];
     self.titleLabel.font=[UIFont boldSystemFontOfSize:20];
@@ -46,7 +46,7 @@
     
     //Add Cancel Button
     self.cancelButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    self.cancelButton.frame=CGRectMake(15, 25, 60, 25);
+    self.cancelButton.frame=CGRectMake(w.width/2-145, 25, 60, 25);
     [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
     self.cancelButton.layer.borderColor=[[UIColor redColor]CGColor];
     self.cancelButton.titleLabel.font=[UIFont systemFontOfSize:15];
@@ -57,7 +57,7 @@
     [self.view addSubview:self.cancelButton];
     
     self.saveButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    self.saveButton.frame=CGRectMake(15, 25, 60, 25);
+    self.saveButton.frame=CGRectMake(w.width/2-145, 25, 60, 25);
     [self.saveButton setTitle:@"Save" forState:UIControlStateNormal];
     self.saveButton.layer.borderColor=[[UIColor redColor]CGColor];
     self.saveButton.titleLabel.font=[UIFont systemFontOfSize:15];
@@ -69,7 +69,7 @@
     self.saveButton.hidden=YES;
     
     self.editButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    self.editButton.frame=CGRectMake(250, 25, 60, 25);
+    self.editButton.frame=CGRectMake(w.width-70, 25, 60, 25);
     [self.editButton setTitle:@"Edit" forState:UIControlStateNormal];
     self.editButton.layer.borderColor=[[UIColor redColor]CGColor];
     self.editButton.titleLabel.font=[UIFont systemFontOfSize:15];
@@ -740,6 +740,60 @@
         
     }
     else{
+        if (w.height>500) {
+            scroll.frame=CGRectMake(0,60,w.width,w.height);
+            privacyView.frame=CGRectMake(0, 0, w.width, w.height-50);
+            onlineStatus.frame=CGRectMake(15, w.height-540, w.width, 30);
+            lineOne.frame=CGRectMake(15, w.height-480, w.width, 1);
+            distance.frame=CGRectMake(15, w.height-480, w.width, 30);
+            lineTwo.frame=CGRectMake(15, w.height-410, w.width, 1);
+            viewProfile.frame=CGRectMake(15, w.height-410, w.width, 30);
+            linethree.frame=CGRectMake(15, w.height-340, w.width, 1);
+            securityLevel.frame=CGRectMake(15, w.height-340, w.width, 30);
+            lineFour.frame=CGRectMake(15, w.height-270, w.width, 1);
+            browsing.frame=CGRectMake(15, w.height-270, w.width, 30);
+            lineFive.frame=CGRectMake(15, w.height-200, w.width, 1);
+            publicSearch.frame=CGRectMake(15, w.height-200, w.width, 30);
+            lineSix.frame=CGRectMake(15, w.height-130, w.width, 1);
+            find.frame=CGRectMake(15, w.height-130, w.width, 30);
+            self.radioButtonStatusY.frame=CGRectMake(15, w.height-510, 20, 20);
+            self.radioButtonStatusN.frame=CGRectMake(70, w.height-510, 20, 20);
+            noLabel.frame=CGRectMake(90, w.height-510, 20, 20);
+            yesLabel.frame=CGRectMake(35, w.height-510, 30, 20);
+            
+            noViewLabel.frame=CGRectMake(110, w.height-380, 110, 20);
+            self.radioButtonViewN.frame=CGRectMake(90, w.height-380, 20, 20);
+            yesViewLabel.frame=CGRectMake(35, w.height-380, 110, 20);
+            self.radioButtonViewY.frame=CGRectMake(15, w.height-380, 20, 20);
+            
+            yesDisLabel.frame=CGRectMake(35, w.height-450, 30, 20);
+            self.radioButtonDisN.frame=CGRectMake(70, w.height-450, 20, 20);
+            noDisLabel.frame=CGRectMake(90, w.height-450, 20, 20);
+            self.radioButtonDisY.frame=CGRectMake(15, w.height-450, 20, 20);
+            
+            self.radioButtonSecurityY.frame=CGRectMake(15, w.height-300, 20, 20);
+            HighLabel.frame=CGRectMake(35, w.height-300, 50, 20);
+            LowLabel.frame=CGRectMake(190, w.height-300, 50, 20);
+            self.radioButtonSecurityN.frame=CGRectMake(170, w.height-300, 20, 20);
+            self.radioButtonSecurityM.frame=CGRectMake(90, w.height-300, 20, 20);
+            mediumLabel.frame=CGRectMake(110, w.height-300, 90, 20);
+            
+            self.radioButtonbrowY.frame=CGRectMake(15, w.height-230, 20, 20);
+            yesBrowLabel.frame=CGRectMake(35, w.height-230, 30, 20);
+            noBrowLabel.frame=CGRectMake(90, w.height-230, 20, 20);
+            self.radioButtonbrowN.frame=CGRectMake(70, w.height-230, 20, 20);
+            
+            self.radioButtonSrchY.frame=CGRectMake(15, w.height-160, 20, 20);
+            yesSrchLabel.frame=CGRectMake(35, w.height-160, 30, 20);
+            noSrchLabel.frame=CGRectMake(90, w.height-160, 20, 20);
+            self.radioButtonSrchN.frame=CGRectMake(70, w.height-160, 20, 20);
+            
+            self.radioButtonFindY.frame=CGRectMake(15, w.height-110, 20, 20);
+            yesFindLabel.frame=CGRectMake(35, w.height-110, 30, 20);
+            noFindLabel.frame=CGRectMake(90, w.height-110, 20, 20);
+            self.radioButtonFindN.frame=CGRectMake(70, w.height-110, 20, 20);
+        }
+        else{
         
         scroll.frame=CGRectMake(0,60,w.width,w.height);
         privacyView.frame=CGRectMake(0, 0, w.width, w.height);
@@ -792,7 +846,7 @@
         yesFindLabel.frame=CGRectMake(35, w.height-50, 30, 20);
         noFindLabel.frame=CGRectMake(90, w.height-50, 20, 20);
         self.radioButtonFindN.frame=CGRectMake(70, w.height-50, 20, 20);
-        
+        }
     }
     
 

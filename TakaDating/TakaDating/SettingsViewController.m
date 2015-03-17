@@ -31,9 +31,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    windowSize =[UIScreen mainScreen].bounds.size;
     CAGradientLayer *layer = [CAGradientLayer layer];
-    layer.frame = CGRectMake(0, 0, self.view.frame.size.width, 55);
+    layer.frame = CGRectMake(0, 0, windowSize.width, 55);
     UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
     UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
@@ -41,7 +41,7 @@
     
     //Adding title Label
     self.titleLabel=[[UILabel alloc]init];
-    self.titleLabel.frame=CGRectMake(120, 25, 100, 25);
+    self.titleLabel.frame=CGRectMake(windowSize.width/2-40, 25, 100, 25);
     self.titleLabel.text=@"Settings";
     self.titleLabel.textColor=[UIColor whiteColor];
     self.titleLabel.font=[UIFont boldSystemFontOfSize:20];
@@ -49,7 +49,7 @@
     
     //Add Cancel Button
     self.cancelButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    self.cancelButton.frame=CGRectMake(15, 25, 60, 25);
+    self.cancelButton.frame=CGRectMake(windowSize.width/2-145, 25, 60, 25);
     [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
     self.cancelButton.layer.borderColor=[[UIColor redColor]CGColor];
     self.cancelButton.titleLabel.font=[UIFont systemFontOfSize:15];
@@ -70,7 +70,7 @@
 -(void)createUI{
     
     self.cellValues=[NSArray arrayWithObjects:@"Basic Info",@"Account",@"Account Preferences",@"Help",@"About",@"Blocked Users", nil];
-    self.tableView=[[UITableView alloc]initWithFrame:CGRectMake(0.0, 55, self.view.frame.size.width, self.view.frame.size.height)];
+    self.tableView=[[UITableView alloc]initWithFrame:CGRectMake(0.0, 55, windowSize.width, windowSize.height)];
     self.tableView.delegate=self;
     self.tableView.dataSource=self;
     self.tableView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];

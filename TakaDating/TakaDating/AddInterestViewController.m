@@ -45,7 +45,8 @@
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 20, windowSize.width-200, 35)];
+    self.titleLabel = [[UILabel alloc] init];
+    self.titleLabel.frame= CGRectMake(windowSize.width/2-60, 20, windowSize.width-200, 35);
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.textColor = [UIColor whiteColor];
     self.titleLabel.font = [UIFont boldSystemFontOfSize:20];
@@ -53,7 +54,7 @@
     [self.view addSubview:self.titleLabel];
     //Add Cancel BUTTON
     self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.cancelButton.frame = CGRectMake(15, 25, 60, 25);
+    self.cancelButton.frame = CGRectMake(windowSize.width/2-145, 25, 60, 25);
     [self.cancelButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.cancelButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
@@ -65,7 +66,7 @@
     [self.view addSubview:self.cancelButton];
     
     UIButton * saveButton=[UIButton  buttonWithType:UIButtonTypeCustom];
-    saveButton.frame=CGRectMake(windowSize.width-80, 25, 60, 25);
+    saveButton.frame=CGRectMake(windowSize.width-70, 25, 60, 25);
     [saveButton setTitle:@"Save" forState:UIControlStateNormal];
     [saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     saveButton.layer.borderColor = [UIColor redColor].CGColor;
@@ -74,8 +75,28 @@
     saveButton.layer.cornerRadius = 4;
     saveButton.clipsToBounds = YES;
     [saveButton addTarget:self action:@selector(saveButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:saveButton];
+   // [self.view addSubview:saveButton];
 
+    if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+        
+        layer.frame = CGRectMake(0, 0, windowSize.width, 75);
+        self.titleLabel.frame= CGRectMake(windowSize.width/2-270, 20, windowSize.width-200, 35);
+        
+        self.cancelButton.frame = CGRectMake(windowSize.width/2-350, 25, 120, 40);
+        self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+        
+        self.titleLabel.font = [UIFont boldSystemFontOfSize:30];
+        
+      saveButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+      saveButton.frame=CGRectMake(windowSize.width-70, 25, 120, 40);
+        row_hh=85;
+        height=75;
+    }
+    else
+    {
+        height=55;
+        row_hh=40;
+    }
     
     [self createUI] ;
     
@@ -104,15 +125,23 @@
 }
 
 -(void)createUI{
-    self.addInterestTable=[[UITableView alloc]initWithFrame:CGRectMake(0, 55, windowSize.width, windowSize.height-50)];
+    self.addInterestTable=[[UITableView alloc]init];
+   self.addInterestTable.frame= CGRectMake(0, height, windowSize.width, windowSize.height-50);
     self.addInterestTable.delegate=self;
     self.addInterestTable.dataSource=self;
     self.addInterestTable.separatorColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     [self.view addSubview:self.addInterestTable];
     
     UIView * sectionView=[[UIView alloc]init];
-    sectionView.frame=CGRectMake(0, 0, 320, 60);
+    sectionView.frame=CGRectMake(0, 0, windowSize.width, 60);
     sectionView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    
+    
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        self.addInterestTable.frame= CGRectMake(0, height, windowSize.width, windowSize.height-80);
+        sectionView.frame=CGRectMake(0, 0, windowSize.width, 120);
+    }
+    
     
     self.searchbar =[[UISearchBar alloc]initWithFrame:CGRectMake(10, 30, 300, 20)];
     self.searchbar.layer.cornerRadius=7;
@@ -122,7 +151,7 @@
     
     self.searchbar.backgroundColor=[UIColor whiteColor];
     self.searchbar.searchBarStyle=UISearchBarStyleProminent;
-    [sectionView addSubview:self.searchbar];
+    //[sectionView addSubview:self.searchbar];
     self.addInterestTable.tableHeaderView=sectionView ;
     
 }
@@ -130,6 +159,10 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     return subData.count;
+}
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return row_hh;
 }
 
 -(UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -140,15 +173,29 @@
                 [cell.cellButton addTarget:self action:@selector(cellButtonAction:) forControlEvents:UIControlEventTouchDragInside];
     }
     
-    
+    NSString * normal,* select;
     cell.cellLabel.text=[subData objectAtIndex:indexPath.row];
-    
-    cell.containerView.frame=CGRectMake(0, 0, self.view.frame.size.width, 50);
+    if(UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad){
+        cell.containerView.frame=CGRectMake(0, 0, windowSize.width, row_hh);
+        cell.cellLabel.textColor=[UIColor blackColor];
+        cell.cellLabel.frame=CGRectMake(80, 20, windowSize.width/2, 30);
+        cell.cellButton.frame=CGRectMake(20, 10, 25, 25);
+        normal=@"select_normal_ipad.png";
+        select=@"select_ipad.png";
+       
+
+    }
+    else{
+    cell.containerView.frame=CGRectMake(0, 0, windowSize.width, row_hh);
     cell.cellLabel.textColor=[UIColor blackColor];
     cell.cellLabel.frame=CGRectMake(60, 10, 200, 30);
     cell.cellButton.frame=CGRectMake(20, 10, 15, 15);
-    [cell.cellButton setImage:[UIImage imageNamed:@"select_normal.png"] forState:UIControlStateNormal];
-    [cell.cellButton setImage:[UIImage imageNamed:@"select.png"] forState:UIControlStateSelected];
+        normal=@"select_normal.png";
+        select=@"select.png";
+        
+    }
+    [cell.cellButton setImage:[UIImage imageNamed:normal] forState:UIControlStateNormal];
+    [cell.cellButton setImage:[UIImage imageNamed:select] forState:UIControlStateSelected];
     cell.cellButton.tag=indexPath.row;
     if ([[[SingletonClass  shareSingleton].intr_name objectAtIndex:indexPath.row]isEqualToString:cell.cellLabel.text]) {
         
@@ -158,14 +205,14 @@
     
     @try {
         if ([self.selectedArray containsObject:indexPath]) {
-            [cell.cellButton setImage:[UIImage imageNamed:@"select.png"]forState:UIControlStateSelected];
+            [cell.cellButton setImage:[UIImage imageNamed:select]forState:UIControlStateSelected];
             [cell.cellButton setSelected:YES];
            
         }
         else
         {
             
-            [cell.cellButton setImage:[UIImage imageNamed:@"select_normal.png"]forState:UIControlStateNormal];
+            [cell.cellButton setImage:[UIImage imageNamed:normal]forState:UIControlStateNormal];
             [cell.cellButton setSelected:NO];
         }
     }
@@ -180,30 +227,44 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     AddInterestTableViewCell * cell=(AddInterestTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-    cell.containerView.frame=CGRectMake(0, 0, self.view.frame.size.width, 50);
-    cell.cellLabel.textColor=[UIColor blackColor];
-    cell.cellLabel.frame=CGRectMake(60, 10, 200, 30);
-    cell.cellButton.frame=CGRectMake(20, 10, 15, 15);
-    
+//    cell.containerView.frame=CGRectMake(0, 0, windowSize.width, row_hh);
+//    cell.cellLabel.textColor=[UIColor blackColor];
+//    cell.cellLabel.frame=CGRectMake(60, 10, 200, 30);
+//    cell.cellButton.frame=CGRectMake(20, 10, 15, 15);
+//
+      NSString * normal,* select;
+    if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+        normal=@"select_normal_ipad.png";
+        select=@"select_ipad.png";
+
+    }
+    else{
+        normal=@"select_normal.png";
+        select=@"select.png";
+
+    }
     
     if ([cell.cellButton isSelected]==YES) {
-        [cell.cellButton setImage:[UIImage imageNamed:@"select_normal.png"]forState:UIControlStateNormal];
+        [cell.cellButton setImage:[UIImage imageNamed:normal]forState:UIControlStateNormal];
         [cell.cellButton setSelected:NO];
         [self.selectedArray removeObject:indexPath];
       //  for (int i=0;subData.count; i++) {
             for (int j=0; j<[SingletonClass shareSingleton].intr_name.count; j++) {
                 if ([[[SingletonClass shareSingleton].intr_name objectAtIndex:j]isEqualToString:[subData objectAtIndex:indexPath.row]]) {
                     [[SingletonClass shareSingleton].intr_name removeObjectAtIndex:indexPath.row];
+                    [[SingletonClass shareSingleton].intr_cat_id removeObjectAtIndex:indexPath.row];
+                    [self.addInterestTable reloadData];
                 }
             }
        // }
         NSLog(@" %@",[subData objectAtIndex:indexPath.row]);
     }
     else{
-        [cell.cellButton setImage:[UIImage imageNamed:@"select.png"]forState:UIControlStateSelected];
+        [cell.cellButton setImage:[UIImage imageNamed:select]forState:UIControlStateSelected];
         [cell.cellButton setSelected:YES];
         [self.selectedArray addObject:indexPath];
         [[SingletonClass shareSingleton].intr_name addObject:[subData objectAtIndex:indexPath.row]];
+        [[SingletonClass shareSingleton].intr_cat_id addObject:[self.intr_id_arr objectAtIndex:indexPath.row]];
         NSLog(@" %@",[subData objectAtIndex:indexPath.row]);
         
         

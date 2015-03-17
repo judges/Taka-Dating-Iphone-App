@@ -13,7 +13,9 @@
     int sectionVal;
     NSString * heightStr,* weightStr;
     NSMutableArray * selectedArray;
-    
+    UIImageView * imgView;
+    CGSize windowSize;
+    CGFloat height,row_hh,font_size;
     NSIndexPath * selectedIndex ,* selected2,*selected3;
 }
 @property (nonatomic) UILabel *titleLabel;
