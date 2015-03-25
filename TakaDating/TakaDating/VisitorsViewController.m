@@ -181,6 +181,7 @@
     
     if (indexPath.section==0) {
         
+        
         if (imgCount.count>0) {
   
 
@@ -220,9 +221,16 @@
             // customCellView.togglebutton.hidden=YES;
         }
     customCellView.customImageCounterView.hidden=NO;
-            NSURL * imageUrl=[NSURL URLWithString:[NSString stringWithFormat:@"%@",[viewerImage objectAtIndex:indexPath.row]]];
-            [customCellView.profileImageView setImageWithURL:imageUrl];
-    //customCellView.profileImageView.image = [UIImage imageNamed:[viewerImage objectAtIndex:indexPath.row]];
+            NSURL * imageUrl;
+            if ([SingletonClass shareSingleton].superPower==0) {
+                 customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
+            }
+            else{
+             imageUrl=[NSURL URLWithString:[NSString stringWithFormat:@"%@",[viewerImage objectAtIndex:indexPath.row]]];
+                 [customCellView.profileImageView setImageWithURL:imageUrl];
+            }
+           
+   
     customCellView.nameLabel.text =[viewerName objectAtIndex:indexPath.row];
        if ([isOnline[indexPath.row] isEqualToNumber:[NSNumber numberWithInt:0]]) {
            customCellView.isOnlne.image=[UIImage imageNamed:@"offline_icon.png"];
@@ -244,7 +252,7 @@
     
     //customCellView.customImageCounterView.totalImageCountLabel.text = [SingletonClass shareSingleton].imgCount[indexPath.row];
        customCellView.customImageCounterView.totalImageCountLabel.text = imgCount[indexPath.row];
-      
+        
    }
    // }
       /*  else
@@ -356,7 +364,7 @@
             [self.navigationController pushViewController:self.promoteVC animated:YES];
         }
     }*/
-    
+     [SingletonClass shareSingleton].fromChat=NO;
         UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
         
         userDataVC.index=[viewerID objectAtIndex:indexPath.row];
@@ -560,7 +568,7 @@
     }
     id response=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     
-    //[afn getDataFromPath:postUrl withParamData:dict withBlock:^(id response, NSError *error) {
+    
         NSLog(@"%@",response);
         if ([[response objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
             
@@ -576,37 +584,33 @@
             }
             NSLog(@"viewer ID %@",[SingletonClass shareSingleton].viewerID);
         }
-   // }];
-   /*  NSString * urlStr=[NSString stringWithFormat:@"http://taka.dating/mobile/profilevisitors/%@",[SingletonClass shareSingleton].userID];
-    
-    urlStr=[urlStr stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL * url=[NSURL URLWithString:urlStr];
-    
-    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
-    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlRespaonse error:&error];
-    if (!data) {
-        NSLog(@"No data");
-    }
-    
-    id parse=[NSJSONSerialization JSONObjectWithData:data
-                                             options:NSJSONReadingAllowFragments error:&error];
-    NSLog(@"parse  data for Profile visitors %@",parse);
-    
-    if ([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
+    if (awardSanction==NO) {
         
-        NSMutableArray * visitorsArr=[parse objectForKey:@"visitors"];
-        for (int i=0; i<visitorsArr.count; i++) {
-            NSMutableDictionary * dict=[visitorsArr objectAtIndex:i];
-           [viewerID addObject:[dict objectForKey:@"userId"]];
-            NSString * viewerProfilePic=[NSString stringWithFormat:@"http://taka.dating%@",[dict objectForKey:@"thumbanailUrl"]];
-            [viewerImage addObject:viewerProfilePic];
-            [viewerName addObject:[dict objectForKey:@"displayName"]];
-            [isOnline addObject:[dict objectForKey:@"isOnline"]];
-            [imgCount addObject:[dict objectForKey:@"imagecount"]];
+    
+    if (viewerID.count>50) {
+        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/award/grant-award/"];
+        
+        NSMutableURLRequest *  request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+        [request setHTTPMethod:@"POST"];
+        [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+        
+        
+        NSString * body=[NSString stringWithFormat:@"userId=%@&awardId=%@",[SingletonClass shareSingleton].userID,@"4"];
+        
+        [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+        
+        NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlRespaonse error:&error];
+        
+        if(data==nil){
+            return;
         }
-        NSLog(@"viewer ID %@",[SingletonClass shareSingleton].viewerID);
-    }*/
-}
+        
+        id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        NSLog(@"grnated award %@",json);
+        awardSanction=YES;
+    }
+    }
+   }
 
 
      

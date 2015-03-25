@@ -7,6 +7,7 @@
 //
 
 #import "RefillCreditsViewController.h"
+#import "SingletonClass.h"
 
 @interface RefillCreditsViewController ()
 
@@ -46,8 +47,14 @@
     [self.cancelButton addTarget:self action:@selector(cancelButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.cancelButton];
     
+    
+    self.payPalConfig = [[PayPalConfiguration alloc] init];
+    self.payPalConfig.merchantName = @"Ultramagnetic Omega Supreme";
+    self.payPalConfig.merchantPrivacyPolicyURL = [NSURL URLWithString:@"https://www.omega.supreme.example/privacy"];
+   self.payPalConfig.merchantUserAgreementURL = [NSURL URLWithString:@"https://www.omega.supreme.example/user_agreement"];
+    
     dispatch_async(dispatch_get_global_queue(0, 0),^{
-        [self findContinent];
+        continent=[self findContinent];
         dispatch_async(dispatch_get_main_queue(),^{
             [self createUI];
         });
@@ -57,8 +64,53 @@
     // Do any additional setup after loading the view from its nib.
 }
 
+#pragma mark- instance method
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
+   [PayPalMobile preconnectWithEnvironment:PayPalEnvironmentSandbox];
+}
+
+#pragma mark -
+#pragma mark PayPal InstaceMethod
+- (instancetype)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        self.payPalConfig = [[PayPalConfiguration alloc] init];
+        
+        
+        // See PayPalConfiguration.h for details and default values.
+        // Should you wish to change any of the values, you can do so here.
+        // For example, if you wish to accept PayPal but not payment card payments, then add:
+        self.acceptCreditCards=YES;
+        self.payPalConfig.acceptCreditCards = YES;
+        // Or if you wish to have the user choose a Shipping Address from those already
+        // associated with the user's PayPal account, then add:
+        self.payPalConfig.payPalShippingAddressOption = PayPalShippingAddressOptionPayPal;
+        self.payPalConfig.merchantName = @"Ultramagnetic Omega Supreme";
+       self.payPalConfig.merchantPrivacyPolicyURL = [NSURL URLWithString:@"https://www.omega.supreme.example/privacy"];
+       self.payPalConfig.merchantUserAgreementURL = [NSURL URLWithString:@"https://www.omega.supreme.example/user_agreement"];
+        
+        
+    }
+    return self;
+}
+
+- (instancetype)initWithConfiguration:(PayPalConfiguration *)configuration
+                             delegate:(id<PayPalFuturePaymentDelegate>)delegate{
+    self.payPalConfig = [[PayPalConfiguration alloc] init];
+    
+    self.payPalConfig.merchantName = @"Ultramagnetic Omega Supreme";
+    self.payPalConfig.merchantPrivacyPolicyURL = [NSURL URLWithString:@"https://www.omega.supreme.example/privacy"];
+   self.payPalConfig.merchantUserAgreementURL = [NSURL URLWithString:@"https://www.omega.supreme.example/user_agreement"];
+    
+    
+    return  self;
+}
+
+
 #pragma mark- find continent
--(void)findContinent{
+-(NSString*)findContinent{
     NSError * error=nil;
     NSURLResponse * urlResponse=nil;
     
@@ -71,16 +123,30 @@
     
     NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
     if (data==nil) {
-        return;
+        return nil;
     }
     id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSLog(@"json for continent %@",json );
     if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"AS"]) {
-        oneMonth=@"1.99$";
-        threeMonth=@"4.99$";
-        sixMonth =@"9.99$";
-        oneYear=@"19.99$";
-
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"AF"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"AM"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"EU"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"AUS"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"SAM"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else{
+        return @"";
     }
     
 }
@@ -267,24 +333,95 @@
 -(void)cancelButtonAction:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
 }
+/*
+#pragma  check for continent
+-(void)checkForContinent:(int)tag{
+    if (tag==100) {
+        if ([continent isEqualToString:@"AS"]) {
+            description=@"AS1";
+        }
+        else if([continent isEqualToString:@"AF"]){
+            description=@"AF1";
+        }
+        else if ([continent isEqualToString:@"AM"]){
+            description=@"AM1";
+        }
+        else if ([continent isEqualToString:@"AUS"]){
+            description=@"AUS1";
+        }
+        else if ([continent isEqualToString:@"SAM"]){
+            description=@"SAM1";
+        }
+        else if ([continent isEqualToString:@"EU"]){
+            description=@"EU1";
+        }
+    }
+    else if(tag==600){
+        if ([continent isEqualToString:@"AS"]) {
+            description=@"AS";
+        }
+        else if([continent isEqualToString:@"AF"]){
+            description=@"AF1";
+        }
+        else if ([continent isEqualToString:@"AM"]){
+            description=@"AM1";
+        }
+        else if ([continent isEqualToString:@"AUS"]){
+            description=@"AUS1";
+        }
+        else if ([continent isEqualToString:@"SAM"]){
+            description=@"SAM1";
+        }
+        else if ([continent isEqualToString:@"EU"]){
+            description=@"EU1";
+        }
+    }
+    else{
+        if ([continent isEqualToString:@"AS"]) {
+            description=@"AS1";
+        }
+        else if([continent isEqualToString:@"AF"]){
+            description=@"AF1";
+        }
+        else if ([continent isEqualToString:@"AM"]){
+            description=@"AM1";
+        }
+        else if ([continent isEqualToString:@"AUS"]){
+            description=@"AUS1";
+        }
+        else if ([continent isEqualToString:@"SAM"]){
+            description=@"SAM1";
+        }
+        else if ([continent isEqualToString:@"EU"]){
+            description=@"EU1";
+        }
+    }
+}*/
 
 #pragma mark- callPayPalPaymentMethod
--(void)callPayPalPaymentMethod:(id)sender{
+-(void)callPayPalPaymentMethod:(UIButton*)sender{
    
     NSString * description;
     PayPalPayment *payment = [[PayPalPayment alloc] init];
     if ([sender tag]==100) {
         total=[NSNumber numberWithDouble:2.09];
         description=@"100 Points Credit";
+        desc=@"100";
+       // [self checkForContinent:100];
+        
     }
     else if ([sender tag]==600)
     {
         total=[NSNumber numberWithDouble:8.83];
         description=@"600 Points Credit";
+        desc=@"600";
+       // [self checkForContinent:600];
     }
     else{
         total=[NSNumber numberWithDouble: 20.99 ];
         description=@"1500 Points Credit";
+        desc=@"1500";
+        //[self checkForContinent:1500];
     }
     payment.amount = (NSDecimalNumber*)total;
     payment.currencyCode = @"USD";
@@ -300,7 +437,7 @@
     }
     
     // Update payPalConfig re accepting credit cards.
-    self.payPalConfig.acceptCreditCards = self.acceptCreditCards;
+    self.payPalConfig.acceptCreditCards = YES;
     
     PayPalPaymentViewController *paymentViewController = [[PayPalPaymentViewController alloc] initWithPayment:payment
                                                                                                 configuration:self.payPalConfig
@@ -349,6 +486,24 @@
         self.creditsLabel.text=[NSString stringWithFormat:@"Your current balance is %@",total];
         [[NSUserDefaults standardUserDefaults]setObject:self.creditsLabel.text forKey:@"credit"];
         [[NSUserDefaults standardUserDefaults]synchronize];
+       
+        NSError * error=nil;
+        NSURLResponse * urlResponse=nil;
+        
+        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/payment/insert-payment-detail"];
+         NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+        [request setHTTPMethod:@"POST"];
+        [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+
+        NSString * body=[NSString stringWithFormat:@"userid=%@&txn_id=%@&paypal_id=%@&created_at=%@&discription=%@&amount=%@&status=%@",[SingletonClass shareSingleton].userID,[dict objectForKey:@"id"],[dict objectForKey:@"id"],[dict objectForKey:@"create_time"],desc,[NSString stringWithFormat:@"%@",total],@"Success"];
+      
+        [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+        
+        NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        if (data==nil) {
+            return;
+        }
+        id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     }
 }
 - (void)didReceiveMemoryWarning {

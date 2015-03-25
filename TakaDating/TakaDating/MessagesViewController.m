@@ -11,6 +11,12 @@
 #import "UIImageView+WebCache.h"
 #import "AddphotosViewController.h"
 
+
+#import "XMPPMessageArchiving.h"
+#import "XMPPStream.h"
+#import "XMPPMessageArchivingCoreDataStorage.h"
+
+
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
 static const int ddLogLevel = LOG_LEVEL_VERBOSE;
@@ -21,6 +27,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 
 @interface MessagesViewController ()
+{
+    XMPPStream * xmppStream;
+}
 @property(nonatomic,strong)MessageDetailViewController * mdVC;
 
 @end
@@ -293,14 +302,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     if (!online) {
         if (section < [sections count])
         {
-          //  id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
-           // return sectionInfo.numberOfObjects;
+            id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
+             NSLog(@"number of rows %ld",sectionInfo.numberOfObjects);
+            //return sectionInfo.numberOfObjects;
             return userName.count;
         }
         
     }
     else{
-       NSArray *sections = [[self fetchedResultsController] sections];
+      // NSArray *sections = [[self fetchedResultsController] sections];
         
         if (section < [sections count])
         {
@@ -308,6 +318,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
             
             int sec = [sectionInfo.name intValue];
             if (sec==0) {
+                NSLog(@"number of rows %ld",sectionInfo.numberOfObjects);
                 return sectionInfo.numberOfObjects;
             }
         }
@@ -318,9 +329,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     return 0;
 }
-//-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-//    return 1;
-//}
+
 
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     
@@ -339,7 +348,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         else{
         cell.imgView.frame=CGRectMake(25, 5, 30, 30);
         cell.deleteButton.frame=CGRectMake(5, 10, 15, 15);
-        cell.cellLabel.frame=CGRectMake(70, 10, 150, 30);
+        cell.cellLabel.frame=CGRectMake(70, 5, 150, 30);
         cell.deleteButton.tag=indexPath.row;
         }
         if (selectAll==YES) {
@@ -364,13 +373,10 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         }
     }
     
-
-  //  XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-    
     cell.cellLabel.text = [userName objectAtIndex:indexPath.row];
     NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating%@",[profileImage objectAtIndex:indexPath.row]]];
     [cell.imgView setImageWithURL:url];
-   // [self configurePhotoForCell:cell user:user];
+  
     return  cell;
    
    
@@ -399,10 +405,21 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    
+    
     if (editbuttonSelect==NO) {
         XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
+        /// Fetch chat history with perticulor user
         
+        /*XMPPMessageArchivingCoreDataStorage *storage = [XMPPMessageArchivingCoreDataStorage   sharedInstance];
+        NSManagedObjectContext *moc = [storage mainThreadManagedObjectContext];
+        
+       //xmppMessageArchivingStorage = [XMPPMessageArchivingCoreDataStorage sharedInstance];
+       XMPPMessageArchiving * xmppMessageArchivingModule = [[XMPPMessageArchiving alloc] initWithMessageArchivingStorage:[XMPPMessageArchivingCoreDataStorage sharedInstance]];
+        [xmppMessageArchivingModule activate:xmppStream];
+        [xmppMessageArchivingModule  addDelegate:self delegateQueue:dispatch_get_main_queue()];*/
+        //[self loadarchivemsg:user.displayName];
        
       if(self.mdVC)
       {
@@ -412,6 +429,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         self.mdVC=[[MessageDetailViewController alloc]initWithUser:user.displayName];
         self.mdVC.titleStr= [userName objectAtIndex:indexPath.row];
         self.mdVC.userId=user.displayName;
+        [self fetchAllChatHistory:user];
     [self.navigationController pushViewController:self.mdVC animated:YES];
     }
 
@@ -423,10 +441,83 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 -(void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath{
     XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-    NSLog(@"%@",user.jidStr);
+   /* NSLog(@"%@",user.jidStr);
     XMPPJID *newBuddy = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@",user.jidStr]];
-    [self.xmppRoster removeUser:newBuddy];
+    [self.xmppRoster removeUser:newBuddy];*/
+    
+    NSError * error;
+    NSURLResponse * urlResponse;
+    NSURL * postUrl=[NSURL URLWithString:@"http://takadating.com:9090/plugins/userService/userservic"];
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+   
+
+    NSString * body=[NSString stringWithFormat:@"type=delete_roster&secret=3U3vCIjx&username=%@&item_jid=%@@takadating.com",[SingletonClass shareSingleton].userID,user.displayName];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if(data==nil)
+    {
+        return;
+    }
+    
+     NSArray *sections = [[self fetchedResultsController] sections];
+    for (int j=0; j<sections.count;j++) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = sections[j];
+        
+        NSLog(@"number of rows %ld",sectionInfo.numberOfObjects);
+        
+        
+        
+        for (int i=0; i<sectionInfo.numberOfObjects; i++) {
+            
+            NSIndexPath * indexPath=[NSIndexPath indexPathForRow:i inSection:j];
+            
+            XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+            
+            if ([user.displayName isEqualToString:[SingletonClass shareSingleton].userID]) {
+                [profileImage  removeObjectAtIndex:indexPath.row];
+                [userName removeObjectAtIndex:indexPath.row];
+            }
+           }
+    }
+    [self.messageTable reloadData];
 }
+
+
+#pragma  amrk-  Get chat history
+-(void)fetchAllChatHistory:(XMPPUserCoreDataStorageObject*)user{
+    if ([SingletonClass shareSingleton].sortedData.count<=0) {
+        return;
+    }
+    [[SingletonClass shareSingleton].messages removeAllObjects];
+    NSMutableDictionary * dict=[NSMutableDictionary dictionary];
+        for (int  i=0;  i<[SingletonClass shareSingleton].sortedData.count;i++) {
+            dict=[[SingletonClass shareSingleton].sortedData objectAtIndex:i];
+            if ([[dict objectForKey:@"fromJID"] isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID]]&& [[dict objectForKey:@"toJID"]isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",user.displayName]]) {
+                
+                
+                NSMutableDictionary * dict2=[[NSMutableDictionary alloc]init];
+                [dict2 setObject:[dict objectForKey:@"body"] forKey:@"msg"];
+                [dict2 setObject:@"you" forKey:@"sender"];
+                [[SingletonClass shareSingleton].messages addObject:dict2];
+            }
+            else if ([[dict objectForKey:@"toJID"] isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID]]&& [[dict objectForKey:@"fromJID"]isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",user.displayName]]) {
+                
+                
+                NSMutableDictionary * dict2=[[NSMutableDictionary alloc]init];
+                [dict2 setObject:[dict objectForKey:@"body"] forKey:@"msg"];
+                [dict2 setObject:user.displayName forKey:@"sender"];
+                [[SingletonClass shareSingleton].messages addObject:dict2];
+                
+            }
+        }
+        
+    
+    }
+    
+    
+
 
 -(void)deleteButtonAction:(id)sender{
     
@@ -495,15 +586,30 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     profileImage=[[NSMutableArray alloc]init];
     userName=[[NSMutableArray alloc]init];
     NSLog(@"xmmp Roster Friends list %lu",(unsigned long)[self fetchedResultsController].sections.count);
-    for (int i=0; i<[self fetchedResultsController].sections.count; i++) {
+    NSArray *sections = [[self fetchedResultsController] sections];
+    for (int j=0; j<sections.count;j++) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = sections[j];
+        
+        NSLog(@"number of rows %ld",sectionInfo.numberOfObjects);
+
+    
+    
+    for (int i=0; i<sectionInfo.numberOfObjects; i++) {
+        
+        NSIndexPath * indexPath=[NSIndexPath indexPathForRow:i inSection:j];
+        
+        XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+        
+        if (![user.displayName isEqualToString:[SingletonClass shareSingleton].userID]) {
+            
+        
+        
         NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/mobi/profile-details"];
         
         NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
         [request setHTTPMethod:@"POST"];
         [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-        NSIndexPath * indexPath=[NSIndexPath indexPathForRow:i inSection:0];
-        
-        XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+       
         
         NSString * body=[NSString stringWithFormat:@"userId=%@&loggedId=%@",user.displayName,[SingletonClass shareSingleton].userID];
         
@@ -523,6 +629,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
                 [profileImage addObject:[dict objectForKey:@"thumbanailUrl"]];
                 [userName addObject:[dict objectForKey:@"displayName"]];
         }
+        }
+    }
     }
 }
 
@@ -534,4 +642,59 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     // Dispose of any resources that can be recreated.
 }
 
+#pragma -mark Fetch history chat
+
+/*-(void)loadarchivemsg:(NSString *)chatWithUser
+{
+    
+    XMPPMessageArchivingCoreDataStorage *storage = [XMPPMessageArchivingCoreDataStorage sharedInstance];
+    NSManagedObjectContext *moc = [storage mainThreadManagedObjectContext];
+    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XMPPMessageArchiving_Message_CoreDataObject"
+                                                         inManagedObjectContext:moc];
+    NSFetchRequest *request = [[NSFetchRequest alloc]init];
+    
+    
+    NSString *predicateFrmt = @"bareJidStr==%@ ";
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFrmt, [NSString stringWithFormat:@"%@@takadating.com",chatWithUser]];
+    request.predicate = predicate;
+    NSLog(@"%@",[[NSUserDefaults standardUserDefaults] stringForKey:@"kXMPPmyJID"]);
+    [request setEntity:entityDescription];
+    NSError *error;
+    NSArray *messages_arc = [moc executeFetchRequest:request error:&error];
+    
+    [self print:[[NSMutableArray alloc]initWithArray:messages_arc] chatWithUser:chatWithUser];
+}
+
+-(void)print:(NSMutableArray*)messages_arc chatWithUser:(NSString*)chatWithUser{
+    @autoreleasepool {
+        NSMutableArray * messages=[[NSMutableArray alloc]init];
+        for (XMPPMessageArchiving_Message_CoreDataObject *message in messages_arc) {
+            
+            NSXMLElement *element = [[NSXMLElement alloc] initWithXMLString:message.messageStr error:nil];
+            NSLog(@"to param is %@",[element attributeStringValueForName:@"to"]);
+            
+            NSMutableDictionary *m = [[NSMutableDictionary alloc] init];
+            [m setObject:message.body forKey:@"msg"];
+            
+            if ([[element attributeStringValueForName:@"to"] isEqualToString:chatWithUser]) {
+                
+                [m setObject:@"you" forKey:@"sender"];
+            }
+            else
+            {
+                [m setObject:chatWithUser forKey:@"sender"];
+            }
+            
+            
+            [messages addObject:m];
+            
+            NSLog(@"bareJid param is %@",message.bareJid);
+            NSLog(@"bareJidStr param is %@",message.bareJidStr);
+            NSLog(@"body param is %@",message.body);
+            NSLog(@"timestamp param is %@",message.timestamp);
+            NSLog(@"outgoing param is %d",[message.outgoing intValue]);
+            NSLog(@"***************************************************");
+        }
+    }
+}*/
 @end

@@ -8,7 +8,7 @@
 
 #import "InterestViewController.h"
 #import "AppDelegate.h"
-
+#import "SingletonClass.h"
 
 @interface InterestViewController ()
 @property(nonatomic,strong)AddInterestViewController * addInterestVC;
@@ -445,8 +445,41 @@ self.titleLabel.frame=CGRectMake(windowSize.width/2-60, 20, windowSize.width-200
 }
 
 -(void)cancelButtonAction:(id)sender{
+    [self getUserUpdatedInterests];
     [self.navigationController popViewControllerAnimated:YES];
     //[[[[[UIApplication sharedApplication]keyWindow]subviews]lastObject]removeFromSuperview];
+}
+
+#pragma mark- updated results
+-(void)getUserUpdatedInterests{
+    NSError * error;
+    NSURLResponse * urlResponse=nil;
+    
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/user/get-full-user-interests"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"User interests %@ ",json);
+    NSMutableDictionary * dict=[NSMutableDictionary dictionary];
+    if ([[json objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        NSArray *  interests=[json objectForKey:@"data"];
+        for (int i=0; i<interests.count; i++) {
+            dict=[interests objectAtIndex:i];
+            [[SingletonClass shareSingleton].selectedIntName addObject:[dict objectForKey:@"intr_name"]];
+            [[SingletonClass shareSingleton].selectedIntId addObject:[dict objectForKey:@"intr_id"]];
+        }
+    }
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -477,21 +510,21 @@ self.titleLabel.frame=CGRectMake(windowSize.width/2-60, 20, windowSize.width-200
     }
     parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSLog(@"getall instrests %@",parse);
-    
+
     
 }
 
 #pragma mark- send Button action
 -(void)saveButtonAction:(UIButton*)sender{
     
-    NSString * interests;
+    NSMutableString * interests=[[NSMutableString alloc]init];
     
-    for (int i=0; i<[SingletonClass shareSingleton].intr_cat_id.count; i++) {
+    for (int i=0; i<[SingletonClass shareSingleton].selectedIntId.count; i++) {
         if (i==0) {
-            interests =[NSString stringWithFormat:@"%@",[[SingletonClass shareSingleton].intr_cat_id objectAtIndex:i]];
+            [interests  appendString:[NSString stringWithFormat:@"%@",[[SingletonClass shareSingleton].selectedIntId objectAtIndex:i]]];
         }
         else{
-            interests =[NSString stringWithFormat:@",%@",[[SingletonClass shareSingleton].intr_cat_id objectAtIndex:i]];
+            [interests  appendString:[NSString stringWithFormat:@",%@",[[SingletonClass shareSingleton].selectedIntId objectAtIndex:i]]];
         }
     }
     
@@ -517,6 +550,32 @@ self.titleLabel.frame=CGRectMake(windowSize.width/2-60, 20, windowSize.width-200
     }
     id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSLog(@"Update interests %@",json);
+    if ([[json objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        // Grant award..
+        if ([SingletonClass shareSingleton].intr_id.count>15) {
+            
+        
+        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/award/grant-award/"];
+        
+        NSMutableURLRequest *  request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+        [request setHTTPMethod:@"POST"];
+        [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+      
+
+        NSString * body=[NSString stringWithFormat:@"userId=%@&awardId=%@",[SingletonClass shareSingleton].userID,@"3"];
+        
+        [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+        
+        NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        
+        if(data==nil){
+            return;
+        }
+        
+        id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        NSLog(@"grnated award %@",json);
+        }
+    }
 }
 
 @end

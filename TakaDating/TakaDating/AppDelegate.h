@@ -21,6 +21,8 @@
 #import "XMPPvCardAvatarModule.h"
 #import "XMPPvCardCoreDataStorage.h"
 
+#import "MBProgressHUD.h"
+
 extern NSString *const kXMPPmyJID;
 extern NSString *const kXMPPmyPassword;
 
@@ -44,6 +46,8 @@ extern NSString *const kXMPPmyPassword;
     BOOL isXmppConnected;
     
     UIWindow *window;
+    
+     MBProgressHUD * HUD;
 }
 
 @property (strong, nonatomic) UIWindow *window;
@@ -84,4 +88,10 @@ extern NSString *const kXMPPmyPassword;
 -(void)reacheabilit;
 
 -(void)getAllFacebookInfo:(id)sender;
+
+
+-(void) showHUDLoadingView:(NSString *)strTitle;
+-(void) hideHUDLoadingView;
+-(void)showToastMessage:(NSString *)message;
++(AppDelegate *)sharedAppDelegate;
 @end

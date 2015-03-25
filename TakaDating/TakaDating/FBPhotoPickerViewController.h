@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AddPhotoViewCell.h"
+#import "AppDelegate.h"
 
 @interface FBPhotoPickerViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate>
 {

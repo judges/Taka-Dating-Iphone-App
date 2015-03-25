@@ -43,7 +43,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    appdelegate=[UIApplication sharedApplication].delegate;
+  //  appdelegate=[UIApplication sharedApplication].delegate;
     
     self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     windowSize=[UIScreen mainScreen].bounds.size;

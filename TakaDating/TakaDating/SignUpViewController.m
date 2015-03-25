@@ -782,7 +782,7 @@
     }
     else
     {
-        if ([SingletonClass shareSingleton].location) {
+        if (![SingletonClass shareSingleton].location) {
             UIAlertView * alert=[[UIAlertView alloc]initWithTitle:nil message:@"Enable Location service in device" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
         }
@@ -805,7 +805,7 @@
                 NSString * requestBody;
                 if ([SingletonClass shareSingleton].facebookId) {
                     url=[NSURL URLWithString:@"http://23.238.24.26/authentication/fbsignup/"];
-                  /*  requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@&fbUserId=%@",self.nameText.text,self.dateString,[SingletonClass shareSingleton].location,[SingletonClass shareSingleton].lattitude,[SingletonClass shareSingleton].longitude,radiobutton,hereForNum,self.emailText.text,self.passwordText.text,[SingletonClass shareSingleton].facebookId];*/
+                    /*requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@&fbUserId=%@",self.nameText.text,self.dateString,[SingletonClass shareSingleton].location,[SingletonClass shareSingleton].lattitude,[SingletonClass shareSingleton].longitude,radiobutton,hereForNum,self.emailText.text,self.passwordText.text,[SingletonClass shareSingleton].facebookId];*/
                     
                     
                      requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@&fbUserId=%@",self.nameText.text,self.dateString,@"Bangalore",@"21.00",@"33.0",radiobutton,hereForNum,self.emailText.text,self.passwordText.text,[SingletonClass shareSingleton].facebookId];
@@ -814,9 +814,9 @@
                 else{
                     
                     url=[NSURL URLWithString:@"http://23.238.24.26/mobi/signup/"];
-                   /* requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@",self.nameText.text,self.dateString,[SingletonClass shareSingleton].location,[SingletonClass shareSingleton].lattitude,[SingletonClass shareSingleton].longitude,radiobutton,hereForNum,self.emailText.text,self.passwordText.text];*/
-                     requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@",self.nameText.text,self.dateString,@"Bangalore",@"21.00",@"33.0",radiobutton,hereForNum,self.emailText.text,self.passwordText.text];
-                    
+                    requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@",self.nameText.text,self.dateString,[SingletonClass shareSingleton].location,[SingletonClass shareSingleton].lattitude,[SingletonClass shareSingleton].longitude,radiobutton,hereForNum,self.emailText.text,self.passwordText.text];
+                   /*  requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@",self.nameText.text,self.dateString,@"Bangalore",@"21.00",@"33.0",radiobutton,hereForNum,self.emailText.text,self.passwordText.text];
+                    */
                 }
                 
                 
@@ -856,7 +856,7 @@
                     
                     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:urlActiveStr cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
                     
-                    
+                    [request setHTTPMethod:@"POST"];
                     [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
                     
                     //NSMutableDictionary * dict=[NSMutableDictionary dictionary];
@@ -1032,15 +1032,16 @@
                                 [SingletonClass shareSingleton].InvisibleModeSetting=[dict objectForKey:@"InvisibleModeSetting"];
                                 [SingletonClass shareSingleton].MessagesSetting=[dict objectForKey:@"MessagesSetting"];
                                 
-                                /* NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
+                                 NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
                                  if (imagesArr.count>0) {
                                  
                                  
-                                 NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
+                             //    NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
                                  NSMutableArray * dictarr=[[NSMutableArray alloc]init];
                                  NSMutableArray * arr=[[ NSMutableArray alloc]init];
                                  
                                  for (int i=0; i<imagesArr.count; i++) {
+                                    
                                  dict =[imagesArr objectAtIndex:i];
                                  if ([[dict objectForKey:@"privacy"]isEqualToString:@"3"]){
                                  NSString * imageName=[NSString stringWithString:[dict objectForKey:@"imageLink"]];
@@ -1054,9 +1055,10 @@
                                  [arr addObject:imageName];
                                  }
                                  
+                                 
                                  }
                                  [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]initWithArray:arr];
-                                 }*/
+                                 }
                                 
                                 [SingletonClass shareSingleton].profileImg=[NSString stringWithFormat:@"http://taka.dating%@",[parse objectForKey:@"profileimg"]];
                                 

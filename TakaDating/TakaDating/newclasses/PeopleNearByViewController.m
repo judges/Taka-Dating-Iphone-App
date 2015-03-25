@@ -168,7 +168,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
-    NSString *name = @"";
+    //NSString *name = @"";
     
     
     CustomCellView *customCellView = [[CustomCellView alloc] initWithFrame:cell.bounds];
@@ -338,6 +338,7 @@
 }
 #pragma mark-
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    [SingletonClass shareSingleton].fromChat=NO;
     UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
     
     userDataVC.index=[[SingletonClass shareSingleton].viewerID objectAtIndex:indexPath.row];

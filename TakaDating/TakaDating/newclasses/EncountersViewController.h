@@ -22,6 +22,7 @@
     UILabel *  tagLine;
     UIView * view;
     UILabel *  ProfileName;
+    NSArray *interests;
     
 }
 
@@ -38,6 +39,6 @@
 @property(nonatomic,strong)UIActivityIndicatorView* refreshActivityIndicator;
 
 
-@property(nonatomic,strong)NSString * userHereFor,*sex;
+@property(nonatomic,strong)NSString * userHereFor,*sex,*appearance;
 @property(nonatomic,strong) NSString * useriId,*income,*languages,*profession,*sexuality,*relationship,*eduaction,*drinking,*smoking,*kids,*living,*weight,*height,*bodyType,*about,*interestedIn,*displayName,*location,*hairColor,*eyeColor,*intrests,*imageId;;
 @end

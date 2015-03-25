@@ -78,4 +78,17 @@
 
 //Insterests updating
 @property(nonatomic,strong)NSMutableArray * selectedInterests ;
+
+//Message chat history sorted array
+@property(nonatomic,strong)NSArray * sortedData;
+
+
+//Chat bool varibale
+@property(nonatomic)BOOL fromChat;
+
+@property(nonatomic)NSMutableArray * selectedIntId,* selectedIntName;
+
+// super power activation
+
+@property(nonatomic)int superPower;
 @end

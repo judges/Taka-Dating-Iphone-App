@@ -87,7 +87,7 @@
 #pragma mark- Table Delegate methods
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    return 6;
+    return 5;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -121,26 +121,26 @@
     }
     
     
-    if (indexPath.row==0) {
+   /* if (indexPath.row==0) {
         cell.cellLable.text=@"Most Active People!";
         cell.cellSubLbl.text=@"Use Taka 7 times in a week to win this award (If you log in everyday in a week then this award will be available)";
     }
-    else if (indexPath.row==1)
+    else*/ if (indexPath.row==0)
     {
         cell.cellLable.text=@"One of the top voters of the week!";
          cell.cellSubLbl.text=@"Like 1000 different people to win this award.";
     }
-    else if (indexPath.row==2)
+    else if (indexPath.row==1)
     {
         cell.cellLable.text=@"The most liked people!";
          cell.cellSubLbl.text=@"Get 10 likes from different people to win this award.";
     }
-    else if (indexPath.row==3)
+    else if (indexPath.row==2)
     {
         cell.cellLable.text=@"The most Interested person!";
          cell.cellSubLbl.text=@"Add 15 interests in your profile to get this award.";
     }
-    else if (indexPath.row==4)
+    else if (indexPath.row==3)
     {
         cell.cellLable.text=@"The most checked out people!";
          cell.cellSubLbl.text=@"Get visited by 50 people in a week to win this award.";

@@ -23,9 +23,13 @@
 #import "SingletonClass.h"
 #import "EncountersViewController.h"
 #import <CFNetwork/CFNetwork.h>
+#import "PayPalMobile.h"
+#import "MessageDetailViewController.h"
 
 
+#import <NewRelicAgent/NewRelic.h>
 
+@class MessageDetailViewController;
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
 static const int ddLogLevel = LOG_LEVEL_VERBOSE;
@@ -37,6 +41,9 @@ NSString *const kXMPPmyJID = @"kXMPPmyJID";
 NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
 
 @interface AppDelegate()
+{
+    MessageDetailViewController * mdVC;
+}
 
 - (void)setupStream;
 - (void)teardownStream;
@@ -62,10 +69,15 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
 @synthesize window;
 
 
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [self reacheability];
+    //[NewRelicAgent startWithApplicationToken:@"AAf51ed5e2c602336259adc6f4c8404770ec806ea1"];
     
+
+   // [NewRelicAgent disableFeatures:NRFeatureFlag_CrashReporting];
+       [self reacheability];
+   
     // Configure logging framework
     
     [DDLog addLogger:[DDTTYLogger sharedInstance] withLogLevel:XMPP_LOG_FLAG_SEND_RECV];
@@ -74,22 +86,17 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
     
     [self setupStream];
     
-    // Setup the view controllers
-    
-    
-    /* if (![self connect])
-     {
-     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, 0.0 * NSEC_PER_SEC);
-     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-     
-     
-     });
-     }*/
+    [PayPalMobile initializeWithClientIdsForEnvironments:@{PayPalEnvironmentProduction : @"",
+                                                           PayPalEnvironmentSandbox : @"ASR0bxDIAqjAPLLlPs_echPOSIloTtvLdcQFNelhseLzNKcyqojUdMPOxxOZ"}];
+   
     [SingletonClass shareSingleton].messages=[[NSMutableArray alloc]init];
-    
-    // Override point for customization after application launch.
+   
+   
     return YES;
 }
+
+
+
 - (void)dealloc
 {
     [self teardownStream];
@@ -207,7 +214,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
                              
                              //   NSString *userID = [NSString stringWithFormat:@"%@",[user objectForKey:@"id"]];
                              
-                             [SingletonClass shareSingleton].userID=userInfo;
+                            // [SingletonClass shareSingleton].userID=userInfo;
                              NSURL *url=[NSURL URLWithString:[NSString stringWithFormat:@"http://graph.facebook.com/%@/picture?type=large",userInfo]];
                              NSString * urlstr=[NSString stringWithFormat:@"%@",url];
                              NSLog(@"Profile url %@",urlstr);
@@ -351,7 +358,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
     
     NSData * Data=[NSData dataWithBytes:[data UTF8String] length:[data length]];
     NSDictionary * dataDict=[NSJSONSerialization JSONObjectWithData:Data options:NSJSONReadingMutableLeaves error:&error];
-    if (error) {
+    if (data==nil) {
         return NO;
     }
     
@@ -383,7 +390,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
     NSDictionary * emailDict=[NSJSONSerialization JSONObjectWithData:notifyData options:NSJSONReadingMutableLeaves error:&error];
     NSDictionary * email=[emailDict objectForKey:@"Email"];
     NSDictionary * mobile=[emailDict objectForKey:@"Mobile"];
-    if (error) {
+    if (data==nil) {
         return NO;
     }
     
@@ -411,15 +418,16 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
     [SingletonClass shareSingleton].InvisibleModeSetting=[dict objectForKey:@"InvisibleModeSetting"];
     [SingletonClass shareSingleton].MessagesSetting=[dict objectForKey:@"MessagesSetting"];
     
-   /* NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
+    NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
     if (imagesArr.count>0) {
         
         
-        NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
+       // NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
         NSMutableArray * dictarr=[[NSMutableArray alloc]init];
         NSMutableArray * arr=[[ NSMutableArray alloc]init];
         
         for (int i=0; i<imagesArr.count; i++) {
+            
             dict =[imagesArr objectAtIndex:i];
             if ([[dict objectForKey:@"privacy"]isEqualToString:@"3"]){
                 NSString * imageName=[NSString stringWithString:[dict objectForKey:@"imageLink"]];
@@ -433,9 +441,10 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
                 [arr addObject:imageName];
             }
             
+      
         }
         [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]initWithArray:arr];
-    }*/
+    }
     
     [SingletonClass shareSingleton].profileImg=[NSString stringWithFormat:@"http://taka.dating%@",[parse objectForKey:@"profileimg"]];
     
@@ -1168,7 +1177,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
 {
-    DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
+    //DDLogVerbose(@"%@: %@", THIS_FILE, THIS_METHOD);
     
     // A simple example of inbound message handling.
     
@@ -1193,7 +1202,8 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
         {
             [[NSNotificationCenter defaultCenter]postNotificationName:@"recievedMsg" object:nil userInfo:nil];
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
+             [[NSNotificationCenter defaultCenter]removeObserver:self name:@"recievedMsg" object:nil];
+                        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:displayName
                                                                 message:body
                                                                delegate:nil
                                                       cancelButtonTitle:@"Ok"
@@ -1226,12 +1236,13 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
         if  ([presenceType isEqualToString:@"subscribe"])
         {
             // [_chatDelegate newBuddyOnline:[NSString stringWithFormat:@"%@@%@", presenceFromUser, kHostName]];
-            NSLog(@"presence user wants to subscribe %@",presenceFromUser);
             XMPPPresence *tempPresence = [[XMPPPresence alloc] init];
             tempPresence = presence;
             [[self xmppStream] sendElement:presence];
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"New request From:" message:presenceFromUser delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
-            //  [alert show];
+            NSLog(@"presence user wants to subscribe %@",presenceFromUser);
+           
+           // UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"New request From:" message:presenceFromUser delegate:self cancelButtonTitle:@"NO" otherButtonTitles:@"YES", nil];
+            // [alert show];
         }
     }
     
@@ -1303,6 +1314,44 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
         [[UIApplication sharedApplication] presentLocalNotificationNow:localNotification];
     }
     
+}
+
+
+#pragma mark -
+#pragma mark - Loading View mbprogresshud
+
+-(void) showHUDLoadingView:(NSString *)strTitle
+{
+    HUD = [[MBProgressHUD alloc] initWithView:self.window];
+    [self.window addSubview:HUD];
+    //HUD.delegate = self;
+    //HUD.labelText = [strTitle isEqualToString:@""] ? @"Loading...":strTitle;
+    HUD.detailsLabelText=[strTitle isEqualToString:@""] ? @"Loading...":strTitle;
+    [HUD show:YES];
+}
+
+-(void) hideHUDLoadingView
+{
+    [HUD removeFromSuperview];
+}
+
+-(void)showToastMessage:(NSString *)message
+{
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.window
+                                              animated:YES];
+    
+    // Configure for text only and offset down
+    hud.mode = MBProgressHUDModeText;
+    hud.detailsLabelText = message;
+    hud.margin = 10.f;
+    hud.yOffset = 130.f;
+    hud.removeFromSuperViewOnHide = YES;
+    [hud hide:YES afterDelay:5.0];
+}
+
++(AppDelegate *)sharedAppDelegate
+{
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 

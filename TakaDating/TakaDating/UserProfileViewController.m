@@ -15,6 +15,7 @@
 #import "XMPPJID.h"
 #import "XMPPRoster.h"
 
+
 @interface UserProfileViewController ()
 {
     UIImageView * profileImg;
@@ -125,6 +126,8 @@
 
 }
 
+
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -148,7 +151,8 @@
                 self.parentView.frame=CGRectMake(0, 55, windowSize.width, self.view.frame.size.height);
             }
             else{
-                self.parentView.frame=CGRectMake(0, 55, windowSize.width, self.view.frame.size.height-80);
+                 self.parentView.frame=CGRectMake(0,height ,self.screen_width, self.view.frame.size.height);
+                //self.parentView.frame=CGRectMake(0, 55, windowSize.width, self.view.frame.size.height-80);
             }
             self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg.png"]];
         }
@@ -167,6 +171,7 @@
         self.tabView.backgroundColor=[UIColor clearColor];
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
             self.tabView.frame=CGRectMake(0, self.parentView.frame.size.height-130, windowSize.width, 80);
+            
         }
         else{
             if([UIScreen mainScreen].bounds.size.height>500)
@@ -361,7 +366,14 @@ NS_AVAILABLE_IOS(5_0){
         [self swipeGesture:frame];
     }
     else{
-        CGRect frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
+        CGRect frame;
+        if (windowSize.height<500) {
+              frame=CGRectMake(0, -250, windowSize.width, windowSize.height);
+        }
+        else{
+              frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
+        }
+       
         [self swipeGesture:frame];
     }
     
@@ -370,7 +382,7 @@ NS_AVAILABLE_IOS(5_0){
 -(void)swipeGesture:(CGRect)frame{
     if(self.parentView.frame.origin.y==height)
     {
-        [UIView animateWithDuration:1 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             
             if ([UIScreen mainScreen].bounds.size.height>500) {
                 
@@ -392,7 +404,7 @@ NS_AVAILABLE_IOS(5_0){
                     ff=CGRectMake(0, 220, windowSize.width, 350);
                 }
                 else{
-                    ff=CGRectMake(0, 125, windowSize.width, 450);
+                    ff=CGRectMake(0, 180, windowSize.width, 450);
                 }
             }
             int tagValue=1;
@@ -402,7 +414,7 @@ NS_AVAILABLE_IOS(5_0){
     }
     else{
         
-        [UIView animateWithDuration:1 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=CGRectMake(0,height ,self.screen_width, self.view.frame.size.height);
             self.secondView.hidden=YES;
         } completion:^(BOOL finished) {
@@ -463,8 +475,12 @@ NS_AVAILABLE_IOS(5_0){
         frame=CGRectMake(0, -windowSize.width/2, windowSize.width, windowSize.height);
     }
     else{
-        frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
-        
+        if (windowSize.height<500) {
+            frame=CGRectMake(0, -250, windowSize.width, windowSize.height);
+        }
+        else{
+            frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
+        }
     }
     
     
@@ -481,8 +497,16 @@ NS_AVAILABLE_IOS(5_0){
        )//&& self.selectedIndex!=tagValue)
     {
         
-        [UIView animateWithDuration:1 animations:^{
-            self.parentView.frame=frame;//CGRectMake(0, -300, self.screen_width, self.view.frame.size.height);
+        [UIView animateWithDuration:0.5 animations:^{
+            if ([UIScreen mainScreen].bounds.size.height>500) {
+                
+                // self.parentView.frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
+                self.parentView.frame=frame;
+            }
+            else{
+                //self.parentView.frame=CGRectMake(0, -300, windowSize.width, windowSize.height);
+                self.parentView.frame=frame;
+            }
         } completion:^(BOOL finished) {
             CGRect  ff;
             if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
@@ -494,7 +518,7 @@ NS_AVAILABLE_IOS(5_0){
                     ff=CGRectMake(0, 220, windowSize.width, 350);
                 }
                 else{
-                    ff=CGRectMake(0, 125, windowSize.width, 450);
+                    ff=CGRectMake(0, 180, windowSize.width, 450);
                 }
             }
             if (tagValue!=4&&tagValue!=2) {
@@ -507,7 +531,7 @@ NS_AVAILABLE_IOS(5_0){
     }
     else{
         self.secondView.hidden=YES;
-        [UIView animateWithDuration:1 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=CGRectMake(0,height , self.screen_width, self.view.frame.size.height);
             self.secondView.hidden=YES;
             // self.profileTableView.hidden=YES;
@@ -686,6 +710,24 @@ NS_AVAILABLE_IOS(5_0){
     
 }*/
 
+#pragma mark-findLength of string interests
+
+-(CGFloat)findLength:(NSString *)text andHeight:(CGFloat)height
+{
+    UILabel *label = [[UILabel alloc] init];
+    label.text = text;
+    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    label.numberOfLines = 0;
+    label.textAlignment=NSTextAlignmentCenter;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    // label.frame = CGRectMake(0, 0, 280, 100);
+    CGSize size=[label sizeThatFits:CGSizeMake(FLT_MAX, height)];
+    [label sizeToFit];
+    NSLog(@"width %f",size.width);
+    return size.width;
+}
+
 #pragma mark- table view delegate methods
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section{
@@ -813,8 +855,84 @@ NS_AVAILABLE_IOS(5_0){
         }
         if (indexPath.section==1) {
             if (indexPath.row==0) {
-                cell.textLabel.text=@"Inetrests";
-                cell.imageView.image=[UIImage imageNamed:@"interest_icon.png"];
+                if (interests.count>0) {
+                    int y=0;
+                    int x=0;
+                    UIView * backView=[[UIView alloc]init];
+                    backView.frame=CGRectMake(0, 0,cell.frame.size.width, cell.contentView.frame.size.height);
+                    
+                    [cell.contentView addSubview:backView];
+                    
+                    if (interests.count>6) {
+                        //[self createInterestUI:5 indexpath:indexPath];
+                        
+                        for (int i=0;i<4;i++) {
+                            
+                            UIButton * btn1=[[UIButton alloc]init];
+                            btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                           [btn1 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i+i]] forState:UIControlStateNormal];
+                            [btn1 setBackgroundColor:[UIColor clearColor]];
+                            btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                            btn1.layer.borderWidth=0.7;
+                            btn1.layer.cornerRadius=7;
+                            btn1.clipsToBounds=YES;
+                            [btn1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                            [backView addSubview:btn1];
+                            
+                            UIButton * btn2=[[UIButton alloc]init];
+                            btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                            [btn2 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i+1]] forState:UIControlStateNormal];
+                            [btn2 setBackgroundColor:[UIColor clearColor]];
+                            btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                            [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                            btn2.layer.borderWidth=0.7;
+                            btn2.layer.cornerRadius=7;
+                            btn2.clipsToBounds=YES;
+                            [backView addSubview:btn2];
+                            
+                        }
+                        
+                    }
+                    else{
+                        
+                        int y=0;
+                        int x=0;
+                        
+                        
+                        for (int i=0;i<interests.count;i++) {
+                            UIButton * btn1=[[UIButton alloc]init];
+                            btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                           [btn1 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i]] forState:UIControlStateNormal];
+                            [btn1 setBackgroundColor:[UIColor clearColor]];
+                            btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                            btn1.layer.borderWidth=0.7;
+                            btn1.layer.cornerRadius=7;
+                            btn1.clipsToBounds=YES;
+                            [btn1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                            [backView addSubview:btn1];
+                            
+                            UIButton * btn2=[[UIButton alloc]init];
+                            btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                             [btn2 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i]] forState:UIControlStateNormal];
+                            [btn2 setBackgroundColor:[UIColor clearColor]];
+                            btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                            [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                            btn2.layer.borderWidth=0.7;
+                            btn2.layer.cornerRadius=7;
+                            btn2.clipsToBounds=YES;
+                            [backView addSubview:btn2];
+                            
+                            
+                            y=40;
+                            x=cell.contentView.frame.size.width/2+20;
+                        }
+                    }
+                }
+                else{
+                    cell.textLabel.text=@"Inetrests";
+                    cell.imageView.image=[UIImage imageNamed:@"interest_icon.png"];
+                }
+
             }
         }
         
@@ -825,7 +943,12 @@ NS_AVAILABLE_IOS(5_0){
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+    if (indexPath.section==1) {
+        if (!interests.count) {
+            return  row_hh;
+        }
+        return  200;
+    }
     return row_hh;
 }
 
@@ -866,7 +989,6 @@ NS_AVAILABLE_IOS(5_0){
 
 #pragma  mark- Web service
 -(void)callWebService{
-    
     NSError * error;
     NSURLResponse * urlResponse;
     
@@ -921,7 +1043,10 @@ NS_AVAILABLE_IOS(5_0){
         _profession=[json objectForKey:@"profession"];
     }
          _appearance=[NSString stringWithFormat:@"Heighr:%@ Weight%@ Bodytype:%@ Eyecolor:%@ Haircolor:%@",_height,_weight,_bodyType,_eyeColor,_hairColor ];
+        interests=[parse objectForKey:@"interestList"];
+
     }
+    
     
     
 }
@@ -1274,23 +1399,49 @@ NS_AVAILABLE_IOS(5_0){
 
 #pragma mark- Chat 
 -(void)chatButtonAction:(UIButton*)sender{
+    
     MessageDetailViewController * mdVC=[[MessageDetailViewController alloc]initWithNibName:@"MessageDetailViewController" bundle:nil];
-    [self addBuddy];
-    [self.navigationController pushViewController:mdVC animated:YES];
+    if ([SingletonClass shareSingleton].fromChat==YES) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else{
+        [self addBuddy];
+        [self.navigationController pushViewController:mdVC animated:YES];
+    }
 }
 
-- (AppDelegate *)appDelegate
-{
-    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+-(AppDelegate*)appdelegate{
+    return (AppDelegate*)[UIApplication sharedApplication].delegate;
 }
 
-- (XMPPRoster *)xmppRoster {
-    return [[self appDelegate] xmppRoster];
+-(XMPPRoster*)xmppRoster{
+    return [[self appdelegate]xmppRoster];
 }
+
 
 -(void)addBuddy{
-    XMPPJID *newBuddy = [XMPPJID jidWithString:_displayName];
-    [self.xmppRoster addUser:newBuddy withNickname:@""];
+    
+  /*  NSString * jid=[NSString stringWithFormat:@"%@@takadating.com",_useriId];
+    XMPPJID *newBuddy = [XMPPJID jidWithString:jid];
+    [self.xmppRoster addUser:newBuddy withNickname:@""];*/
+    
+    NSError * error=nil;
+    NSURLResponse * urlResponse=nil;
+    
+    NSURL * postUrl=[NSURL URLWithString:@"http://takadating.com:9090/plugins/userService/userservice"];
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    NSString * body=[NSString stringWithFormat:@"type=add_roster&secret=3U3vCIjx&username=%@&item_jid=%@@takadating.com&name=%@&subscription=3",[SingletonClass shareSingleton].userID,_useriId,_displayName];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"%@",json);
+   
+
 }
 /*
 #pragma mark - Navigation

@@ -736,6 +736,15 @@
 		DACCCBC71AA84B58000BBFB9 /* PayPalPayment.h in Sources */ = {isa = PBXBuildFile; fileRef = DACA3A081AA730B7008C0F7D /* PayPalPayment.h */; };
 		DACCCBC81AA84B5C000BBFB9 /* PayPalPaymentViewController.h in Sources */ = {isa = PBXBuildFile; fileRef = DACA3A091AA730B7008C0F7D /* PayPalPaymentViewController.h */; };
 		DACCCBC91AA84B60000BBFB9 /* PayPalProfileSharingViewController.h in Sources */ = {isa = PBXBuildFile; fileRef = DACA3A0A1AA730B7008C0F7D /* PayPalProfileSharingViewController.h */; };
+		DACD504A1AC01EF900418DB4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = DACD50471AC01EF900418DB4 /* LICENSE */; };
+		DACD504B1AC01EF900418DB4 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = DACD50471AC01EF900418DB4 /* LICENSE */; };
+		DACD504C1AC01EF900418DB4 /* NewRelicAgent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DACD50481AC01EF900418DB4 /* NewRelicAgent.framework */; };
+		DACD504D1AC01EF900418DB4 /* NewRelicAgent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DACD50481AC01EF900418DB4 /* NewRelicAgent.framework */; };
+		DACD504E1AC01EF900418DB4 /* README in Resources */ = {isa = PBXBuildFile; fileRef = DACD50491AC01EF900418DB4 /* README */; };
+		DACD504F1AC01EF900418DB4 /* README in Resources */ = {isa = PBXBuildFile; fileRef = DACD50491AC01EF900418DB4 /* README */; };
+		DACD50511AC01F3C00418DB4 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DACD50501AC01F3C00418DB4 /* CoreTelephony.framework */; };
+		DACD50531AC01F5400418DB4 /* libc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DACD50521AC01F5400418DB4 /* libc++.dylib */; };
+		DACD50551AC01F5E00418DB4 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DACD50541AC01F5E00418DB4 /* libz.dylib */; };
 		DACE022B1AB033AB002782E3 /* XMPPAnonymousAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = DACE00BB1AB033AA002782E3 /* XMPPAnonymousAuthentication.m */; };
 		DACE022C1AB033AB002782E3 /* XMPPAnonymousAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = DACE00BB1AB033AA002782E3 /* XMPPAnonymousAuthentication.m */; };
 		DACE022D1AB033AB002782E3 /* XMPPDeprecatedDigestAuthentication.m in Sources */ = {isa = PBXBuildFile; fileRef = DACE00BE1AB033AA002782E3 /* XMPPDeprecatedDigestAuthentication.m */; };
@@ -1068,6 +1077,12 @@
 		DACEB02C1A7BC8AA00A0082F /* location_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DACEB0291A7BC8AA00A0082F /* location_ipad.png */; };
 		DACEB02D1A7BC8AA00A0082F /* location_ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DACEB02A1A7BC8AA00A0082F /* location_ipad@2x.png */; };
 		DACEB02E1A7BC8AA00A0082F /* location_ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DACEB02A1A7BC8AA00A0082F /* location_ipad@2x.png */; };
+		DACFE0981ABD341100673E75 /* send_social.png in Resources */ = {isa = PBXBuildFile; fileRef = DACFE0951ABD341100673E75 /* send_social.png */; };
+		DACFE0991ABD341100673E75 /* send_social.png in Resources */ = {isa = PBXBuildFile; fileRef = DACFE0951ABD341100673E75 /* send_social.png */; };
+		DACFE09A1ABD341100673E75 /* send_social@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DACFE0961ABD341100673E75 /* send_social@2x.png */; };
+		DACFE09B1ABD341100673E75 /* send_social@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DACFE0961ABD341100673E75 /* send_social@2x.png */; };
+		DACFE09C1ABD341100673E75 /* send_social@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DACFE0971ABD341100673E75 /* send_social@3x.png */; };
+		DACFE09D1ABD341100673E75 /* send_social@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DACFE0971ABD341100673E75 /* send_social@3x.png */; };
 		DAD17ACC1A907FA200FEE1CA /* next_question_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD17ACA1A907FA200FEE1CA /* next_question_ipad.png */; };
 		DAD17ACD1A907FA200FEE1CA /* next_question_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD17ACA1A907FA200FEE1CA /* next_question_ipad.png */; };
 		DAD17ACE1A907FA200FEE1CA /* next_question_ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD17ACB1A907FA200FEE1CA /* next_question_ipad@2x.png */; };
@@ -1098,6 +1113,8 @@
 		DAD949CD1A2F6DCF003BA79D /* setting_message_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD949C11A2F6DCF003BA79D /* setting_message_icon@2x.png */; };
 		DAD949CE1A2F6DCF003BA79D /* visitor_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD949C21A2F6DCF003BA79D /* visitor_icon.png */; };
 		DAD949CF1A2F6DCF003BA79D /* visitor_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAD949C31A2F6DCF003BA79D /* visitor_icon@2x.png */; };
+		DADA21151AC2917D00100C72 /* Blur.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DADA21141AC2917D00100C72 /* Blur.jpg */; };
+		DADA21161AC2917D00100C72 /* Blur.jpg in Resources */ = {isa = PBXBuildFile; fileRef = DADA21141AC2917D00100C72 /* Blur.jpg */; };
 		DADD6A841A6938B1005C9560 /* select_active_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DADD6A801A6938B1005C9560 /* select_active_ipad.png */; };
 		DADD6A851A6938B1005C9560 /* select_active_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DADD6A801A6938B1005C9560 /* select_active_ipad.png */; };
 		DADD6A861A6938B1005C9560 /* select_active_ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DADD6A811A6938B1005C9560 /* select_active_ipad@2x.png */; };
@@ -1147,6 +1164,8 @@
 		DAEA34371A7290F30053CD33 /* mobile_icon_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAEA34281A7290F30053CD33 /* mobile_icon_ipad.png */; };
 		DAEA34381A7290F30053CD33 /* mobile_icon_ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAEA34291A7290F30053CD33 /* mobile_icon_ipad@2x.png */; };
 		DAEA34391A7290F30053CD33 /* mobile_icon_ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAEA34291A7290F30053CD33 /* mobile_icon_ipad@2x.png */; };
+		DAF53E771AC1A8D2008833B6 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DAF53E761AC1A8D2008833B6 /* MBProgressHUD.m */; };
+		DAF53E781AC1A8D2008833B6 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = DAF53E761AC1A8D2008833B6 /* MBProgressHUD.m */; };
 		DAF8E4FE1A7A4A2200D1D6E5 /* chat_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAF8E4FC1A7A4A2200D1D6E5 /* chat_ipad.png */; };
 		DAF8E4FF1A7A4A2200D1D6E5 /* chat_ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DAF8E4FC1A7A4A2200D1D6E5 /* chat_ipad.png */; };
 		DAF8E5001A7A4A2200D1D6E5 /* chat_ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DAF8E4FD1A7A4A2200D1D6E5 /* chat_ipad@2x.png */; };
@@ -1807,6 +1826,12 @@
 		DACCCBCF1AA84D4A000BBFB9 /* CardIOUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CardIOUtilities.h; path = TakaDating/PayPal/CardIOUtilities.h; sourceTree = "<group>"; };
 		DACCCBD01AA84D4A000BBFB9 /* CardIOView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CardIOView.h; path = TakaDating/PayPal/CardIOView.h; sourceTree = "<group>"; };
 		DACCCBD11AA84D4A000BBFB9 /* CardIOViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CardIOViewDelegate.h; path = TakaDating/PayPal/CardIOViewDelegate.h; sourceTree = "<group>"; };
+		DACD50471AC01EF900418DB4 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		DACD50481AC01EF900418DB4 /* NewRelicAgent.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NewRelicAgent.framework; sourceTree = "<group>"; };
+		DACD50491AC01EF900418DB4 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		DACD50501AC01F3C00418DB4 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		DACD50521AC01F5400418DB4 /* libc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.dylib"; path = "usr/lib/libc++.dylib"; sourceTree = SDKROOT; };
+		DACD50541AC01F5E00418DB4 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		DACE00BA1AB033AA002782E3 /* XMPPAnonymousAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPAnonymousAuthentication.h; sourceTree = "<group>"; };
 		DACE00BB1AB033AA002782E3 /* XMPPAnonymousAuthentication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPAnonymousAuthentication.m; sourceTree = "<group>"; };
 		DACE00BD1AB033AA002782E3 /* XMPPDeprecatedDigestAuthentication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPDeprecatedDigestAuthentication.h; sourceTree = "<group>"; };
@@ -2125,6 +2150,9 @@
 		DACEB0241A7BC49F00A0082F /* header_ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "header_ipad@2x.png"; path = "Resources/iPadImages/header_ipad@2x.png"; sourceTree = "<group>"; };
 		DACEB0291A7BC8AA00A0082F /* location_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = location_ipad.png; path = Resources/iPadImages/location_ipad.png; sourceTree = "<group>"; };
 		DACEB02A1A7BC8AA00A0082F /* location_ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "location_ipad@2x.png"; path = "Resources/iPadImages/location_ipad@2x.png"; sourceTree = "<group>"; };
+		DACFE0951ABD341100673E75 /* send_social.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = send_social.png; path = Resources/send_social.png; sourceTree = "<group>"; };
+		DACFE0961ABD341100673E75 /* send_social@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "send_social@2x.png"; path = "Resources/send_social@2x.png"; sourceTree = "<group>"; };
+		DACFE0971ABD341100673E75 /* send_social@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "send_social@3x.png"; path = "Resources/send_social@3x.png"; sourceTree = "<group>"; };
 		DAD17ACA1A907FA200FEE1CA /* next_question_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = next_question_ipad.png; path = Resources/iPadImages/next_question_ipad.png; sourceTree = "<group>"; };
 		DAD17ACB1A907FA200FEE1CA /* next_question_ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "next_question_ipad@2x.png"; path = "Resources/iPadImages/next_question_ipad@2x.png"; sourceTree = "<group>"; };
 		DAD2E19C1A7A17B000D372B8 /* UserProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserProfileViewController.h; sourceTree = "<group>"; };
@@ -2152,6 +2180,7 @@
 		DAD949C11A2F6DCF003BA79D /* setting_message_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "setting_message_icon@2x.png"; path = "Resources/MenuIcons/setting_message_icon@2x.png"; sourceTree = "<group>"; };
 		DAD949C21A2F6DCF003BA79D /* visitor_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = visitor_icon.png; path = Resources/MenuIcons/visitor_icon.png; sourceTree = "<group>"; };
 		DAD949C31A2F6DCF003BA79D /* visitor_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "visitor_icon@2x.png"; path = "Resources/MenuIcons/visitor_icon@2x.png"; sourceTree = "<group>"; };
+		DADA21141AC2917D00100C72 /* Blur.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Blur.jpg; path = Resources/Blur.jpg; sourceTree = "<group>"; };
 		DADD6A801A6938B1005C9560 /* select_active_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = select_active_ipad.png; path = Resources/iPadImages/select_active_ipad.png; sourceTree = "<group>"; };
 		DADD6A811A6938B1005C9560 /* select_active_ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "select_active_ipad@2x.png"; path = "Resources/iPadImages/select_active_ipad@2x.png"; sourceTree = "<group>"; };
 		DADD6A821A6938B1005C9560 /* select_normal_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = select_normal_ipad.png; path = Resources/iPadImages/select_normal_ipad.png; sourceTree = "<group>"; };
@@ -2178,6 +2207,8 @@
 		DAEA34271A7290F30053CD33 /* mobile_icon_active_ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobile_icon_active_ipad@2x.png"; path = "Resources/iPadImages/mobile_icon_active_ipad@2x.png"; sourceTree = "<group>"; };
 		DAEA34281A7290F30053CD33 /* mobile_icon_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mobile_icon_ipad.png; path = Resources/iPadImages/mobile_icon_ipad.png; sourceTree = "<group>"; };
 		DAEA34291A7290F30053CD33 /* mobile_icon_ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "mobile_icon_ipad@2x.png"; path = "Resources/iPadImages/mobile_icon_ipad@2x.png"; sourceTree = "<group>"; };
+		DAF53E751AC1A8D2008833B6 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		DAF53E761AC1A8D2008833B6 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		DAF8E4FC1A7A4A2200D1D6E5 /* chat_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chat_ipad.png; path = Resources/iPadImages/chat_ipad.png; sourceTree = "<group>"; };
 		DAF8E4FD1A7A4A2200D1D6E5 /* chat_ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "chat_ipad@2x.png"; path = "Resources/iPadImages/chat_ipad@2x.png"; sourceTree = "<group>"; };
 		DAF8E5021A7A4C8900D1D6E5 /* chat_bg_ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = chat_bg_ipad.png; path = Resources/iPadImages/chat_bg_ipad.png; sourceTree = "<group>"; };
@@ -2199,6 +2230,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DACD50551AC01F5E00418DB4 /* libz.dylib in Frameworks */,
+				DACD50531AC01F5400418DB4 /* libc++.dylib in Frameworks */,
+				DACD50511AC01F3C00418DB4 /* CoreTelephony.framework in Frameworks */,
 				DAC9BCBA1AB0507F0028F83C /* libresolv.dylib in Frameworks */,
 				DAC8B7E51AA85A52008B36FE /* Security.framework in Frameworks */,
 				DAC9BCB71AB050580028F83C /* CFNetwork.framework in Frameworks */,
@@ -2206,6 +2240,7 @@
 				DA6CAB9F1A24E93500BD0EE3 /* CoreLocation.framework in Frameworks */,
 				DAC8B7EB1AA85AD4008B36FE /* CoreVideo.framework in Frameworks */,
 				DAC8B7DB1AA859F3008B36FE /* CoreMedia.framework in Frameworks */,
+				DACD504C1AC01EF900418DB4 /* NewRelicAgent.framework in Frameworks */,
 				DAC8B7E91AA85A73008B36FE /* libxml2.dylib in Frameworks */,
 				DACE03471AB033AB002782E3 /* libidn.a in Frameworks */,
 				DAC8B7E71AA85A5D008B36FE /* SystemConfiguration.framework in Frameworks */,
@@ -2232,6 +2267,7 @@
 				DA9D287D1A0DE02200202D8B /* UIKit.framework in Frameworks */,
 				DACE03481AB033AB002782E3 /* libidn.a in Frameworks */,
 				DACA3A0C1AA730B7008C0F7D /* libPayPalMobile.a in Frameworks */,
+				DACD504D1AC01EF900418DB4 /* NewRelicAgent.framework in Frameworks */,
 				DA9D287C1A0DE02200202D8B /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2309,6 +2345,7 @@
 				DAFEA8631A25110000EC2907 /* UIpickerImages */,
 				DA9B9FEC1A4176D500350835 /* red_line.png */,
 				DAC9901A1A8D1E9800AAFBF7 /* offline_icon.png */,
+				DADA21141AC2917D00100C72 /* Blur.jpg */,
 				DAC9901B1A8D1E9800AAFBF7 /* online_icon.png */,
 				DA9B9FED1A4176D500350835 /* red_line@2x.png */,
 				DAC77A8E1A32EC0100F1F3D2 /* pay_icon.png */,
@@ -2736,6 +2773,8 @@
 		DA9D284F1A0DE02100202D8B = {
 			isa = PBXGroup;
 			children = (
+				DAF53E741AC1A8D2008833B6 /* mbProgressHud */,
+				DACD50461AC01EF900418DB4 /* NewRelic_iOS_Agent_4.186 */,
 				DACE00B71AB033AA002782E3 /* xmpp */,
 				DACA3A021AA73097008C0F7D /* PayPal */,
 				DAA9CA3E1A6659CF00077B35 /* Reachability */,
@@ -2761,6 +2800,9 @@
 		DA9D285A1A0DE02200202D8B /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DACD50541AC01F5E00418DB4 /* libz.dylib */,
+				DACD50521AC01F5400418DB4 /* libc++.dylib */,
+				DACD50501AC01F3C00418DB4 /* CoreTelephony.framework */,
 				DAC9BCB91AB0507F0028F83C /* libresolv.dylib */,
 				DAC9BCB51AB050580028F83C /* CFNetwork.framework */,
 				DAC9BCB61AB050580028F83C /* CoreData.framework */,
@@ -3572,6 +3614,17 @@
 				DACCCBBD1AA81870000BBFB9 /* RefillCreditsViewController.xib */,
 			);
 			name = CreditsViewController;
+			sourceTree = "<group>";
+		};
+		DACD50461AC01EF900418DB4 /* NewRelic_iOS_Agent_4.186 */ = {
+			isa = PBXGroup;
+			children = (
+				DACD50471AC01EF900418DB4 /* LICENSE */,
+				DACD50481AC01EF900418DB4 /* NewRelicAgent.framework */,
+				DACD50491AC01EF900418DB4 /* README */,
+			);
+			name = NewRelic_iOS_Agent_4.186;
+			path = newRelic/NewRelic_iOS_Agent_4.186;
 			sourceTree = "<group>";
 		};
 		DACE00B71AB033AA002782E3 /* xmpp */ = {
@@ -4616,9 +4669,21 @@
 			name = Notification;
 			sourceTree = "<group>";
 		};
+		DAF53E741AC1A8D2008833B6 /* mbProgressHud */ = {
+			isa = PBXGroup;
+			children = (
+				DAF53E751AC1A8D2008833B6 /* MBProgressHUD.h */,
+				DAF53E761AC1A8D2008833B6 /* MBProgressHUD.m */,
+			);
+			path = mbProgressHud;
+			sourceTree = "<group>";
+		};
 		DAFEA8631A25110000EC2907 /* UIpickerImages */ = {
 			isa = PBXGroup;
 			children = (
+				DACFE0951ABD341100673E75 /* send_social.png */,
+				DACFE0961ABD341100673E75 /* send_social@2x.png */,
+				DACFE0971ABD341100673E75 /* send_social@3x.png */,
 				DAC9CF5A1A8CB7110053B6D6 /* next_question.png */,
 				DAC9CF5B1A8CB7110053B6D6 /* next_question@2x.png */,
 				DAFEA8641A25113500EC2907 /* add_friends.png */,
@@ -4754,6 +4819,7 @@
 				DA3F51FC1A124512001D9CDD /* profile_male@2x.png in Resources */,
 				DA3F51C91A122BAB001D9CDD /* gen_female_icon.png in Resources */,
 				DA857F8E1A6D711900712DE3 /* drinking_ipad@2x.png in Resources */,
+				DACFE0981ABD341100673E75 /* send_social.png in Resources */,
 				DAC65C6E1AB6ED1E00D01869 /* invite_ipad.png in Resources */,
 				DADD6AA61A693990005C9560 /* lets_go_btn_ipad.png in Resources */,
 				DA4777891A2DF57C004A31EE /* imga5.jpg in Resources */,
@@ -4922,6 +4988,7 @@
 				DA6F2AFE1A6814E90075913C /* email_login_ipad@2x.png in Resources */,
 				DAC77A911A32EC0100F1F3D2 /* pay_icon@2x.png in Resources */,
 				DACB578B1AB8600700454411 /* books_culture_icon_ipad@2x.png in Resources */,
+				DACFE09A1ABD341100673E75 /* send_social@2x.png in Resources */,
 				DA67F3561A2F95B6004597A4 /* yes@2x.png in Resources */,
 				DA9D54EF1A23576900A17D91 /* PeopleNearByViewController.xib in Resources */,
 				DA3F51CD1A122BAB001D9CDD /* lets_go_btn.png in Resources */,
@@ -4974,6 +5041,7 @@
 				DA9F2A001A70E7C5009F1192 /* music_icon@2x.png in Resources */,
 				DA9E2F891A306E2E00A81282 /* ProfileNearFilterViewController.xib in Resources */,
 				DAF8E5061A7A4C8900D1D6E5 /* chat_bg_ipad@2x.png in Resources */,
+				DACD504A1AC01EF900418DB4 /* LICENSE in Resources */,
 				DA0378E91A28633B0012A05F /* language@2x.png in Resources */,
 				DAA0848F1A17578E00D45AAB /* AccountSignOutViewController.xib in Resources */,
 				DAC9901E1A8D1E9800AAFBF7 /* online_icon.png in Resources */,
@@ -5005,6 +5073,7 @@
 				DAA0D3321A4EA099005B1677 /* invite.png in Resources */,
 				DA19161C1A1E4E76005DB681 /* signup_greyline.png in Resources */,
 				DAC77A861A32E92E00F1F3D2 /* select.png in Resources */,
+				DADA21151AC2917D00100C72 /* Blur.jpg in Resources */,
 				DA67F3541A2F95B6004597A4 /* no@2X.png in Resources */,
 				DA9FD0A41A24511A0098C1F5 /* header@2x.png in Resources */,
 				DA0378F51A28633B0012A05F /* work@2x.png in Resources */,
@@ -5040,6 +5109,7 @@
 				DACB57891AB8600700454411 /* books_culture_icon_ipad.png in Resources */,
 				DA857F5C1A6D6EB100712DE3 /* side_arrow_ipad.png in Resources */,
 				DA5EC8B71A5C12C1006D7E95 /* gallery_btn@2x.png in Resources */,
+				DACD504E1AC01EF900418DB4 /* README in Resources */,
 				DA6F07191A25ACB200D55397 /* InterestViewController.xib in Resources */,
 				DACEB0131A7B9DEA00A0082F /* checkmark_ipad.png in Resources */,
 				DA857F9C1A6D711900712DE3 /* language_ipad.png in Resources */,
@@ -5186,6 +5256,7 @@
 				DA3F51F91A124512001D9CDD /* profile_female.png in Resources */,
 				DA6F2AF81A6812160075913C /* otheroption_btn_ipad@2x.png in Resources */,
 				DA58B4F01A2923C7001CD8D3 /* mobile_icon.png in Resources */,
+				DACFE09C1ABD341100673E75 /* send_social@3x.png in Resources */,
 				DAC5F50F1A77C5A8007AD0F2 /* imag4.jpg in Resources */,
 				DA857FA01A6D711900712DE3 /* living_ipad.png in Resources */,
 				DAFEA86F1A25113500EC2907 /* date@2x.png in Resources */,
@@ -5254,6 +5325,7 @@
 				DA5EC8BC1A5C12C1006D7E95 /* instragram_btn@2x.png in Resources */,
 				DACB57961AB8600700454411 /* interested_in_ipad.png in Resources */,
 				DAC65C891AB6F54F00D01869 /* accept_ipad@2x.png in Resources */,
+				DACFE0991ABD341100673E75 /* send_social.png in Resources */,
 				DACEAFF81A7B8BC400A0082F /* chat_blue_bg@3x.png in Resources */,
 				DA9D56921A6D16A000A8A328 /* setting_btn_bg_ipad@2x.png in Resources */,
 				DAEA342F1A7290F30053CD33 /* message_icon_ipad.png in Resources */,
@@ -5338,6 +5410,7 @@
 				DAC65C751AB6ED1E00D01869 /* liked_you_icon_ipad@2x.png in Resources */,
 				DAEA34391A7290F30053CD33 /* mobile_icon_ipad@2x.png in Resources */,
 				DAC5F5021A77B9C1007AD0F2 /* yes_ipad@2x.png in Resources */,
+				DACD504B1AC01EF900418DB4 /* LICENSE in Resources */,
 				DA9D56901A6D16A000A8A328 /* setting_btn_bg_ipad.png in Resources */,
 				DAC9901F1A8D1E9800AAFBF7 /* online_icon.png in Resources */,
 				DA9F2A011A70E7C5009F1192 /* music_icon@2x.png in Resources */,
@@ -5375,6 +5448,7 @@
 				DACEB0201A7BBF3000A0082F /* pay_icon_ipad.png in Resources */,
 				DA857F531A6D6DB700712DE3 /* fb_icon_ipad@2x.png in Resources */,
 				DAC918C61A6CF68700392468 /* be_the_first_ipad.png in Resources */,
+				DACFE09B1ABD341100673E75 /* send_social@2x.png in Resources */,
 				DA857F931A6D711900712DE3 /* education_ipad@2x.png in Resources */,
 				DAEA34351A7290F30053CD33 /* mobile_icon_active_ipad@2x.png in Resources */,
 				DAA5EC8A1A6CCED500AFCD1E /* menu_icon_ipad.png in Resources */,
@@ -5427,6 +5501,7 @@
 				DA857F5F1A6D6EB100712DE3 /* side_arrow_ipad@2x.png in Resources */,
 				DAC5F4FE1A77B9C1007AD0F2 /* no_ipad@2x.png in Resources */,
 				DAC017341A777B4A003265BE /* warning_icon_small_ipad.png in Resources */,
+				DACFE09D1ABD341100673E75 /* send_social@3x.png in Resources */,
 				DA857FB11A6D711900712DE3 /* work_ipad.png in Resources */,
 				DAC918D21A6CF6DE00392468 /* people_who_like_ipad.png in Resources */,
 				DA857F811A6D711900712DE3 /* apperance_ipad.png in Resources */,
@@ -5437,6 +5512,7 @@
 				DACEB00C1A7B8BC400A0082F /* screen2_1242@3x.png in Resources */,
 				DAA5EC671A6CC76700AFCD1E /* profile_male_grey_ipad@2x.png in Resources */,
 				DAC918C01A6CF65400392468 /* favorite_ipad.png in Resources */,
+				DADA21161AC2917D00100C72 /* Blur.jpg in Resources */,
 				DA9F29FD1A70E7C5009F1192 /* movie_tv_shows@2x.png in Resources */,
 				DA857F9F1A6D711900712DE3 /* language_ipad@2x.png in Resources */,
 				DADD6AA91A693990005C9560 /* lets_go_btn_ipad@2x.png in Resources */,
@@ -5445,6 +5521,7 @@
 				DAF8E5051A7A4C8900D1D6E5 /* chat_bg_ipad.png in Resources */,
 				DAA5EC741A6CCA5B00AFCD1E /* credit_icon_grey_ipad.png in Resources */,
 				DAC6D9321AB2F6D500C0BA6D /* chat_big_icon.png in Resources */,
+				DACD504F1AC01EF900418DB4 /* README in Resources */,
 				DAC65C871AB6F54F00D01869 /* accept_ipad.png in Resources */,
 				DA6F2AF31A6811E50075913C /* fb_btn_ipad@2x.png in Resources */,
 				DACB578A1AB8600700454411 /* books_culture_icon_ipad.png in Resources */,
@@ -5501,6 +5578,7 @@
 				DACE02711AB033AB002782E3 /* XMPPRosterMemoryStorage.m in Sources */,
 				DACE029B1AB033AB002782E3 /* XMPPMessage+XEP0045.m in Sources */,
 				DACE02BD1AB033AB002782E3 /* XMPPResultSet.m in Sources */,
+				DAF53E771AC1A8D2008833B6 /* MBProgressHUD.m in Sources */,
 				DAA038801A2F019900F12E7F /* SuperPowerViewController.m in Sources */,
 				DACE02C51AB033AB002782E3 /* XMPPIQ+XEP_0066.m in Sources */,
 				DACE027D1AB033AB002782E3 /* XMPPJabberRPCModule.m in Sources */,
@@ -5765,6 +5843,7 @@
 				DACE02D81AB033AB002782E3 /* XMPPCapabilities.xcdatamodel in Sources */,
 				DACE026E1AB033AB002782E3 /* XMPPUserCoreDataStorageObject.m in Sources */,
 				DACE03121AB033AB002782E3 /* NSXMLElement+XEP_0297.m in Sources */,
+				DAF53E781AC1A8D2008833B6 /* MBProgressHUD.m in Sources */,
 				DACE024E1AB033AB002782E3 /* XMPPModule.m in Sources */,
 				DACE028A1AB033AB002782E3 /* XMPPRoomMessageCoreDataStorageObject.m in Sources */,
 				DACE02E81AB033AB002782E3 /* XMPPMessageArchivingCoreDataStorage.m in Sources */,
@@ -5998,6 +6077,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/sumitghosh/Desktop/MSN/Badoo/Code/TakaDating,
+					"$(PROJECT_DIR)/newRelic/NewRelic_iOS_Agent_4.186",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TakaDating/TakaDating-Prefix.pch";
@@ -6029,6 +6109,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					/Users/sumitghosh/Desktop/MSN/Badoo/Code/TakaDating,
+					"$(PROJECT_DIR)/newRelic/NewRelic_iOS_Agent_4.186",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TakaDating/TakaDating-Prefix.pch";
@@ -6059,6 +6140,7 @@
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					/Users/sumitghosh/Desktop/MSN/Badoo/Code/TakaDating,
+					"$(PROJECT_DIR)/newRelic/NewRelic_iOS_Agent_4.186",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TakaDating/TakaDating-Prefix.pch";
@@ -6088,6 +6170,7 @@
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 					/Users/sumitghosh/Desktop/MSN/Badoo/Code/TakaDating,
+					"$(PROJECT_DIR)/newRelic/NewRelic_iOS_Agent_4.186",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "TakaDating/TakaDating-Prefix.pch";

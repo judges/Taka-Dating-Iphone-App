@@ -224,8 +224,15 @@
                 customCellView.isOnlne.image=[UIImage imageNamed:@"offline_icon.png"];
             }
             customCellView.customImageCounterView.hidden=NO;
-            NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[thumbanailUrl objectAtIndex:indexPath.row]]];
-            [customCellView.profileImageView setImageWithURL:url] ;
+                 
+                 if ([SingletonClass shareSingleton].superPower==0) {
+                     customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
+                 }
+                 else{
+
+                     NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[thumbanailUrl objectAtIndex:indexPath.row]]];
+                     [customCellView.profileImageView setImageWithURL:url] ;
+                 }
             customCellView.nameLabel.text =[displayName objectAtIndex:indexPath.row] ;
             NSString *totalCount= [NSString stringWithFormat:@"%d",(int)indexPath.row];
             CGFloat h = 25 + ([totalCount length]*5);
@@ -258,8 +265,13 @@
                 customCellView.isOnlne.image=[UIImage imageNamed:@"offline_icon.png"];
             }
             customCellView.customImageCounterView.hidden=NO;
-            NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[thumbanailUrlUser objectAtIndex:indexPath.row]]];
-            [customCellView.profileImageView setImageWithURL:url] ;
+            if ([SingletonClass shareSingleton].superPower==0) {
+                customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
+            }
+            else{
+                    NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[thumbanailUrlUser objectAtIndex:indexPath.row]]];
+                [customCellView.profileImageView setImageWithURL:url] ;
+            }
             customCellView.nameLabel.text =[displayNameUser objectAtIndex:indexPath.row] ;
             NSString *totalCount= [NSString stringWithFormat:@"%d",(int)indexPath.row];
             CGFloat h = 25 + ([totalCount length]*5);
@@ -324,18 +336,18 @@
        // }
     }
    else if (section==1) {
-       // if (isProfilePic==NO) {
+        if (![SingletonClass shareSingleton].profileImg) {
         size = CGSizeMake(self.view.frame.size.width, height);
         return size;
-      //  }
+        }
 
     }
     else  if(section==2)
     {
-        //if (isProfilePic==NO) {
+        if (![SingletonClass shareSingleton].profileImg) {
             size = CGSizeMake(self.view.frame.size.width, height);
             return size;
-       // }
+        }
     }
         size = CGSizeMake(self.view.frame.size.width, 25);
         return size;
@@ -404,9 +416,14 @@
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+     [SingletonClass shareSingleton].fromChat=NO;
     UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
-    
-    userDataVC.index=[useriId objectAtIndex:indexPath.row];
+    if (indexPath.section==0) {
+         userDataVC.index=[useriId objectAtIndex:indexPath.row];
+    }
+    else{
+        userDataVC.index=[useriIdUser objectAtIndex:indexPath.row];
+    }
     [self.navigationController pushViewController:userDataVC animated:YES];
 }
 
@@ -503,7 +520,7 @@
     [areuseableView addSubview:backView];
   
     
-    if (isProfilePic==NO ) {
+    if (![SingletonClass shareSingleton].profileImg ) {
         if (!self.secaddPhotoButton) {
             
             self.secaddPhotoButton=[[UIButton alloc]initWithFrame:buttonff];
@@ -537,7 +554,10 @@
        // }
     }
     else{
-      // if (!self.promoteButton) {
+        if (useriId.count<1) {
+            
+        
+       if (!self.promoteButton) {
            self.promoteButton.hidden=NO;
            self.promoteButton=[[UIButton alloc]initWithFrame:buttonff];
            [self.promoteButton setTitle:@"Promote yourself" forState:UIControlStateNormal];
@@ -547,7 +567,7 @@
         [self.promoteButton setBackgroundImage:[UIImage imageNamed:button] forState:UIControlStateNormal];
            [self.promoteButton addTarget:self action:@selector(addMeHereButtonAction:) forControlEvents:UIControlEventTouchUpInside];
            [backView addSubview:self.promoteButton];
-    //}
+    }
     //    self.promoteButton.hidden=NO;
    
     if (!self.toplabel) {
@@ -571,6 +591,7 @@
         }
         
     }
+        }
 }
 
 /*-(void) createFirstSectionHeader:(CollectionHeaderTitleLabel *)areuseableView{
@@ -623,8 +644,8 @@
     backView.backgroundColor = [UIColor blackColor];
     [areuseableView addSubview:backView];
 
-    isProfilePic=NO;
-    if (isProfilePic==NO) {
+    
+    if (![SingletonClass shareSingleton].profileImg) {
         if (!self.addPhotoButton) {
             
             self.addPhotoButton=[[UIButton alloc]initWithFrame:buttonff];
@@ -643,7 +664,7 @@
             self.toplabel.textAlignment=NSTextAlignmentCenter;
             self.toplabel.lineBreakMode=NSLineBreakByCharWrapping;
             self.toplabel.numberOfLines=0;
-            self.toplabel.text=@"You can't see Favorites if you don't have you profile pic.";
+            self.toplabel.text=@"You can't see Favorites if you don't have your profile pic.";
             [backView addSubview:self.toplabel];
             
        // }

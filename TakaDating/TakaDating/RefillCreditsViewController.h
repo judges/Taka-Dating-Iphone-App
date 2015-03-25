@@ -14,6 +14,7 @@
     NSNumber * total;
     CGSize windowSize;
     NSString * oneMonth,* threeMonth,* sixMonth, *oneYear;
+    NSString * continent,*desc,*amount,* status,*created_at,*paypal_id;
 }
 @property(nonatomic)UILabel * titleLabel,*creditsLabel;
 @property(nonatomic)UIButton * cancelButton;
@@ -21,4 +22,5 @@
 @property(nonatomic, strong, readwrite) PayPalConfiguration *payPalConfig;
 @property(nonatomic, assign, readwrite) BOOL acceptCreditCards;
 @property(nonatomic, strong, readwrite) IBOutlet UIView *successView;
+
 @end

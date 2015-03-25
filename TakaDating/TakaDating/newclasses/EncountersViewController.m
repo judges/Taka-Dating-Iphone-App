@@ -579,7 +579,7 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
     }
     else{
         
-        [UIView animateWithDuration:1 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=CGRectMake(0,0 ,self.screen_width, self.view.frame.size.height);
             self.secondView.hidden=YES;
         } completion:^(BOOL finished) {
@@ -719,7 +719,7 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
     }
     else{
         self.secondView.hidden=YES;
-        [UIView animateWithDuration:1 animations:^{
+        [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=CGRectMake(0,0 , self.screen_width, self.view.frame.size.height);
             self.secondView.hidden=YES;
             // self.profileTableView.hidden=YES;
@@ -920,9 +920,88 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
             }
         }
         if (indexPath.section==1) {
-            if (indexPath.row==0) {
-                cell.textLabel.text=@"Inetrests";
-                cell.imageView.image=[UIImage imageNamed:@"interest_icon.png"];
+            if (indexPath.row==0)
+            {
+                if (interests.count>0) {
+                    UIView * backView=[[UIView alloc]init];
+                    backView.frame=CGRectMake(0, 0,320, cell.contentView.frame.size.height);
+                    
+                    [cell.contentView addSubview:backView];
+                   
+                    
+                    if (interests.count>6) {
+                        //[self createInterestUI:5 indexpath:indexPath];
+                       
+                        for (int i=0;i<4;i++) {
+                            
+                            UIButton * btn1=[[UIButton alloc]init];
+                            btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                            [btn1 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i+i]] forState:UIControlStateNormal];
+                            [btn1 setBackgroundColor:[UIColor clearColor]];
+                            btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                            btn1.layer.borderWidth=0.7;
+                            btn1.layer.cornerRadius=7;
+                            btn1.clipsToBounds=YES;
+                            [btn1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                          
+                            [backView addSubview:btn1];
+                            
+                            UIButton * btn2=[[UIButton alloc]init];
+                            btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                                    [btn2 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i+1]] forState:UIControlStateNormal];
+                                [btn2 setBackgroundColor:[UIColor clearColor]];
+                                    btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                                    [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                                    btn2.layer.borderWidth=0.7;
+                                    btn2.layer.cornerRadius=7;
+                                   btn2.clipsToBounds=YES;
+                                  //  [btn2 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
+                                    [backView addSubview:btn2];
+                            
+                        }
+
+                    }
+                    else{
+                        
+                        int y=0;
+                        int x=0;
+                       
+                       
+                        for (int i=0;i<interests.count;i++) {
+                            UIButton * btn1=[[UIButton alloc]init];
+                            btn1.frame=CGRectMake(0+i*110, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                         [btn1 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i]] forState:UIControlStateNormal];
+                            [btn1 setBackgroundColor:[UIColor clearColor]];
+                            btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                            btn1.layer.borderWidth=0.7;
+                            btn1.layer.cornerRadius=7;
+                            btn1.clipsToBounds=YES;
+                            [btn1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                         
+                            [backView addSubview:btn1];
+                            
+                            UIButton * btn2=[[UIButton alloc]init];
+                            btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                             [btn2 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i+1]] forState:UIControlStateNormal];
+                            [btn2 setBackgroundColor:[UIColor clearColor]];
+                            btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                            [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                            btn2.layer.borderWidth=0.7;
+                            btn2.layer.cornerRadius=7;
+                            btn2.clipsToBounds=YES;
+                          //  [btn2 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
+                            [backView addSubview:btn2];
+                            y=40;
+                            x=cell.contentView.frame.size.width/2+20;
+                        }
+
+                       // [self createInterestUI:interests.count indexpath:indexPath];
+                    }
+                }
+                else{
+                        cell.textLabel.text=@"Inetrests";
+                        cell.imageView.image=[UIImage imageNamed:@"interest_icon.png"];
+                }
             }
         }
     
@@ -933,7 +1012,12 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
+    if(indexPath.section==1){
+        if (!interests.count) {
+            return  row_hh;
+        }
+        return 200;
+    }
     return row_hh;
 }
 
@@ -971,6 +1055,29 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
     
 }
 
+/*#pragma mark- createInterestUI
+-(void)createInterestUI:(int)count indexpath:(NSIndexPath*)index
+{
+    UITableViewCell * cell=[self.profileTableView cellForRowAtIndexPath:index];
+
+    
+   
+   //        UIButton * btn2=[[UIButton alloc]init];
+//        btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 20+y, cell.contentView.frame.size.width/2-40, 40);
+//        [btn2 setTitle:@"interest2" forState:UIControlStateNormal];
+//        [btn2 setBackgroundColor:[UIColor clearColor]];
+//        btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
+//        [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+//        btn2.layer.borderWidth=0.7;
+//        btn2.layer.cornerRadius=7;
+//        btn2.clipsToBounds=YES;
+//        [btn2 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
+//        [backView addSubview:btn2];
+//        
+        y=40;
+        x=cell.contentView.frame.size.width/2+20;
+    }
+}*/
 #pragma -mark callWebServiceForEncounter
 
 -(void)callWebServiceForEncounter{
@@ -1095,19 +1202,32 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
                 else{
                     _profession=[userInfo objectForKey:@"profession"];
                 }
-                NSArray * intrestArr=[enParse objectForKey:@"userInterests"];
-                
-//                NSMutableDictionary * dictInt=[[NSMutableDictionary alloc]init];
-//                for (int j=0; j<intrestArr.count; j++) {
-//                  dictInt=[intrestArr objectAtIndex:j];
-//                    _intrests=[dictInt objectForKey:@"userInterests"];
-//                    
-//                    
-//                }
+                _appearance=[NSString stringWithFormat:@"Heighr:%@ Weight%@ Bodytype:%@ Eyecolor:%@ Haircolor:%@",_height,_weight,_bodyType,_eyeColor,_hairColor ];
+                interests=[enParse objectForKey:@"userInterests"];
+                NSLog(@"interest %@",interests);
+
             }
         }
         
     }
+}
+
+#pragma mark-findLength of string interests
+
+-(CGFloat)findLength:(NSString *)text andHeight:(CGFloat)height
+{
+    UILabel *label = [[UILabel alloc] init];
+    label.text = text;
+    label.font = [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    label.numberOfLines = 0;
+    label.textAlignment=NSTextAlignmentCenter;
+    label.lineBreakMode = NSLineBreakByWordWrapping;
+    
+    // label.frame = CGRectMake(0, 0, 280, 100);
+    CGSize size=[label sizeThatFits:CGSizeMake(FLT_MAX, height)];
+    [label sizeToFit];
+    NSLog(@"width %f",size.width);
+    return size.width;
 }
 
 -(NSString * )getSexuality:(NSString *)value

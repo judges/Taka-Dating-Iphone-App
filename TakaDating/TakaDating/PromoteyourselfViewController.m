@@ -116,7 +116,10 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
     NSLog(@"images count in promote %lu",(unsigned long)[SingletonClass shareSingleton].userImages.count);
-    return [SingletonClass shareSingleton].profileImages.count;
+    if ([SingletonClass shareSingleton].profileImages.count<1) {
+        return 1;
+    }
+    return [SingletonClass shareSingleton].profileImages.count+1;
 }
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
@@ -128,17 +131,16 @@
     NSString *name = @"crm.png";
     
      CustomCollectionCell *customCellView = [[CustomCollectionCell alloc] initWithFrame:cell.bounds];
-    //if(indexPath.row==0)
-    //{
-   //     customCellView.profileImageView.image = [UIImage imageNamed:@"profile_pic_bg.png"];
-   //     customCellView.toggleButton.hidden=YES;
-   // }
-   // else{
+    if(indexPath.row==0)
+    {
+        customCellView.profileImageView.image = [UIImage imageNamed:@"profile_pic_bg.png"];
+        customCellView.toggleButton.hidden=YES;
+    }
+    else{
+        customCellView.toggleButton.hidden=YES;
         NSString * imageUrl;
         if ([SingletonClass shareSingleton].profileImages.count>0) {
-           // imageUrl=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[[SingletonClass shareSingleton].userImages objectAtIndex:indexPath.row]]];
-      //  }
-            NSMutableDictionary * dict=[[SingletonClass shareSingleton].profileImages objectAtIndex:indexPath.row];
+            NSMutableDictionary * dict=[[SingletonClass shareSingleton].profileImages objectAtIndex:indexPath.row-1];
             
             
             if ([[dict objectForKey:@"privacy"]isEqualToString:@"3"]) {
@@ -150,7 +152,7 @@
             NSURL * url=[NSURL URLWithString:imageUrl];
             
         [customCellView.profileImageView  setImageWithURL:url];
-    
+        }
        
     }
     cell.backgroundColor = [UIColor clearColor];

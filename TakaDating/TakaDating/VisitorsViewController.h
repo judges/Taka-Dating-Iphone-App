@@ -10,7 +10,7 @@
 
 @interface VisitorsViewController : UIViewController< UIScrollViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UIActionSheetDelegate>
 {
-    BOOL selectAll,editAll;
+    BOOL selectAll,editAll,awardSanction;
     CGSize windowSize;
     NSMutableArray * viewerID,*viewerName,*viewerImage,*isOnline,*imgCount;
     UIButton * toggleButton;

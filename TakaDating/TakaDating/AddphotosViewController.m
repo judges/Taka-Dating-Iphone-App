@@ -240,14 +240,43 @@
     [afn getDataFromPath:postUrl withParamDataImage:dictParm andImage:image withBlock:^(id response, NSError *error) {
         if (error) {
             NSLog(@"Fail");
+            [[AppDelegate sharedAppDelegate]showToastMessage:@"Image failed to Uploaded successfully"];
         }else{
         
             NSLog(@"Upload Successfull");
             NSLog(@"responsible %@",response);
-
+             [[AppDelegate sharedAppDelegate]showToastMessage:@"Image Uploaded successfully"];
+            [self getAllUploadedImages];
         }
     }];
 }
+-(void)getAllUploadedImages{
+    
+    NSURLResponse * urlResponse=nil;
+    NSError * error=nil;
+    
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/user/user-images/"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    NSArray * json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"uploaded images json %@",json);
+    if (json.count>0) {
+        [SingletonClass shareSingleton].profileImages=(NSArray*)json;
+    }
+    
+    
+}
+
 
 
 #pragma mark- Fecth photo from facebook
@@ -270,18 +299,18 @@
     
     [FBRequestConnection startWithGraphPath:@"me/photos/uploaded" parameters:queryParam HTTPMethod:@"GET" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
         NSArray * resultArr=(NSArray*)result[@"data"];
-        // NSLog(@" facebook photos %@",result[@"data"]);
+      
        
         
-        NSArray * imagesArrCount=[[NSArray alloc]init];
+      
         
         for (int i=0; i<resultArr.count; i++) {
             NSMutableDictionary * images=[resultArr objectAtIndex:i];
-            //  NSLog(@"images21 %@",[images objectForKey:@"images"]);
+           
             NSMutableArray * imagesArr=(NSMutableArray *)[images objectForKey:@"images"];
             
             for (int k=0; k<imagesArr.count; k++) {
-                // NSLog(@"Sources %@ ",[[imagesArr objectAtIndex:k]objectForKey:@"source"]);
+             
                 [[SingletonClass shareSingleton].photosOfUser addObject:[[imagesArr objectAtIndex:k]objectForKey:@"source"]];
                 
             }
@@ -294,8 +323,6 @@
 
         }
        
-        //[[SingletonClass shareSingleton].photosOfUser addObjectsFromArray:imagesArrCount];
-        // NSLog(@" singleTon%@",[SingletonClass shareSingleton].photosOfUser);
         if ([SingletonClass shareSingleton].photosOfUser.count>0) {
             
             if (self.photopicker) {

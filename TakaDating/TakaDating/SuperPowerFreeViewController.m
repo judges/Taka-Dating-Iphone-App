@@ -118,7 +118,8 @@
 #pragma mark-Cancel Button
 
 -(void)cancelButtonAction:(id)sender{
-    [[[[[UIApplication sharedApplication]keyWindow]subviews]lastObject]removeFromSuperview];
+    [self.navigationController popViewControllerAnimated:YES];
+//    [[[[[UIApplication sharedApplication]keyWindow]subviews]lastObject]removeFromSuperview];
 }
 - (void)didReceiveMemoryWarning
 {

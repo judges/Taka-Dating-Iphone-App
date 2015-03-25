@@ -25,4 +25,6 @@
 @property (nonatomic) UIButton *cancelButton;
 @property(nonatomic)UITextField * userText,*passwordText;
 @property (nonatomic, strong) UIActivityIndicatorView *refreshActivityIndicator;
+
+-(void)SignInButtonAction;
 @end

@@ -32,6 +32,8 @@
         [self.containerView addSubview: self.deleteButton];
         
         self.imgView=[[UIImageView alloc]init];
+        self.imgView.layer.cornerRadius=12.0;
+        self.imgView.clipsToBounds=YES;
         [self.containerView addSubview:self.imgView];
         
     }

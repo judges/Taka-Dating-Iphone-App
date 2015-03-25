@@ -172,7 +172,7 @@
         cell=[[AddInterestTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
                 [cell.cellButton addTarget:self action:@selector(cellButtonAction:) forControlEvents:UIControlEventTouchDragInside];
     }
-    
+   // NSLog(@"number of interersts %d",[SingletonClass shareSingleton].selectedIntName.count);
     NSString * normal,* select;
     cell.cellLabel.text=[subData objectAtIndex:indexPath.row];
     if(UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad){
@@ -197,11 +197,18 @@
     [cell.cellButton setImage:[UIImage imageNamed:normal] forState:UIControlStateNormal];
     [cell.cellButton setImage:[UIImage imageNamed:select] forState:UIControlStateSelected];
     cell.cellButton.tag=indexPath.row;
-    if ([[[SingletonClass  shareSingleton].intr_name objectAtIndex:indexPath.row]isEqualToString:cell.cellLabel.text]) {
-        
-        [self.selectedArray addObject:indexPath];
-        
+
+    
+    
+    
+    for (int i=0; i<[SingletonClass  shareSingleton].selectedIntName.count; i++) {
+        if ([[[SingletonClass  shareSingleton].selectedIntName objectAtIndex:i]isEqualToString:cell.cellLabel.text]) {
+            
+            [self.selectedArray addObject:indexPath];
+            
+        }
     }
+    
     
     @try {
         if ([self.selectedArray containsObject:indexPath]) {
@@ -227,11 +234,7 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     AddInterestTableViewCell * cell=(AddInterestTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
-//    cell.containerView.frame=CGRectMake(0, 0, windowSize.width, row_hh);
-//    cell.cellLabel.textColor=[UIColor blackColor];
-//    cell.cellLabel.frame=CGRectMake(60, 10, 200, 30);
-//    cell.cellButton.frame=CGRectMake(20, 10, 15, 15);
-//
+
       NSString * normal,* select;
     if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
         normal=@"select_normal_ipad.png";
@@ -248,27 +251,29 @@
         [cell.cellButton setImage:[UIImage imageNamed:normal]forState:UIControlStateNormal];
         [cell.cellButton setSelected:NO];
         [self.selectedArray removeObject:indexPath];
-      //  for (int i=0;subData.count; i++) {
-            for (int j=0; j<[SingletonClass shareSingleton].intr_name.count; j++) {
-                if ([[[SingletonClass shareSingleton].intr_name objectAtIndex:j]isEqualToString:[subData objectAtIndex:indexPath.row]]) {
-                    [[SingletonClass shareSingleton].intr_name removeObjectAtIndex:indexPath.row];
-                    [[SingletonClass shareSingleton].intr_cat_id removeObjectAtIndex:indexPath.row];
+   
+            for (int j=0; j<[SingletonClass shareSingleton].selectedIntName.count; j++) {
+                if ([[[SingletonClass shareSingleton].selectedIntName objectAtIndex:j]isEqualToString:[subData objectAtIndex:indexPath.row]]) {
+                    [[SingletonClass shareSingleton].selectedIntName removeObjectAtIndex:indexPath.row];
+                    [[SingletonClass shareSingleton].selectedIntId removeObjectAtIndex:indexPath.row];
                     [self.addInterestTable reloadData];
                 }
             }
-       // }
+       
         NSLog(@" %@",[subData objectAtIndex:indexPath.row]);
     }
     else{
         [cell.cellButton setImage:[UIImage imageNamed:select]forState:UIControlStateSelected];
         [cell.cellButton setSelected:YES];
         [self.selectedArray addObject:indexPath];
-        [[SingletonClass shareSingleton].intr_name addObject:[subData objectAtIndex:indexPath.row]];
-        [[SingletonClass shareSingleton].intr_cat_id addObject:[self.intr_id_arr objectAtIndex:indexPath.row]];
+        [[SingletonClass shareSingleton].selectedIntName addObject:[subData objectAtIndex:indexPath.row]];
+        [[SingletonClass shareSingleton].selectedIntId addObject:[self.intr_id_arr objectAtIndex:indexPath.row]];
         NSLog(@" %@",[subData objectAtIndex:indexPath.row]);
-        
+      
         
     }
+    NSLog(@" ids  %@",[SingletonClass shareSingleton].selectedIntId );
+    NSLog(@" names %@",[SingletonClass shareSingleton].selectedIntName);
 }
 
 

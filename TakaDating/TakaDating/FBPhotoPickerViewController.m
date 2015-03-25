@@ -68,7 +68,7 @@
     [self.view addSubview:self.cancelButton];
     
     self.saveButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    self.saveButton.frame = CGRectMake(size.width/2-70, 25, 60, 25);
+    self.saveButton.frame = CGRectMake(size.width-70, 25, 60, 25);
     [self.saveButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.saveButton.titleLabel.font = [UIFont systemFontOfSize:15];
     [self.saveButton setTitle:@"Save" forState:UIControlStateNormal];
@@ -173,24 +173,53 @@
     
     UIImage * image=[UIImage imageWithData:imageData];
     
-   // NSLog(@"nsdata of image %@",imageData);
+   
     NSMutableDictionary * dictParm=[[NSMutableDictionary alloc]init];
     [dictParm setValue:[SingletonClass shareSingleton].userID forKey:@"id"];
-    //[dictParm setValue:@"0"forKey:@"id"];
-   // [dictParm setValue:imageData forKey:@"image_upload"];
-    NSString * postUrl=@"http://taka.dating/mobile/uploadImage";
+   
+    NSString * postUrl=@"http://23.238.24.26/mobi/upload-mobile";
     AFNHelper * afn=[[AFNHelper alloc]init];
     
     [afn getDataFromPath:postUrl withParamDataImage:dictParm andImage:image withBlock:^(id response, NSError *error) {
         if (error) {
             NSLog(@"Fail");
+            [[AppDelegate sharedAppDelegate]showToastMessage:@"Image Uploaded successfully"];
         }else{
             
             NSLog(@"Upload Successfull");
             NSLog(@"responsible %@",response);
+            [[AppDelegate sharedAppDelegate]showToastMessage:@"Image Uploaded successfully"];
+            [self getAllUploadedImages];
             
         }
     }];
+}
+
+
+-(void)getAllUploadedImages{
+    
+    NSURLResponse * urlResponse=nil;
+    NSError * error=nil;
+    
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/user/user-images/"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    NSArray* json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    if (json.count>0) {
+        [SingletonClass shareSingleton].profileImages=(NSArray*)json;
+    }
+
+    
 }
 
 

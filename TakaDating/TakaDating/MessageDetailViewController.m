@@ -51,8 +51,9 @@
 }
 -(void)showSecievedMsg{
     [tView reloadData];
-    [[NSNotificationCenter defaultCenter]removeObserver:self];
-}
+    
+   
+    }
 
 - (void)viewDidLoad
 {
@@ -82,7 +83,7 @@
 
 -(void)createUI{
     self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    CGSize windowSize=[UIScreen mainScreen].bounds.size;
+     windowSize=[UIScreen mainScreen].bounds.size;
     
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, self.view.frame.size.width, 55);
@@ -91,7 +92,8 @@
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(100, 20, self.view.frame.size.width-200, 35)];
+    self.titleLabel = [[UILabel alloc] init];
+    self.titleLabel.frame= CGRectMake(100, 20, self.view.frame.size.width-200, 35);
     self.titleLabel.textAlignment = NSTextAlignmentCenter;
     self.titleLabel.textColor = [UIColor whiteColor];
     self.titleLabel.font = [UIFont boldSystemFontOfSize:20];
@@ -122,33 +124,75 @@
     [self.profileButton addTarget:self action:@selector(profileButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.profileButton];
     
-   
-    
-    messageField =[[UITextField alloc]init];
-    messageField.frame=CGRectMake(0, windowSize.height-55,windowSize.width, 50);
-    messageField.layer.borderColor=[[UIColor blackColor]CGColor];
-    messageField.layer.borderWidth=1.0;
-    [self.view addSubview:messageField];
-    messageField.delegate=self;
-    messages = [[NSMutableArray alloc ] init];
-}
--(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:YES];
+    
+    scrollView=[[UIScrollView alloc]init];
+    scrollView.frame=CGRectMake(0, 55, windowSize.width, windowSize.height);
+    [self.view addSubview:scrollView];
+    
+    scrollView.contentSize=CGSizeMake(windowSize.width, windowSize.height);
+    
     tView =[[UITableView alloc]init];
-    CGSize windowSize=[UIScreen mainScreen].bounds.size;
-    tView.frame=CGRectMake(0, 55,windowSize.width , windowSize.height-110);
+   
+    tView.frame=CGRectMake(0, 0,scrollView.frame.size.width , scrollView.frame.size.height-110);
     tView.delegate=self;
     tView.dataSource=self;
     tView.separatorStyle=UITableViewCellSelectionStyleNone;
     tView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     [tView setShowsHorizontalScrollIndicator:NO];
-    [self.view addSubview:tView];
+    [scrollView addSubview:tView];
+   
+    
+    messageField =[[UITextField alloc]init];
+    messageField.frame=CGRectMake(0, scrollView.frame.size.height-110,scrollView.frame.size.width-50, 50);
+    messageField.backgroundColor=[UIColor whiteColor];
+    messageField.layer.cornerRadius=7;
+    messageField.clipsToBounds=YES;
+    [scrollView addSubview:messageField];
+    messageField.delegate=self;
+    messages = [[NSMutableArray alloc ] init];
+    
+    
+    UIButton * sendButton=[UIButton buttonWithType:UIButtonTypeCustom];
+    sendButton.frame=CGRectMake(scrollView.frame.size.width-45, scrollView.frame.size.height-105, 40, 40);
+    sendButton.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"send_social.png"]];
+    [sendButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
+    [scrollView addSubview:sendButton];
+    
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        layer.frame = CGRectMake(0, 0, windowSize.width, 75);
+
+          scrollView.frame=CGRectMake(0, 75, windowSize.width, windowSize.height);
+        
+            self.titleLabel.frame= CGRectMake(windowSize.width/2-270, 20, windowSize.width-200, 40);
+        self.profileButton.frame = CGRectMake(windowSize.width-150, 25, 120, 40);
+        self.cancelButton.frame = CGRectMake(windowSize.width/2-350, 25, 120, 40);
+        self.profileButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+         self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+         self.titleLabel.font = [UIFont boldSystemFontOfSize:30];
+        
+        tView.frame=CGRectMake(0, 0,scrollView.frame.size.width , scrollView.frame.size.height-130);
+        messageField.frame=CGRectMake(0, scrollView.frame.size.height-130,scrollView.frame.size.width-50, 50);
+         sendButton.frame=CGRectMake(scrollView.frame.size.width-45, scrollView.frame.size.height-125, 40, 40);
+    }
+}
+-(void)viewWillAppear:(BOOL)animated{
+  
 }
 
 #pragma mark-
 #pragma mark- send message
 - (void)sendMessage {
-    
+    [messageField endEditing:YES];
+   
+    [UIView animateWithDuration:0.5 animations:^{
+        if(UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()){
+             scrollView.frame=CGRectMake(0, 75, windowSize.width, windowSize.height);
+        }
+        else{
+            scrollView.frame=CGRectMake(0, 55, windowSize.width, windowSize.height);
+        }
+    }];
     NSString *messageStr = messageField.text;
     
     if([messageStr length] > 0) {
@@ -169,7 +213,7 @@
         
         XMPPMessage *msg = [XMPPMessage message];
         [msg addAttributeWithName:@"type" stringValue:@"chat"];
-        [msg addAttributeWithName:@"to" stringValue:chatWithUser];
+        [msg addAttributeWithName:@"to" stringValue:[NSString stringWithFormat:@"%@@takadating.com",chatWithUser]];
         NSXMLElement *body = [NSXMLElement elementWithName:@"body" stringValue:messageStr];
         [msg addChild:body];
         //[[self xmppStream] sendElement:msg];
@@ -196,13 +240,14 @@
     NSIndexPath *topIndexPath = [NSIndexPath indexPathForRow:[SingletonClass shareSingleton].messages.count-1                                                               inSection:0];
     
     [tView scrollToRowAtIndexPath:topIndexPath
-                atScrollPosition:UITableViewScrollPositionMiddle
+                atScrollPosition:UITableViewScrollPositionBottom
                          animated:YES];
     }
 
 
 
 -(void)profileButtonAction:(id)sender{
+    [SingletonClass shareSingleton].fromChat=YES;
     if(self.profileVC)
         
     {
@@ -314,8 +359,30 @@
 
 -(BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
-    [self sendMessage];
+    [UIView animateWithDuration:0.5 animations:^{
+        if(UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()){
+            scrollView.frame=CGRectMake(0, 75, windowSize.width, windowSize.height);
+        }
+        else{
+            scrollView.frame=CGRectMake(0, 55, windowSize.width, windowSize.height);
+        }
+    }];
+    //[self sendMessage];
     return YES;
+}
+
+-(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    
+       
+        [UIView animateWithDuration:0.5 animations:^{
+//            if (windowSize.height<500) {
+//                scrollView.frame = CGRectMake(scrollView.frame.origin.x, (scrollView.frame.origin.y - 170.0), scrollView.frame.size.width, scrollView.frame.size.height);
+//            }
+//            else{
+                scrollView.frame = CGRectMake(scrollView.frame.origin.x, (scrollView.frame.origin.y - 220.0), scrollView.frame.size.width, scrollView.frame.size.height);
+          //  }
+    }];
+    return  YES;
 }
 
 

@@ -144,7 +144,7 @@
             return 1;
         }
         else{
-            return privacyTwoPic.count;
+            return privacyTwoPic.count+1;
         }
     }
     else if (section==1)
@@ -153,7 +153,7 @@
             return 1;
         }
         else{
-            return privacyZeroPic.count;
+            return privacyZeroPic.count+1;
         }
     }
     else{
@@ -161,7 +161,7 @@
             return 1;
         }
         else{
-            return privacyOnePic.count;
+            return privacyOnePic.count+1;
         }
     }
    
@@ -187,29 +187,38 @@
     }*/
     NSURL * url;
     if (indexPath.section==0) {
-        if (privacyTwoPic.count<1) {
+        if (indexPath.row==0) {
             customCellView.profileImageView.image = [UIImage imageNamed:@"profile_pic_bg.png"];
         }
         else{
-                url=[NSURL URLWithString:[NSString stringWithString:[privacyTwoPic objectAtIndex:indexPath.row]]];
+             if (privacyTwoPic.count>0) {
+                url=[NSURL URLWithString:[NSString stringWithString:[privacyTwoPic objectAtIndex:indexPath.row-1]]];
                 [customCellView.profileImageView setImageWithURL:url];
+             }
         }
     }
     else if (indexPath.section==1)
     {
+        if (indexPath.row==0) {
+            customCellView.profileImageView.image = [UIImage imageNamed:@"profile_pic_bg.png"];
+        }
+        else{
         if (privacyZeroPic.count>0) {
-            url=[NSURL URLWithString:[NSString stringWithString:[privacyZeroPic objectAtIndex:indexPath.row]]];
+            url=[NSURL URLWithString:[NSString stringWithString:[privacyZeroPic objectAtIndex:indexPath.row-1]]];
             [customCellView.profileImageView setImageWithURL:url];
-
+        }
         }
     }
     else{
-        if (privacyTwoPic.count<1) {
+        if (indexPath.row==0) {
            customCellView.profileImageView.image = [UIImage imageNamed:@"profile_pic_bg.png"];
         }
         else{
-                url=[NSURL URLWithString:[NSString stringWithString:[privacyOnePic objectAtIndex:indexPath.row]]];
+              if (privacyOnePic.count>0) {
+                url=[NSURL URLWithString:[NSString stringWithString:[privacyOnePic objectAtIndex:indexPath.row-1]]];
                 [customCellView.profileImageView setImageWithURL:url];
+              }
+            
         }
 
     }

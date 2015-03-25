@@ -259,8 +259,7 @@
 
 -(void)createScrollUI{
     
-    //NSArray * images=[NSArray arrayWithObjects:@"imag1.jpg",@"imag2.jpg",@"imag3.jpg",@"imag4.jpg",@"imag5.jpg",nil];
-    NSString * camera,*online;
+    NSString *online;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         
         imageScroll=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, self.parentView.frame.size.width, self.parentView.frame.size.height-150)];
@@ -285,8 +284,8 @@
     NSMutableArray * arrOfImages=[[NSMutableArray alloc]init];
      NSString * imageUrl;
     
-    NSLog(@"arr count %lu",(unsigned long)[SingletonClass shareSingleton].profileImages.count);
-   
+    //NSLog(@"arr count %lu",(unsigned long)[SingletonClass shareSingleton].profileImages.count);
+    if([SingletonClass shareSingleton].profileImages){
     for (int s=0; s<[SingletonClass shareSingleton].profileImages.count; s++) {
         NSMutableDictionary * dict=[[SingletonClass shareSingleton].profileImages objectAtIndex:s];
      
@@ -317,6 +316,7 @@
         //NSURL * url =[NSURL URLWithString:imageUrl];
         [profileImg setImageWithURL:url];
         [imageScroll addSubview:profileImg];
+    }
     }
     imageScroll.contentSize=CGSizeMake(imageScroll.frame.size.width*arrOfImages.count, imageScroll.frame.size.height);
     [self.parentView addSubview:imageScroll];
@@ -480,13 +480,15 @@ NS_AVAILABLE_IOS(5_0){
             else{
            
             if ([UIScreen mainScreen].bounds.size.height>500) {
-                ff=CGRectMake(0, 220, windowSize.width, 450);
+                ff=CGRectMake(0, 220, windowSize.width, 300);
             }
             else{
                 ff=CGRectMake(0, 125, windowSize.width, 450);
             }
             }
             int tagValue=1;
+            self.selectedIndex=0;
+            self.state=YES;
             [self createTableView:ff tagvalue: tagValue];
             self.swipe.direction = UISwipeGestureRecognizerDirectionDown;
         }];
@@ -572,15 +574,85 @@ NS_AVAILABLE_IOS(5_0){
         [self.secondView addSubview:self.creditsTableView];
         
     }
+}
+
+#pragma mark- show all Awards 
+
+-(void)showAwards{
     
     
+    //Activate Aeards here
+    NSError* error=nil;
+    NSURLResponse * urlResponse=nil;
+    NSString * firstRun=[[NSUserDefaults standardUserDefaults]objectForKey:@"profileFirstRun"];
+    if (!firstRun) {
+       
+        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/award/activate-awards/"];
+        
+        NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+        [request setHTTPMethod:@"POST"];
+        [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+        
+        NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+        
+        [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+        
+        NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        
+        if (data==nil) {
+            return;
+        }
+        
+        id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        if ([[json objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]|| [[json objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:197]]) {
+            [self getAllAwards];
+            [[NSUserDefaults standardUserDefaults]setObject:@"0" forKey:@"profileFirstRun"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+        }
+        
+        
+        
+       
+    }
+    else
+    {
+        [self getAllAwards];
+    }
+}
+
+#pragma mark- get All Awards
+
+-(void)getAllAwards{
+
+    // check Awards
+    NSError* error=nil;
+    NSURLResponse * urlResponse=nil;
     
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/award/show-awards/"];
     
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    
+    if (data==nil) {
+        return;
+    }
+    
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     
 }
+
+
 #pragma mark- profile button action
 
 -(void)profileButtonClick:(UIButton*)sender{
+    [NSThread detachNewThreadSelector:@selector(showAwards) toTarget:self withObject:nil];
     [NSThread detachNewThreadSelector:@selector(getUserinterests) toTarget:self withObject:nil];
     int tagValue=(int)[sender tag];
     CGRect frame;
@@ -653,7 +725,14 @@ NS_AVAILABLE_IOS(5_0){
     
     //superPower = [[SuperPowerViewController alloc] initWithNibName:@"SuperPowerViewController" bundle:nil];
     if (UI_USER_INTERFACE_IDIOM()!=UIUserInterfaceIdiomPad) {
-        superPower=[[SuperPowerViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height)];
+        if (windowSize.height>500) {
+            superPower=[[SuperPowerViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height)];
+
+        }
+        else{
+            superPower=[[SuperPowerViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height-150)];
+        
+            }
     }
     else{
         superPower=[[SuperPowerViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height+45)];
@@ -680,7 +759,13 @@ NS_AVAILABLE_IOS(5_0){
     
   // photoVC = [[PhotoViewController alloc] initWithNibName:@"PhotoViewController" bundle:nil];
     if (UI_USER_INTERFACE_IDIOM()!=UIUserInterfaceIdiomPad) {
-        photoVC=[[PhotoViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height)];
+        if(windowSize.height>500)
+        {
+            photoVC=[[PhotoViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height)];
+        }
+        else{
+            photoVC=[[PhotoViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height-150)];
+        }
     }
     else{
         photoVC=[[PhotoViewController alloc]initWithFrame:CGRectMake(0, 0, self.secondView.frame.size.width, self.secondView.frame.size.height+45)];
@@ -694,14 +779,15 @@ NS_AVAILABLE_IOS(5_0){
 #pragma  mark- animation
 
 -(void)animationMethod:(int)tagValue frame:(CGRect)frame{
-   
+    if (self.state==NO || tagValue==self.selectedIndex) {
+        
     
-    if((self.parentView.frame.origin.y==0)//|| self.state==YES)
-       )//&& self.selectedIndex!=tagValue)
+    
+    if(self.parentView.frame.origin.y==0)
     {
         
         [UIView animateWithDuration:0.5 animations:^{
-            self.parentView.frame=frame;//CGRectMake(0, -300, self.screen_width, self.view.frame.size.height);
+            self.parentView.frame=frame;
         } completion:^(BOOL finished) {
             CGRect  ff;
             if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
@@ -747,19 +833,83 @@ NS_AVAILABLE_IOS(5_0){
     }
     else{
         self.secondView.hidden=YES;
+        [self.profileTableView removeFromSuperview];
+        [self.creditsTableView removeFromSuperview];
+        [photoVC.view removeFromSuperview];
+        [superPower.view removeFromSuperview];
+        self.profileTableView=nil;
+        self.creditsTableView=nil;
+        photoVC=nil;
+        superPower=nil;
+        self.secondView=nil;
         [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=CGRectMake(0,0 , self.screen_width, windowSize.height);
-            self.secondView.hidden=YES;
-           // self.profileTableView.hidden=YES;
-           // photoVC.view.hidden=YES;
-           // self.creditsTableView.hidden=YES;
-          //  superPower.view.hidden=YES;
         } completion:^(BOOL finished) {
             self.swipe.direction=UISwipeGestureRecognizerDirectionUp;
             
         }];
         self.state=NO;
     }    self.selectedIndex=tagValue;
+    }
+    else{
+       
+        self.secondView.hidden=YES;
+        [self.profileTableView removeFromSuperview];
+        [self.creditsTableView removeFromSuperview];
+        [photoVC.view removeFromSuperview];
+        [superPower.view removeFromSuperview];
+        self.profileTableView=nil;
+        self.creditsTableView=nil;
+        photoVC=nil;
+        superPower=nil;
+        self.secondView=nil;
+        CGRect  ff;
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            ff=CGRectMake(0, windowSize.height/2+55, windowSize.width,(windowSize.height-windowSize.height/2-80));
+        }
+        else{
+            
+            if ([UIScreen mainScreen].bounds.size.height>500) {
+                ff=CGRectMake(0, 220, windowSize.width, 300);
+            }
+            else{
+                ff=CGRectMake(0, 125, windowSize.width, 450);
+            }
+        }
+        if (tagValue!=4&&tagValue!=2) {
+            CGRect frame;
+            
+            if (UI_USER_INTERFACE_IDIOM()!=UIUserInterfaceIdiomPad) {
+                
+                
+                if (windowSize.height>500) {
+                    frame=CGRectMake(0, 220, windowSize.width, 300);
+                    [self createTableView:frame tagvalue: tagValue];
+                }
+                else{
+                    [self createTableView:ff tagvalue: tagValue];
+                }
+            }
+            else{
+                
+                [self createTableView:ff tagvalue: tagValue];
+            }
+            
+        }
+        else if(tagValue==4){
+            
+            [self createSuperPowerView:ff];
+        }
+        else{
+           
+            [self createPhotoView:ff];
+        }
+        self.swipe.direction = UISwipeGestureRecognizerDirectionDown;
+        self.state=YES;
+         self.selectedIndex=tagValue;
+    }
+    
+    
     
 }
 
@@ -1038,86 +1188,89 @@ NS_AVAILABLE_IOS(5_0){
                 
                 if (indexPath.row==0) {
                     
-                    UIView * backView=[[UIView alloc]init];
-                    backView.frame=CGRectMake(0, 0,320, cell.contentView.frame.size.height);
-                    //backView.backgroundColor=[UIColor redColor];
-                    [cell.contentView addSubview:backView];
-                    UIButton * btn1=[[UIButton alloc]init];
-                    btn1.frame=CGRectMake(20, 20, cell.contentView.frame.size.width/2-40, 40);
-                    [btn1 setTitle:@"interest1" forState:UIControlStateNormal];
-                    [btn1 setBackgroundColor:[UIColor clearColor]];
-                    btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
-                    btn1.layer.borderWidth=0.7;
-                    btn1.layer.cornerRadius=7;
-                    btn1.clipsToBounds=YES;
-                    [btn1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                    [btn1 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
-                    [backView addSubview:btn1];
-                    
-                    UIButton * btn2=[[UIButton alloc]init];
-                    btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 20, cell.contentView.frame.size.width/2-40, 40);
-                    [btn2 setTitle:@"interest2" forState:UIControlStateNormal];
-                    [btn2 setBackgroundColor:[UIColor clearColor]];
-                    btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
-                    [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
-                    btn2.layer.borderWidth=0.7;
-                    btn2.layer.cornerRadius=7;
-                    btn2.clipsToBounds=YES;
-                    [btn2 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
-                    [backView addSubview:btn2];
-                    
-                    UILabel * lable=[[UILabel alloc]init];
-                    lable.frame=CGRectMake(cell.frame.size.width/2-140, 80, cell.frame.size.width-40, 20);
-                    lable.text=@"Tell about your interests";
-                    [backView addSubview:lable];
-                    
-                    /*int y=20;
-                    if ([SingletonClass shareSingleton].intr_name.count>5) {
-                        UIScrollView * scroll=[[UIScrollView alloc]initWithFrame:CGRectMake(0, 0, cell.contentView.frame.size.width, cell.contentView.frame.size.height)];
-                        [cell.contentView addSubview:scroll];
-                        scroll.contentSize=CGSizeMake(cell.frame.size.width, cell.contentView.frame.size.height);
-                        CGFloat height=50;
-                        CGFloat cellWdth=0;
-                        UILabel * interestLbl=[[UILabel alloc]init];
-
-                        for (int s=0; s<[SingletonClass shareSingleton].intr_name.count; s++) {
-                            if (s==0) {
-                                
-                            
-                                CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:50];
-                              
-                            
-                            cellWdth+=width;
- 
-                                interestLbl.frame=CGRectMake (20, 3, width+20,30);
-                            }
-                            else
-                            {
-                                CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:50];
-                                
-                                cellWdth+=width;
-                                
-                                interestLbl.frame=CGRectMake (10+(s*cellWdth), 3+y, width+20,30);
-                            }
+                    if ([SingletonClass shareSingleton].intr_name.count>0) {
+                        int y=0;
+                        int x=0;
+                        UIView * backView=[[UIView alloc]init];
+                        backView.frame=CGRectMake(0, 0,cell.frame.size.width, cell.contentView.frame.size.height);
                         
-                        
-                            interestLbl.text=[SingletonClass shareSingleton].intr_name[s];
-                            NSLog(@"interest string %@",interestLbl.text);
-                            interestLbl.textColor=[UIColor blackColor];
-                            interestLbl.backgroundColor=[UIColor colorWithRed:(CGFloat)224/255 green:(CGFloat)219/255 blue:(CGFloat)219/255 alpha:1.0];
-                            interestLbl.textAlignment=NSTextAlignmentCenter;
-                            interestLbl.font=[UIFont boldSystemFontOfSize:12];
-                            [scroll addSubview:interestLbl];
-                           
+                        [cell.contentView addSubview:backView];
+                                                
+                        if ([SingletonClass shareSingleton].intr_name.count>6) {
+                            //[self createInterestUI:5 indexpath:indexPath];
+                            
+                            for (int i=0;i<5;i++) {
+                                
+                                UIButton * btn1=[[UIButton alloc]init];
+                                btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                                [btn1 setTitle:@"interest1" forState:UIControlStateNormal];
+                                [btn1 setBackgroundColor:[UIColor clearColor]];
+                                btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                                btn1.layer.borderWidth=0.7;
+                                btn1.layer.cornerRadius=7;
+                                btn1.clipsToBounds=YES;
+                                [btn1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                                [btn1 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
+                                [backView addSubview:btn1];
+                                
+                                UIButton * btn2=[[UIButton alloc]init];
+                                btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                                [btn2 setTitle:@"interest2" forState:UIControlStateNormal];
+                                [btn2 setBackgroundColor:[UIColor clearColor]];
+                                btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                                [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                                btn2.layer.borderWidth=0.7;
+                                btn2.layer.cornerRadius=7;
+                                btn2.clipsToBounds=YES;
+                                [btn2 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
+                                [backView addSubview:btn2];
+                                
                             }
-                        UITapGestureRecognizer * gesture=[[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(moveToInterestView:)];
-                        [scroll addGestureRecognizer:gesture];
-                       
+                            
                         }
+                        else{
+                            
+                            int y=0;
+                            int x=0;
+                            
+                            
+                            for (int i=0;i<[SingletonClass shareSingleton].intr_name.count;i++) {
+                                UIButton * btn1=[[UIButton alloc]init];
+                                btn1.frame=CGRectMake(0+i*110, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                                [btn1 setTitle:@"interest1" forState:UIControlStateNormal];
+                                [btn1 setBackgroundColor:[UIColor clearColor]];
+                                btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                                btn1.layer.borderWidth=0.7;
+                                btn1.layer.cornerRadius=7;
+                                btn1.clipsToBounds=YES;
+                                [btn1 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                                [btn1 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
+                                [backView addSubview:btn1];
+                                
+                                UIButton * btn2=[[UIButton alloc]init];
+                                btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                                [btn2 setTitle:@"interest2" forState:UIControlStateNormal];
+                                [btn2 setBackgroundColor:[UIColor clearColor]];
+                                btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
+                                [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
+                                btn2.layer.borderWidth=0.7;
+                                btn2.layer.cornerRadius=7;
+                                btn2.clipsToBounds=YES;
+                                [btn2 addTarget:self action:@selector(moveToInterestView) forControlEvents:UIControlEventTouchUpInside];
+                                [backView addSubview:btn2];
+
+                                
+                                y=40;
+                                x=cell.contentView.frame.size.width/2+20;
+                            }
+                            
+                            // [self createInterestUI:interests.count indexpath:indexPath];
+                        }
+                    }
                     else{
                         cell.textLabel.text=@"Inetrests";
                         cell.imageView.image=[UIImage imageNamed:@"interest_icon.png"];
-                    }*/
+                    }
                 }
             
             
@@ -1226,9 +1379,8 @@ NS_AVAILABLE_IOS(5_0){
            
         
         if ([SingletonClass shareSingleton].intr_name.count>0) {
-            CGFloat height=50;
-            CGFloat cellWdth=0;
-            
+            return  200;
+           /*
             for (int s=0; s<[SingletonClass shareSingleton].intr_name.count; s++) {
                 
                 CGFloat width = [self findLength:[SingletonClass shareSingleton].intr_name[s] andHeight:80];
@@ -1237,8 +1389,13 @@ NS_AVAILABLE_IOS(5_0){
                     height+=80;
                     return height;
                 }
-            }
+            }*/
         }
+            else
+            {
+                return row_hh;
+            }
+        //}
         }
         if (indexPath.section==3) {
             if (indexPath.row==5) {
@@ -1318,14 +1475,14 @@ NS_AVAILABLE_IOS(5_0){
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
    
     if (indexPath.section==0) {
-        if (indexPath.row==1) {
+      /*  if (indexPath.row==1) {
             if (superPowerProfile) {
                 superPowerProfile=nil;
             }
             superPowerProfile = [[SuperPowerProfileViewController alloc] initWithNibName:@"SuperPowerProfileViewController" bundle:nil];
            // [self.navigationController popViewControllerAnimated:YES];
             [appdelegate.window addSubview:superPowerProfile.view];
-        }
+        }*/
        
     }
 
@@ -1474,6 +1631,9 @@ NS_AVAILABLE_IOS(5_0){
     NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
     [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
     NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return 0;
+    }
     
     id parse =[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSLog(@" parse user selected interests-==-%@",parse);

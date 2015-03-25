@@ -22,9 +22,10 @@
     NSMutableArray	*messages;
     NSMutableArray *turnSockets;
     UIButton * closeBtn,* saveBtn;
-    
+    CGSize    windowSize;
     // XMPPStream *xmppStream;
     XMPPReconnect * xmppReconnect;
+    UIScrollView * scrollView;
    
 }
 
@@ -35,10 +36,10 @@
 - (id) initWithUser:(NSString *) userName;
 - (void) sendMessage;
 - (void) closeChat;
-
+-(void)showSecievedMsg;
 
 
 @property(nonatomic,strong)NSString * titleStr,* userId;
 @property(nonatomic)UILabel * titleLabel;
-@property(nonatomic)UIButton * cancelButton,*profileButton;
+@property(nonatomic)UIButton * cancelButton,*profileButton,*sendButton;
 @end

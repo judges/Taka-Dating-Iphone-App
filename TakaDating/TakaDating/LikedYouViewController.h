@@ -12,7 +12,7 @@
 {
     NSMutableArray * sex,* imageCount,* isOnline,*displayName,*useriId,*thumbanailUrl;
     CGSize windowSize;
-    BOOL editAll,selectAll;
+    BOOL editAll,selectAll,awardSanction;
     UIButton * toggleButton;
     NSMutableArray * cellSelectedArr;
 }

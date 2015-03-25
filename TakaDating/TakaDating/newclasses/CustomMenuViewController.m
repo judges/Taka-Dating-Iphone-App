@@ -265,7 +265,7 @@
     self.edit.titleLabel.font=[UIFont systemFontOfSize:fontSize];
     self.edit.clipsToBounds=YES;
     [ self.edit addTarget:self action:@selector(editButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [self.headerView addSubview: self.edit];
+   // [self.headerView addSubview: self.edit];
     
     self.cancel=[[UIButton alloc]init];
     self.cancel.frame=CGRectMake(25, 25, 70, 25);
@@ -402,7 +402,7 @@
     }
     else{
         [UIView animateWithDuration:.5 animations:^{
-            if (UI_USER_INTERFACE_IDIOM()==UI_USER_INTERFACE_IDIOM()) {
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
                 self.mainsubView.frame = CGRectMake(320, 0, self.view.frame.size.width, self.screen_height);
             }
             else{
@@ -521,7 +521,9 @@
             if (indexPath.row==0) {
                 cell.textLabel.text = [NSString stringWithFormat:@"  %@",[(UIViewController *)[self.viewControllers objectAtIndex:2] title]];
                 NSURL * url=[NSURL URLWithString:[SingletonClass shareSingleton].profileImg];
-                [cell.imageView setImageWithURL:url];
+                NSData * imageData=[NSData dataWithContentsOfURL:url];
+                cell.imageView.image=[UIImage imageWithData:imageData];
+               // [cell.imageView setImageWithURL:url];
             }
         }
              if (indexPath.row==2) {
@@ -689,12 +691,12 @@
                
                  [[NSNotificationCenter defaultCenter]postNotificationName:@"fetchUserList" object:nil userInfo:nil];
             }
-            // [self getSelectedViewControllers:newViewController];
+             [self getSelectedViewControllers:newViewController];
            
             [UIView animateWithDuration:.5 animations:^{
                 self.mainsubView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.screen_height);
             }completion:^(BOOL finished){
-                [self performSelector:@selector(getSelectedViewControllers:) withObject:newViewController afterDelay:0];
+               // [self performSelector:@selector(getSelectedViewControllers:) withObject:newViewController afterDelay:0];
                 
             }];
             
@@ -872,20 +874,14 @@
 }
 
 -(void)settingButtonAction:(id)sender{
-    //self.navigationController.title=@"Settings";
     if(self.settingVC)
     {
         self.settingVC=nil;
-        
-        // self.nav=[[UINavigationController alloc]initWithRootViewController:self.settingVC];
-        //        [self.nav.navigationBar setBackgroundImage:[UIImage imageNamed:@"Cellheader.png"] forBarMetrics:UIBarMetricsDefault];
     }
     self.settingVC=[[SettingViewController alloc]initWithNibName:@"SettingViewController" bundle:nil];
-//    appdelegate=[UIApplication sharedApplication].delegate;
-//    [appdelegate.window addSubview:self.settingVC.view];
+
    [self.navigationController pushViewController:self.settingVC animated:YES];
     
-    //[self presentViewController:self.nav  animated:YES completion:nil];
 }
 
 #pragma  mark- getProfileImages

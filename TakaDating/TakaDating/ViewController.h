@@ -14,10 +14,16 @@
 #import <CoreLocation/CoreLocation.h>
 
 @interface ViewController : UIViewController<UIActionSheetDelegate,CLLocationManagerDelegate>
-
+{
+    id parse;
+    NSMutableData *responseData;
+}
 @property (nonatomic, assign) CGSize windowSize;
 @property (nonatomic) UIButton *facebook_btn;
 @property (nonatomic) UIButton *other_option_btn;
 @property(nonatomic,strong) CLLocationManager * manager1;
 @property(nonatomic)NSString * Area,*CountryArea,* longitude,* lattitude;
+
+-(void)getAllDataFromService;
+-(void)getAllChatHistory;
 @end

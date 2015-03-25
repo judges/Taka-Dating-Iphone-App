@@ -14,11 +14,13 @@
 #import "UserProfileViewController.h"
 #import  "SingletonClass.h"
 #import  "UIImageView+WebCache.h"
+#import "AddphotosViewController.h"
 
 @interface LikedYouViewController (){
     CollectionHeaderTitleLabel * reuseableView;
     PromoteyourselfViewController * promote;
     UserProfileViewController * userProfileVC;
+    AddphotosViewController *addPhoto;
 }
 
 @end
@@ -130,7 +132,7 @@
     //addPhoto.titleLabel.font=[UIFont systemFontOfSize:12];
     addPhoto.clipsToBounds=YES;
     addPhoto.layer.cornerRadius=5;
-    
+    [addPhoto addTarget:self action:@selector(moveToPhotoclass) forControlEvents:UIControlEventTouchUpInside];
     [addPhoto setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
     [self.view addSubview:addPhoto];
     
@@ -144,7 +146,12 @@
     
 }
 
-
+-(void)moveToPhotoclass{
+    if (!addPhoto) {
+        addPhoto=[[AddphotosViewController alloc]initWithNibName:@"AddphotosViewController" bundle:nil];
+    }
+    [self.navigationController pushViewController:addPhoto animated:YES];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -271,8 +278,14 @@
         toggleButton.hidden=YES;
         // customCellView.togglebutton.hidden=YES;
     }
+        if ([SingletonClass shareSingleton].superPower==0) {
+            customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
+        }
+        else{
+        
         NSURL * imageUrl=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[thumbanailUrl objectAtIndex:indexPath.row]]];
         [customCellView.profileImageView setImageWithURL:imageUrl] ;
+        }
         customCellView.nameLabel.text =[displayName objectAtIndex:indexPath.row];
         NSString *totalCount= [NSString stringWithFormat:@"%d",(int)indexPath.row];
         CGFloat h = 25 + ([totalCount length]*5);
@@ -398,7 +411,7 @@
     // button.layer.cornerRadius = 5.0;
     // button.clipsToBounds = YES;
     
-    [button addTarget:self action:@selector(addMeHereButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    //[button addTarget:self action:@selector(addMeHereButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     
     [backView addSubview:button];
     //------------------------------------
@@ -499,9 +512,6 @@
     NSURLResponse * urlResponse=nil;
     
     
-   /* NSString * urlStr=[NSString stringWithFormat:@"http://taka.dating/likedyou/mobile/%@",[SingletonClass shareSingleton].userID];
-    urlStr=[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];*/
-   // NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/mobi/liked-you"];
     NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/notification/liked-you"];
     
     NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
@@ -529,7 +539,7 @@
         for (int i=0; i<userLikesMe.count; i++) {
             dict=[userLikesMe objectAtIndex:i];
              [sex addObject:[dict objectForKey:@"sex"]];
-             //[imageCount addObject:[dict objectForKey:@"imagecount"]];
+             
              [isOnline addObject:[dict objectForKey:@"isOnline"]];
              [displayName addObject:[dict objectForKey:@"displayName"]];
              [useriId addObject:[dict objectForKey:@"userIdLikesTo"]];
@@ -538,18 +548,49 @@
     }
     
     [[NSNotificationCenter defaultCenter]removeObserver:self name:@"likedYou" object:nil];
+    
+    // Grant award..
+    if (awardSanction==NO) {
+        
+    
+    if (useriId.count>10) {
+        
+        
+        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/award/grant-award/"];
+        
+        NSMutableURLRequest *  request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+        [request setHTTPMethod:@"POST"];
+        [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+        
+        
+        NSString * body=[NSString stringWithFormat:@"userId=%@&awardId=%@",[SingletonClass shareSingleton].userID,@"2"];
+        
+        [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+        
+        NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        
+        if(data==nil){
+            return;
+        }
+        
+        id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        NSLog(@"grnated award %@",json);
+    }
+        awardSanction=YES;
+    }
+
 }
 
 #pragma mark- Add button action
-
--(void)addMeHereButtonAction:(id)sender{
+/*
+-(void)moveToPhotoclass:{
     if (promote) {
         promote=nil;
     }
     promote=[[PromoteyourselfViewController alloc]initWithNibName:@"PromoteyourselfViewController" bundle:nil];
     [self.navigationController pushViewController:promote animated:YES];
 }
-
+*/
 
 /*
 #pragma mark - Navigation

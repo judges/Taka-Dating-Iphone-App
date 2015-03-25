@@ -23,7 +23,7 @@
 @interface SignInViewController ()
 {
     ActivationViewController *activationVC;
-    LikedYouViewController * likedYouVC;
+   // LikedYouViewController * likedYouVC;
 }
 @property(nonatomic,strong)AccountInfoViewController * account;
 @property(nonatomic,strong)ProfileViewController * profileVC;
@@ -177,7 +177,7 @@
     //[signInButton.layer insertSublayer:layer1 atIndex:0];
     signInButton.layer.cornerRadius=4;
     signInButton.clipsToBounds=YES;
-    [signInButton addTarget:self action:@selector(SignInButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [signInButton addTarget:self action:@selector(SignInButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview: signInButton];
     
     glayer=[CAGradientLayer layer];
@@ -260,54 +260,56 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*-(void)SignInButtonAction:(id)sender{
-    
-    
-    
-    [SingletonClass shareSingleton].facebookLog=NO;
-   NSString * errorMessage=[self validationFunction];
-    if(errorMessage)
-    {
-        UIAlertView *alert=[[UIAlertView alloc]initWithTitle:nil message:errorMessage delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
-        return;
-    }else{
-        NSString * checkNetwork=[[NSUserDefaults standardUserDefaults]objectForKey:@"NetworkStatus"];
-        if (checkNetwork) {
 
-   NSError *error = nil;
-    NSURLResponse *urlResponse=nil;
+-(void)SignInButtonAction{
+    [SingletonClass shareSingleton].facebookLog=NO;
+  
+    NSError * error=nil;
+    NSURLResponse * urlResponse=nil;
     
-    NSString * urlstr=[NSString stringWithFormat:@"http://taka.dating/authentication/signin/%@/%@/",self.userText.text,self.passwordText.text];
-    
-     urlstr = [urlstr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSURL * url=[NSURL URLWithString:urlstr];
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
-    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
-    if(error)
-    {
-        NSLog(@"No data available %@",error);
-        UIAlertView * alert=[[UIAlertView alloc]initWithTitle:@"The request timed out." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alert show];
+    NSString * checkNetwork=[[NSUserDefaults standardUserDefaults]objectForKey:@"NetworkStatus"];
+    if (checkNetwork) {
+        NSString * requestBody;
+    NSString * signIn=[[NSUserDefaults standardUserDefaults]objectForKey:@"signIn"];
+    if ([signIn isEqualToString:@"YES"]) {
+        NSString * userName=[[NSUserDefaults standardUserDefaults]objectForKey:@"userEmail"];
+        NSString * pass=[[NSUserDefaults standardUserDefaults]objectForKey:@"password"];
+        requestBody=[NSString stringWithFormat:@"password=%@&userEmail=%@",pass,userName];
     }
-    
     else{
+       requestBody=[NSString stringWithFormat:@"password=%@&userEmail=%@",self.passwordText.text,self.userText.text];
         
-     parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:nil];
-        NSLog( @"pars login %@",parse);
-        NSNumber * code=[NSNumber numberWithInt:198];
-         NSNumber * code1=[NSNumber numberWithInt:197];
-        if([[parse objectForKey:@"code"] isEqualToNumber:code])
+        [[NSUserDefaults standardUserDefaults]setObject:self.userText.text forKey:@"userEmail"];
+        [[NSUserDefaults standardUserDefaults]setObject:self.passwordText.text forKey:@"password"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+
+    }
+            NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/authentication/signin/"];
+            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+           
+            
+            [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+            
+            [request setHTTPMethod:@"POST"];
+        
+            [request setHTTPBody:[requestBody dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+        NSData  * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        if (data==nil) {
+            return;
+        }
+        parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        
+        
+        if([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:198]])
         {
             UIAlertView * alert=[[UIAlertView alloc]initWithTitle:@"Not yet activated,do check your mail." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
             
             [NSThread detachNewThreadSelector:@selector(accountActivationMethod) toTarget:self withObject:nil];
-
+            
         }
-       
-        else if ([[parse objectForKey:@"code"] isEqualToNumber:code1])
+        
+        else if ([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:197]])
         {
             UIAlertView * alert=[[UIAlertView alloc]initWithTitle:@"Incorrect Username or password" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
@@ -315,14 +317,26 @@
         else
         {
             
-             [self getAllDataFromService];
+            [self getAllDataFromService];
             
-               
-           
+            NSString * jibField=[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID];
+            NSString * passwordField=@"123456";
+            
+            [self setField:jibField forKey:kXMPPmyJID];
+            [self setField:passwordField forKey:kXMPPmyPassword];
+            
+            [[self appdelegate]connect];
+            [self getAllChatHistory];
+            
+            [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"signIn"];
+            [[NSUserDefaults standardUserDefaults]synchronize];
+            
+            
             EncountersViewController *encounterViewController = [[EncountersViewController alloc] initWithNibName:@"EncountersViewController" bundle:nil];
             encounterViewController.title = @"Rendezvous";
+            
             ProfileViewController *profileViewCopntroller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewController" bundle:nil];
-            profileViewCopntroller.title = @"Profile";
+            profileViewCopntroller.title = [SingletonClass shareSingleton].name;
             
             PeopleNearByViewController *nearByViewController = [[PeopleNearByViewController alloc] initWithNibName:@"PeopleNearByViewController" bundle:nil];
             nearByViewController.title = @"People Nearby";
@@ -345,7 +359,7 @@
             FavoritViewController * favorite=[[FavoritViewController alloc]initWithNibName:@"FavoritViewController" bundle:nil];
             favorite.title=@"Favorite";
             
-            likedYouVC =[[LikedYouViewController alloc]initWithNibName:@"LikedYouViewController" bundle:nil];
+            LikedYouViewController *   likedYouVC =[[LikedYouViewController alloc]initWithNibName:@"LikedYouViewController" bundle:nil];
             likedYouVC.title=@"Liked you";
             
             CustomMenuViewController *customMenuViewController = [[CustomMenuViewController alloc] init];
@@ -361,49 +375,16 @@
             customMenuViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
             [self presentViewController:navi animated:YES completion:nil];
             
+            [NSThread detachNewThreadSelector:@selector(getAllUpdatedInterests) toTarget:self withObject:nil];
+            
+            
         }
         
-    }
-        }
-else{
-            NSLog(@"No network");
-        }
-}
-}
-*/
 
--(void)SignInButtonAction:(UIButton*)sender{
-    [SingletonClass shareSingleton].facebookLog=NO;
-    NSString * errorMessage=[self validationFunction];
-    if(errorMessage)
-    {
-        UIAlertView *alert=[[UIAlertView alloc]initWithTitle:nil message:errorMessage delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
-        [alert show];
-        return;
-    }else{
-        NSString * checkNetwork=[[NSUserDefaults standardUserDefaults]objectForKey:@"NetworkStatus"];
-        if (checkNetwork) {
+        
+           // [NSURLConnection connectionWithRequest:request delegate:self];
             
-            NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/authentication/signin/"];
-            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
-           
-            
-            [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-            
-            [request setHTTPMethod:@"POST"];
-            
-            [[NSUserDefaults standardUserDefaults]setObject:self.userText.text forKey:@"userEmail"];
-           [[NSUserDefaults standardUserDefaults]setObject:self.passwordText.text forKey:@"password"];
-            [[NSUserDefaults standardUserDefaults]synchronize];
-            
-            
-            NSString * requestBody=[NSString stringWithFormat:@"password=%@&userEmail=%@",self.passwordText.text,self.userText.text];
-            [request setHTTPBody:[requestBody dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
-            
-            
-            [NSURLConnection connectionWithRequest:request delegate:self];
-            
-        }
+        
     }
 }
 
@@ -426,81 +407,45 @@ else{
     NSLog(@"response string %@ -==-=-=-= ",respsoneString);
     
     NSError * error;
-    parse=[NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:&error];
-    
-    
-    if([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:198]])
-    {
-        UIAlertView * alert=[[UIAlertView alloc]initWithTitle:@"Not yet activated,do check your mail." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alert show];
-        
-        [NSThread detachNewThreadSelector:@selector(accountActivationMethod) toTarget:self withObject:nil];
-        
-    }
-    
-    else if ([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:197]])
-    {
-        UIAlertView * alert=[[UIAlertView alloc]initWithTitle:@"Incorrect Username or password" message:nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        [alert show];
-    }
-    else
-    {
-        
-        [self getAllDataFromService];
-        
-        NSString * jibField=[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID];
-        NSString * passwordField=@"123456";
-        
-        [self setField:jibField forKey:kXMPPmyJID];
-        [self setField:passwordField forKey:kXMPPmyPassword];
-        
-        [[self appdelegate]connect];
-        
-        EncountersViewController *encounterViewController = [[EncountersViewController alloc] initWithNibName:@"EncountersViewController" bundle:nil];
-        encounterViewController.title = @"Rendezvous";
-        ProfileViewController *profileViewCopntroller = [[ProfileViewController alloc] initWithNibName:@"ProfileViewController" bundle:nil];
-        profileViewCopntroller.title = [SingletonClass shareSingleton].name;
-        
-        PeopleNearByViewController *nearByViewController = [[PeopleNearByViewController alloc] initWithNibName:@"PeopleNearByViewController" bundle:nil];
-        nearByViewController.title = @"People Nearby";
-        
-        
-        
-        //    UINavigationController *profileNavigationController = [[UINavigationController alloc] initWithRootViewController:profileViewCopntroller];
-        //    profileNavigationController.navigationBar.hidden = YES;
-        
-        UINavigationController *profileNavigationController = [[UINavigationController alloc] initWithRootViewController:encounterViewController];
-        profileNavigationController.navigationBar.hidden = YES;
-        
-        
-        MessagesViewController * messagesVC=[[MessagesViewController alloc]initWithNibName:@"MessagesViewController" bundle:nil];
-        messagesVC.title=@"Messages";
-        
-        VisitorsViewController * visitorsVC=[[VisitorsViewController alloc]initWithNibName:@"VisitorsViewController" bundle:nil];
-        visitorsVC.title=@"Visitors";
-        
-        FavoritViewController * favorite=[[FavoritViewController alloc]initWithNibName:@"FavoritViewController" bundle:nil];
-        favorite.title=@"Favorite";
-        
-        likedYouVC =[[LikedYouViewController alloc]initWithNibName:@"LikedYouViewController" bundle:nil];
-        likedYouVC.title=@"Liked you";
-        
-        CustomMenuViewController *customMenuViewController = [[CustomMenuViewController alloc] init];
-        customMenuViewController.numberOfSections = 2;
-        customMenuViewController.viewControllers = @[profileNavigationController,nearByViewController,profileViewCopntroller];
-        customMenuViewController.secondSectionViewControllers=@[messagesVC,visitorsVC,favorite,likedYouVC];
-        
-        UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:customMenuViewController];
-        navi.navigationBar.hidden = YES;
-        
-        
-        
-        customMenuViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-        [self presentViewController:navi animated:YES completion:nil];
-        
-    }
-    
+   
+}
 
+
+#pragma mark- get all Updated  User intrests.
+
+-(void)getAllUpdatedInterests{
+    [SingletonClass shareSingleton].selectedIntId=[[NSMutableArray alloc]init];
+    [SingletonClass shareSingleton].selectedIntName=[[NSMutableArray alloc]init];
+    
+    NSError * error;
+    NSURLResponse * urlResponse=nil;
+    
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/user/get-full-user-interests"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"User interests %@ ",json);
+    NSMutableDictionary * dict=[NSMutableDictionary dictionary];
+    if ([[json objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        NSArray *  interests=[json objectForKey:@"data"];
+        for (int i=0; i<interests.count; i++) {
+            dict=[interests objectAtIndex:i];
+            [[SingletonClass shareSingleton].selectedIntName addObject:[dict objectForKey:@"intr_name"]];
+            [[SingletonClass shareSingleton].selectedIntId addObject:[dict objectForKey:@"intr_id"]];
+        }
+    }
+    
+    
 }
 
 - (void)setField:(NSString *)field forKey:(NSString *)key
@@ -549,6 +494,37 @@ else{
         }];
     }
 }
+#pragma mark- getAllChat history
+-(void)getAllChatHistory{
+    NSError * error=nil;
+    NSURLResponse * urlRsponse=nil;
+    
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/chat/get-chat-data/"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50
+                                   ];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlRsponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    if ([[json objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        NSArray * messages=[json objectForKey:@"data"];
+                
+        NSSortDescriptor * timeDescriptor=[[NSSortDescriptor alloc]initWithKey:@"sentDate" ascending:YES];
+        NSArray * sortDescriptor=[NSArray arrayWithObject:timeDescriptor];
+        
+       [SingletonClass shareSingleton].sortedData=[messages sortedArrayUsingDescriptors:sortDescriptor];
+        
+        NSLog(@"Sorted messages %@",[SingletonClass shareSingleton].sortedData);
+    }
+}
 
 #pragma mark- getAllDataFromService
 
@@ -570,6 +546,7 @@ else{
     [SingletonClass shareSingleton ].dob=[dict objectForKey:@"dob"];
     NSLog(@"UserID %@",[SingletonClass shareSingleton].userID);
    
+    [SingletonClass shareSingleton].superPower=[[dict objectForKey:@"superpower"]intValue];
         [SingletonClass shareSingleton].hairColor=[NSString stringWithFormat:@"HairColor:%@",[self appearanceHairColor:[dict objectForKey:@"hairColor"]]];
    
         [SingletonClass shareSingleton].eyeColor=[NSString stringWithFormat:@"EyeColor:%@",[self appearanceEyeColor:[dict objectForKey:@"eyeColor"]]];
@@ -688,14 +665,15 @@ else{
     
     NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
     if (imagesArr.count>0) {
-    
+ 
 
-    NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
+    
     NSMutableArray * dictarr=[[NSMutableArray alloc]init];
     NSMutableArray * arr=[[ NSMutableArray alloc]init];
-
+      
     for (int i=0; i<imagesArr.count; i++) {
-        dict =[imagesArr objectAtIndex:i];
+
+         dict =[imagesArr objectAtIndex:i];
         if ([[dict objectForKey:@"privacy"]isEqualToString:@"3"]){
             NSString * imageName=[NSString stringWithString:[dict objectForKey:@"imageLink"]];
             [arr addObject:imageName];
@@ -707,9 +685,11 @@ else{
             NSLog(@"image Name %@",imageName);
             [arr addObject:imageName];
         }
-        
     }
+        
+ 
         [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]initWithArray:arr];
+      
 }
     
     [SingletonClass shareSingleton].profileImg=[NSString stringWithFormat:@"http://taka.dating%@",[parse objectForKey:@"profileimg"]];

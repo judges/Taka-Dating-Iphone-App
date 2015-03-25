@@ -9,11 +9,13 @@
 #import "AccountSignOutViewController.h"
 #import "SingletonClass.h"
 #import "AFNHelper.h"
+#import "IntermediateViewController.h"
 #import "ViewController.h"
 
 @interface AccountSignOutViewController ()
 {
-    ViewController *viewVC;
+    IntermediateViewController  * intermediateVC;
+    ViewController * ViewVC;
 }
 @end
 
@@ -607,7 +609,38 @@
 #pragma mark- Action sheet delegate method
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     if (buttonIndex==0) {
-        NSLog(@"Sign Out button clicked");
+        [SingletonClass shareSingleton].profileImages=nil;
+        [SingletonClass shareSingleton].userImages=nil;
+      
+        [SingletonClass shareSingleton].viewerID=nil;
+        [SingletonClass shareSingleton].viewerImage=nil;
+        [SingletonClass shareSingleton].viewerName=nil;
+        [SingletonClass shareSingleton].viewerSex=nil;
+        [SingletonClass shareSingleton].isOnline=nil;
+        [SingletonClass shareSingleton].imgCount=nil;
+        
+        
+        [SingletonClass shareSingleton].intr_cat_id=nil;
+        [SingletonClass shareSingleton].intr_id=nil;
+        [SingletonClass shareSingleton].intr_name=nil;
+    
+        [SingletonClass shareSingleton].encounterUsrImages=nil;
+        [SingletonClass shareSingleton].messages=nil;
+        
+        
+        [SingletonClass shareSingleton].selectedInterests=nil;
+        [SingletonClass shareSingleton].selectedIntId=nil;
+        [SingletonClass shareSingleton].selectedIntName=nil;
+       
+        [SingletonClass shareSingleton].sortedData=nil;
+      
+        [SingletonClass shareSingleton].photosOfUser=nil;
+        
+        [[NSUserDefaults standardUserDefaults] setObject:@"NO" forKey:@"signIn"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+        
+        intermediateVC=[[IntermediateViewController alloc]initWithNibName:@"IntermediateViewController" bundle:nil];
+         [self.navigationController pushViewController:intermediateVC animated:YES];
     }
 }
 
@@ -640,8 +673,9 @@
     id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSLog(@"parse %@",json);
     if ([[json objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
-        viewVC=[[ViewController alloc]initWithNibName:@"ViewController" bundle:nil];
-        [self presentViewController:viewVC animated:YES completion:nil];
+        intermediateVC=[[IntermediateViewController alloc]initWithNibName:@"IntermediateViewController" bundle:nil];
+        //[self presentViewController:intermediateVC animated:YES completion:nil];
+        [self.navigationController pushViewController:intermediateVC animated:YES];
     }
     
     
