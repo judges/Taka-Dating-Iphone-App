@@ -13,6 +13,7 @@
     CGSize windowSize;
     CGFloat height;
     UITableView * awardTbl;
+    BOOL likesAward,viewsAward;
 }
 @property(nonatomic)UILabel * titleLabel;
 @property(nonatomic)UIButton * cancelButton;

@@ -294,11 +294,14 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
     [SingletonClass shareSingleton].name=name;
     
     [SingletonClass shareSingleton].bodyType=[NSString stringWithFormat:@"BodyType:%@",[self appearanceBodyType:[dict objectForKey:@"bodyType"]]];
-    
+        
+        [[NSUserDefaults standardUserDefaults]setObject:[parse objectForKey:@"balance"] forKey:@"credit"];
+        [[NSUserDefaults standardUserDefaults]synchronize];
+        
+        [SingletonClass shareSingleton].superPower=[[dict objectForKey:@"superpower"]intValue];
+        
     [SingletonClass shareSingleton].userID=[dict objectForKey:@"userId"];
-    [[NSUserDefaults standardUserDefaults]setObject: [SingletonClass shareSingleton].userID forKey:@"userId"];
-    [[NSUserDefaults standardUserDefaults]synchronize];
-    
+        
     [SingletonClass shareSingleton ].dob=[dict objectForKey:@"dob"];
     NSLog(@"UserID %@",[SingletonClass shareSingleton].userID);
     
@@ -1187,15 +1190,25 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
         XMPPUserCoreDataStorageObject *user = [xmppRosterStorage userForJID:[message from]
                                                                  xmppStream:xmppStream
                                                        managedObjectContext:[self managedObjectContext_roster]];
+        int timeStamp=[[NSDate date] timeIntervalSince1970];
+        
+        NSString * time=[NSString stringWithFormat:@"%d",timeStamp];
         
         NSString *body = [[message elementForName:@"body"] stringValue];
         NSString *displayName = [user displayName];
         
+     //   NSString * timeStampStr=[[message elementForName:@"time"]stringValue];
+        
+        //int timeStamp=[timeStampStr intValue];
+       // NSDate * date = [NSDate dateWithTimeIntervalSince1970:timeStamp];
+       // NSString * str=[NSString stringWithFormat:@"%@",date];
+
         
         
         NSMutableDictionary * dict=[[NSMutableDictionary alloc]init];
         [dict setObject:body forKey:@"msg"];
         [dict setObject:displayName forKey:@"sender"];
+        [dict setObject:time forKey:@"time"];
         
         [[SingletonClass shareSingleton].messages addObject:dict];
         

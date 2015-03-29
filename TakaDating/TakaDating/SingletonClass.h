@@ -90,5 +90,9 @@
 
 // super power activation
 
-@property(nonatomic)int superPower;
+@property(nonatomic)int superPower,balance;
+
+// Award Section
+
+@property(nonatomic)BOOL visitorAward,userLikesAward;
 @end

@@ -212,7 +212,14 @@
         
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
             self.parentView.frame=CGRectMake(0, 0, windowSize.width, windowSize.height-25);
-            self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
+          //  self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
+            CAGradientLayer *layer = [CAGradientLayer layer];
+            layer.frame = self.parentView.bounds;
+            UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+            UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
+            
+            layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
+            [self.parentView.layer insertSublayer:layer atIndex:0];
         }
         else{
             if ([UIScreen mainScreen].bounds.size.height>500) {
@@ -221,7 +228,14 @@
             else{
                 self.parentView.frame=CGRectMake(0, 0, windowSize.width, self.view.frame.size.height-80);
             }
-            self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg.png"]];
+           // self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg.png"]];
+            CAGradientLayer *layer = [CAGradientLayer layer];
+            layer.frame = self.parentView.bounds;
+            UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+            UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)50/255 alpha:1.0];
+            
+            layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
+            [self.parentView.layer insertSublayer:layer atIndex:0];
         }
         
         
@@ -618,7 +632,7 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
             }
             self.profileTableView.delegate=self;
             self.profileTableView.dataSource=self;
-            self.profileTableView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)176/255 blue:(CGFloat)176/255 alpha:1.0];
+            self.profileTableView.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
             
             [self.profileTableView setShowsVerticalScrollIndicator:NO];
             [self.secondView addSubview:self.profileTableView];
@@ -969,7 +983,7 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
                        
                         for (int i=0;i<interests.count;i++) {
                             UIButton * btn1=[[UIButton alloc]init];
-                            btn1.frame=CGRectMake(0+i*110, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                             btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
                          [btn1 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i]] forState:UIControlStateNormal];
                             [btn1 setBackgroundColor:[UIColor clearColor]];
                             btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;

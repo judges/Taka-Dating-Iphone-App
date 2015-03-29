@@ -8,10 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PhotoViewController : UIViewController< UIScrollViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate>
+@interface PhotoViewController : UIViewController< UIScrollViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UIActionSheetDelegate>
 {
     NSMutableArray * privacyZeroPic,* privacyOnePic,* privacyTwoPic;
     CGFloat x,y,header_hh;
+    UIActionSheet * actionSheet;
+    CGSize windowSize;
+    NSString * profilePicPath;
 }
 @property(nonatomic,strong)UIActivityIndicatorView* refreshActivityIndicator;
 @property (nonatomic) UIScrollView *scrollView;

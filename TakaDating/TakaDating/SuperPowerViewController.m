@@ -37,12 +37,16 @@
     return self;
 }
 
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    continent=[self findContinent ];
     self.view.frame=[SingletonClass shareSingleton].frame;
     NSLog(@"self.view %f",self.view.frame.size.height);
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+   // self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    
+    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, self.view.frame.size.width, 55);
@@ -111,7 +115,7 @@
     scroll.backgroundColor=[UIColor clearColor];
     [self.view addSubview:scroll];
     
-    scroll.contentSize=CGSizeMake(self.view.frame.size.width, self.view.frame.size.height*2.7);
+    scroll.contentSize=CGSizeMake(self.view.frame.size.width, self.view.frame.size.height*2.5);
     
     UIView * topView=[[UIView alloc]init];
     topView.frame=frame_Topview;
@@ -121,7 +125,7 @@
     [scroll addSubview:topView];
     
    //Free
-    UIButton * tryFree=[UIButton buttonWithType:UIButtonTypeCustom];
+  /*  UIButton * tryFree=[UIButton buttonWithType:UIButtonTypeCustom];
        tryFree.layer.cornerRadius=15;
     tryFree.clipsToBounds=YES;
     [tryFree setTitle:@"Try for free" forState:UIControlStateNormal];
@@ -137,17 +141,19 @@
     invite.textAlignment=NSTextAlignmentCenter;
     invite.text=@"Invite your friends to Taka";
     [topView addSubview:invite];
-    
+    */
     
     //Three months
     UIButton * threeMonths=[UIButton buttonWithType:UIButtonTypeCustom];
     
     threeMonths.layer.cornerRadius=5;
     threeMonths.clipsToBounds=YES;
-    [threeMonths setTitle:@"3 months at 450.00 INR/month" forState:UIControlStateNormal];
+    [threeMonths setTitle:@"3 months " forState:UIControlStateNormal];
     [threeMonths setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [threeMonths setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:image]]];
     threeMonths.titleLabel.font=[UIFont systemFontOfSize:fontSize];
+    [threeMonths addTarget:self action:@selector(callPayPalPaymentMethod:) forControlEvents:UIControlEventTouchUpInside];
+    threeMonths.tag=200;
     [topView addSubview:threeMonths];
     
     UIButton * threeMonthBtn=[[UIButton alloc]init];
@@ -160,6 +166,7 @@
     threeMonthBtn.clipsToBounds=YES;
     threeMonthBtn.layer.cornerRadius=4;
     threeMonthBtn.backgroundColor=[UIColor lightGrayColor];
+    
     [topView addSubview:threeMonthBtn];
     
     UILabel * threeMonthsLbl=[[UILabel alloc]init];
@@ -173,10 +180,12 @@
     
     oneMonths.layer.cornerRadius=5;
     oneMonths.clipsToBounds=YES;
-    [oneMonths setTitle:@"1 months at 550.00 INR/month" forState:UIControlStateNormal];
+    [oneMonths setTitle:@"1 months " forState:UIControlStateNormal];
     [oneMonths setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [oneMonths setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:image]]];
      oneMonths.titleLabel.font=[UIFont systemFontOfSize:fontSize];
+    [oneMonths addTarget:self action:@selector(callPayPalPaymentMethod:) forControlEvents:UIControlEventTouchUpInside];
+    oneMonths.tag=100;
     [topView addSubview:oneMonths];
     
     UILabel * oneMonthLbl=[[UILabel alloc]init];
@@ -192,10 +201,12 @@
     
     sixMonths.layer.cornerRadius=5;
     sixMonths.clipsToBounds=YES;
-    [sixMonths setTitle:@"6 months at 341.67 INR/month" forState:UIControlStateNormal];
+    [sixMonths setTitle:@"6 months " forState:UIControlStateNormal];
     [sixMonths setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [sixMonths setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:image]]];
     sixMonths.titleLabel.font=[UIFont systemFontOfSize:fontSize];
+    [sixMonths addTarget:self action:@selector(callPayPalPaymentMethod:) forControlEvents:UIControlEventTouchUpInside];
+     sixMonths.tag=300;
     [topView addSubview:sixMonths];
     
     UIButton * sixMonthBtn=[[UIButton alloc]init];
@@ -224,9 +235,11 @@
     oneYear.layer.cornerRadius=5;
     oneYear.titleLabel.font=[UIFont systemFontOfSize:fontSize];
     oneYear.clipsToBounds=YES;
-    [oneYear setTitle:@"12 months at 283.33 INR/month" forState:UIControlStateNormal];
+    [oneYear setTitle:@"12 months " forState:UIControlStateNormal];
     [oneYear setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [oneYear setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:image]]];
+    [oneYear addTarget:self action:@selector(callPayPalPaymentMethod:) forControlEvents:UIControlEventTouchUpInside];
+     oneYear.tag=400;
     [topView addSubview:oneYear];
     
     
@@ -268,7 +281,7 @@
     UIImageView * imgView1=[[UIImageView alloc]init];
     imgView1.image=[UIImage imageNamed:chatImage];
     
-    [bottomView addSubview:imgView1];
+    //[bottomView addSubview:imgView1];
     
     UIImageView * imgView2=[[UIImageView alloc]init];
     imgView2.image=[UIImage imageNamed:beFirtImage];
@@ -285,7 +298,7 @@
     
     [bottomView addSubview:imgView4];
     
-    UILabel * chatLabel=[[UILabel alloc]init];
+   /* UILabel * chatLabel=[[UILabel alloc]init];
        chatLabel.text=@"Chat with popular user";
     chatLabel.font=[UIFont boldSystemFontOfSize:fontSize];
     [imgView1 addSubview:chatLabel];
@@ -296,11 +309,11 @@
     chatLabel2.numberOfLines=0;
     chatLabel2.font=[UIFont systemFontOfSize:fontSize];
     chatLabel2.text=@"Get exclusive access to the most popular on Taka.";
-    [imgView1 addSubview:chatLabel2];
+    [imgView1 addSubview:chatLabel2];*/
     
     UILabel * beTheFirst=[[UILabel alloc]init];
     
-    beTheFirst.text=@"Be the first";
+    beTheFirst.text=@"Visitors!";
     beTheFirst.font=[UIFont boldSystemFontOfSize:fontSize];
     [imgView2 addSubview:beTheFirst];
     
@@ -309,7 +322,7 @@
     beTheFirst2.lineBreakMode=NSLineBreakByCharWrapping;
     beTheFirst2.numberOfLines=0;
     beTheFirst2.font=[UIFont systemFontOfSize:fontSize];
-    beTheFirst2.text=@"Start chatting with people from the moment they start.";
+    beTheFirst2.text=@"Check who visited you";
     [imgView2 addSubview:beTheFirst2];
 
     UILabel * like=[[UILabel alloc]init];
@@ -345,8 +358,8 @@
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         
         
-        tryFree.frame=CGRectMake(topView.frame.size.width/2-150, 5, 328, button_hight);
-        invite.frame=CGRectMake(self.view.frame.size.width/2-110, topView.frame.size.height-400, 250, 20);
+     //   tryFree.frame=CGRectMake(topView.frame.size.width/2-150, 5, 328, button_hight);
+     //   invite.frame=CGRectMake(self.view.frame.size.width/2-110, topView.frame.size.height-400, 250, 20);
 
         threeMonths.frame=CGRectMake(self.view.frame.size.width/2-150, topView.frame.size.height-380, 328, button_hight);
         threeMonthBtn.frame=CGRectMake(self.view.frame.size.width/2-110, topView.frame.size.height-310, 100, 20);
@@ -362,31 +375,31 @@
         
         
         sectionTwo.frame=CGRectMake(10, scroll.frame.size.height+180, 200, 50);
-        bottomView.frame=CGRectMake(0,scroll.frame.size.height+230, self.view.frame.size.width, 450);
+        bottomView.frame=CGRectMake(0,scroll.frame.size.height+230, self.view.frame.size.width, 350);
 
         
         
-        imgView1.frame=CGRectMake(self.view.frame.size.width/2-180, 10, 460, 80);
-        imgView2.frame=CGRectMake(self.view.frame.size.width/2-180,110, 460, 80);
-        imgView3.frame=CGRectMake(self.view.frame.size.width/2-180, 210, 460, 80);
-        imgView4.frame=CGRectMake(self.view.frame.size.width/2-180, 310, 460, 80);
+       // imgView1.frame=CGRectMake(self.view.frame.size.width/2-180, 10, 460, 80);
+        imgView2.frame=CGRectMake(self.view.frame.size.width/2-200,10, 460, 80);
+        imgView3.frame=CGRectMake(self.view.frame.size.width/2-200, 110, 460, 80);
+        imgView4.frame=CGRectMake(self.view.frame.size.width/2-200, 210, 460, 80);
 
         
         
-        chatLabel.frame=CGRectMake(self.view.frame.size.width/2-200, 10, 250, 20);
-        chatLabel2.frame=CGRectMake(self.view.frame.size.width/2-200, 25, 250, 40);
-        beTheFirst.frame=CGRectMake(self.view.frame.size.width/2-200, 10, 250, 20);
-        beTheFirst2.frame=CGRectMake(self.view.frame.size.width/2-200, 25, 250, 40);
-        like.frame=CGRectMake(self.view.frame.size.width/2-200, 10, 250, 20);
-        like2.frame=CGRectMake(self.view.frame.size.width/2-200, 25, 250, 40);
-        favorite.frame=CGRectMake(self.view.frame.size.width/2-200, 10, 250, 20);
-        favorite2.frame=CGRectMake(self.view.frame.size.width/2-200, 25, 250, 40);
+       // chatLabel.frame=CGRectMake(self.view.frame.size.width/2-200, 10, 250, 20);
+      //  chatLabel2.frame=CGRectMake(self.view.frame.size.width/2-200, 25, 250, 40);
+        beTheFirst.frame=CGRectMake(self.view.frame.size.width/2-220, 10, 260, 20);
+        beTheFirst2.frame=CGRectMake(self.view.frame.size.width/2-220, 25, 260, 40);
+        like.frame=CGRectMake(self.view.frame.size.width/2-220, 10, 260, 20);
+        like2.frame=CGRectMake(self.view.frame.size.width/2-220, 25, 260, 40);
+        favorite.frame=CGRectMake(self.view.frame.size.width/2-220, 10, 260, 20);
+        favorite2.frame=CGRectMake(self.view.frame.size.width/2-220, 25, 250, 40);
         
         
     }
     else{
-        invite.frame=CGRectMake(60, 45, 200, 15);
-        tryFree.frame=CGRectMake(topView.frame.size.width/2-80, 5, 168, 30);
+       // invite.frame=CGRectMake(60, 45, 200, 15);
+       // tryFree.frame=CGRectMake(topView.frame.size.width/2-80, 5, 168, 30);
         
         threeMonths.frame=CGRectMake(topView.frame.size.width/2-80, 70, 168, button_hight);
         threeMonthBtn.frame=CGRectMake(topView.frame.size.width/2-80, 110, 70, 10);
@@ -402,15 +415,15 @@
         
         
         sectionTwo.frame=CGRectMake(10, 470, 200, 30);
-        bottomView.frame=CGRectMake(0, 500, self.view.frame.size.width, 225);
+        bottomView.frame=CGRectMake(0, 500, self.view.frame.size.width, 175);
         
-        imgView1.frame=CGRectMake(0, 5, bottomView.frame.size.width, 50);
-         imgView2.frame=CGRectMake(0, 60, bottomView.frame.size.width, 50);
-        imgView3.frame=CGRectMake(0, 115, bottomView.frame.size.width, 50);
-        imgView4.frame=CGRectMake(0, 170, bottomView.frame.size.width, 50);
+        //imgView1.frame=CGRectMake(0, 5, bottomView.frame.size.width, 50);
+         imgView2.frame=CGRectMake(0, 5, bottomView.frame.size.width, 50);
+        imgView3.frame=CGRectMake(0, 60, bottomView.frame.size.width, 50);
+        imgView4.frame=CGRectMake(0, 115, bottomView.frame.size.width, 50);
         
-        chatLabel.frame=CGRectMake(90, 5, 160, 15);
-        chatLabel2.frame=CGRectMake(90, 17, 160, 30);
+       // chatLabel.frame=CGRectMake(90, 5, 160, 15);
+      //  chatLabel2.frame=CGRectMake(90, 17, 160, 30);
         beTheFirst.frame=CGRectMake(90, 5, 160, 15);
          beTheFirst2.frame=CGRectMake(90, 17, 160, 30);
          like.frame=CGRectMake(90, 5, 160, 15);
@@ -446,5 +459,309 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+
+#pragma mark- find continent
+-(NSString*)findContinent{
+    NSError * error=nil;
+    NSURLResponse * urlResponse=nil;
+    
+    NSString * urlStr=@"http://www.geoplugin.net/json.gp";
+    
+    urlStr=[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    NSURL * url=[NSURL URLWithString:urlStr];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return nil;
+    }
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"json for continent %@",json );
+    if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"AS"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"AF"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"AM"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"EU"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"AUS"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else if ([[json objectForKey:@"geoplugin_continentCode"]isEqualToString:@"SAM"]) {
+        return  [json objectForKey:@"geoplugin_continentCode"];
+    }
+    else{
+        return @"";
+    }
+    
+}
+
+
+
+#pragma mark PayPalPaymentDelegate methods
+
+- (void)payPalPaymentViewController:(PayPalPaymentViewController *)paymentViewController didCompletePayment:(PayPalPayment *)completedPayment {
+    NSLog(@"PayPal Payment Success!");
+    //  self.resultText = [completedPayment description];
+    [self showSuccess];
+    
+    [self sendCompletedPaymentToServer:completedPayment]; // Payment was processed successfully; send to server for verification and fulfillment
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)payPalPaymentDidCancel:(PayPalPaymentViewController *)paymentViewController {
+    NSLog(@"PayPal Payment Canceled");
+    // self.resultText = nil;
+    self.successView.hidden = YES;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+#pragma mark - Helpers
+
+- (void)showSuccess {
+    self.successView.hidden = NO;
+    self.successView.alpha = 1.0f;
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationDuration:0.5];
+    [UIView setAnimationDelay:2.0];
+    self.successView.alpha = 0.0f;
+    [UIView commitAnimations];
+}
+
+#pragma mark Proof of payment validation
+
+- (void)sendCompletedPaymentToServer:(PayPalPayment *)completedPayment {
+    // TODO: Send completedPayment.confirmation to server
+    NSLog(@"Here is your proof of payment:\n\n%@\n\nSend this to your server for confirmation and fulfillment.", completedPayment.confirmation);
+    NSMutableDictionary * dict=[NSMutableDictionary dictionary];
+    dict=[completedPayment.confirmation objectForKey:@"response"];
+    if ([[dict objectForKey:@"state"]  isEqualToString:@"approved"]) {
+       
+        
+        NSError * error=nil;
+        NSURLResponse * urlResponse=nil;
+        
+        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/mobile-app/insert-payment"];
+        NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+        [request setHTTPMethod:@"POST"];
+        [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+        
+        NSString * body=[NSString stringWithFormat:@"userid=%@&txn_id=%@&paypal_id=%@&created_at=%@&discription=%@&amount=%@&status=%@&&transactiontype=1",[SingletonClass shareSingleton].userID,[dict objectForKey:@"id"],[dict objectForKey:@"id"],[dict objectForKey:@"create_time"],desc,[NSString stringWithFormat:@"%@",total],@"Success"];
+        
+        [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+        
+        NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        if (data==nil) {
+            return;
+        }
+        id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        if ([[json objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+            
+            NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/mobile-app/activate-super"];
+            NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+            [request setHTTPMethod:@"POST"];
+            [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+            
+            NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+            [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+            NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+            if (data==nil) {
+                return;
+            }
+            id  parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+            NSLog(@"super power activation response %@",parse);
+            if ([[parse objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+                [SingletonClass shareSingleton].superPower=1;
+            }
+            
+        }
+    }
+}
+
+
+#pragma mark- callPayPalPaymentMethod
+-(void)callPayPalPaymentMethod:(UIButton*)sender{
+    if ([SingletonClass shareSingleton].superPower==1) {
+         [[AppDelegate sharedAppDelegate]showToastMessage:@"You are SUPER POWER user..!"];
+        return;
+    }
+    NSString * description;
+    PayPalPayment *payment = [[PayPalPayment alloc] init];
+    if ([sender tag]==100) {
+       // total=[NSNumber numberWithDouble:2.09];
+        description=@"100 Points Credit";
+        //desc=@"100";
+         [self checkForContinent:100];
+        
+    }
+    else if ([sender tag]==200)
+    {
+        //total=[NSNumber numberWithDouble:8.83];
+        description=@"600 Points Credit";
+       // desc=@"600";
+         [self checkForContinent:200];
+    }
+    else  if ([sender tag]==300){
+       // total=[NSNumber numberWithDouble: 20.99 ];
+        description=@"1500 Points Credit";
+        //desc=@"1500";
+        [self checkForContinent:300];
+    }
+    else  {
+        //total=[NSNumber numberWithDouble: 20.99 ];
+        description=@"1500 Points Credit";
+        //desc=@"1500";
+        [self checkForContinent:400];
+    }
+    payment.amount = (NSDecimalNumber*)total;
+    if ([continent isEqualToString:@"EU"])
+    {
+         payment.currencyCode = @"EUR";
+    }
+    else{
+        payment.currencyCode = @"USD";
+    }
+    payment.shortDescription =description;
+    // payment.items = items;  // if not including multiple items, then leave payment.items as nil
+    //payment.paymentDetails = paymentDetails; // if not including payment details, then leave payment.paymentDetails as nil
+    
+    if (!payment.processable) {
+        // This particular payment will always be processable. If, for
+        // example, the amount was negative or the shortDescription was
+        // empty, this payment wouldn't be processable, and you'd want
+        // to handle that here.
+    }
+    
+    // Update payPalConfig re accepting credit cards.
+    self.payPalConfig.acceptCreditCards = YES;
+    
+    PayPalPaymentViewController *paymentViewController = [[PayPalPaymentViewController alloc] initWithPayment:payment
+                                                                                                configuration:self.payPalConfig
+                                                                                                     delegate:self];
+    [self presentViewController:paymentViewController animated:YES completion:nil];
+}
+
+
+ #pragma  check for continent
+ -(void)checkForContinent:(int)tag{
+     if (tag==100) {
+         if ([continent isEqualToString:@"AS"]) {
+             desc=@"AS1";
+              total=[NSNumber numberWithDouble:1.99];
+         }
+         else if([continent isEqualToString:@"AF"]){
+             desc=@"AF1";
+              total=[NSNumber numberWithDouble:1.99];
+         }
+        else if ([continent isEqualToString:@"AM"]){
+            desc=@"AM1";
+             total=[NSNumber numberWithDouble:6.99];
+        }
+        else if ([continent isEqualToString:@"AUS"]){
+            desc=@"AUS1";
+             total=[NSNumber numberWithDouble:6.99];
+        }
+        else if ([continent isEqualToString:@"SAM"]){
+            desc=@"SAM1";
+             total=[NSNumber numberWithDouble:3.99];
+        }
+        else if ([continent isEqualToString:@"EU"]){
+            desc=@"EU1";
+             total=[NSNumber numberWithDouble:6.99];
+        }
+     }
+
+     else if(tag==200){
+         if ([continent isEqualToString:@"AS"]) {
+             desc=@"AS3";
+              total=[NSNumber numberWithDouble:4.99];
+         }
+         else if([continent isEqualToString:@"AF"]){
+             desc=@"AF3";
+              total=[NSNumber numberWithDouble:4.99];
+         }
+         else if ([continent isEqualToString:@"AM"]){
+             desc=@"AM3";
+             total=[NSNumber numberWithDouble:18.99];
+         }
+         else if ([continent isEqualToString:@"AUS"]){
+             desc=@"AUS3";
+              total=[NSNumber numberWithDouble:18.99];
+         }
+         else if ([continent isEqualToString:@"SAM"]){
+             desc=@"SAM3";
+              total=[NSNumber numberWithDouble:9.99];
+         }
+         else if ([continent isEqualToString:@"EU"]){
+             desc=@"EU3";
+              total=[NSNumber numberWithDouble:18.99];
+        }
+     }
+
+ else if(tag==300){
+     if ([continent isEqualToString:@"AS"]) {
+         desc=@"AS6";
+          total=[NSNumber numberWithDouble:9.99];
+     }
+     else if([continent isEqualToString:@"AF"]){
+         desc=@"AF6";
+          total=[NSNumber numberWithDouble:9.99];
+     }
+     else if ([continent isEqualToString:@"AM"]){
+         desc=@"AM6";
+          total=[NSNumber numberWithDouble:29.99];
+     }
+     else if ([continent isEqualToString:@"AUS"]){
+         desc=@"AUS6";
+          total=[NSNumber numberWithDouble:29.99];
+     }
+     else if ([continent isEqualToString:@"SAM"]){
+         desc=@"SAM6";
+          total=[NSNumber numberWithDouble:14.99];
+     }
+     else if ([continent isEqualToString:@"EU"]){
+         desc=@"EU6";
+          total=[NSNumber numberWithDouble:29.99];
+     }
+     
+    }
+ 
+ else{
+     if ([continent isEqualToString:@"AS"]) {
+         desc=@"AS12";
+         total=[NSNumber numberWithDouble:19.99];
+     }
+     else if([continent isEqualToString:@"AF"]){
+         desc=@"AF12";
+         total=[NSNumber numberWithDouble:19.99];
+     }
+     else if ([continent isEqualToString:@"AM"]){
+         desc=@"AM12";
+         total=[NSNumber numberWithDouble:49.99];
+     }
+     else if ([continent isEqualToString:@"AUS"]){
+         desc=@"AUS12";
+         total=[NSNumber numberWithDouble:49.99];
+     }
+     else if ([continent isEqualToString:@"SAM"]){
+         desc=@"SAM12";
+         total=[NSNumber numberWithDouble:24.99];
+     }
+     else if ([continent isEqualToString:@"EU"]){
+         desc=@"EU12";
+         total=[NSNumber numberWithDouble:49.99];
+     }
+
+ }
+ }
+
 
 @end

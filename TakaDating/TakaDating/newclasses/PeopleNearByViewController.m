@@ -50,8 +50,8 @@
     //[NSThread detachNewThreadSelector:@selector(callServiceForPeopleNearby) toTarget:self withObject:nil];
     // [self callServiceForPeopleNearby];
     
-     self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    
+    // self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     [super viewDidLoad];
    
     [self createUI];
@@ -426,7 +426,7 @@
     [request setHTTPMethod:@"POST"];
     [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
     
-    NSString * body=[NSString stringWithFormat:@"userEmail=%@&count=%d",[SingletonClass shareSingleton].emailID,currentPage];
+    NSString * body=[NSString stringWithFormat:@"userEmail=%@&count=%@",[SingletonClass shareSingleton].emailID,[NSString stringWithFormat:@"%d",currentPage]];
     [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding  allowLossyConversion:YES]];
 
     NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
@@ -434,12 +434,15 @@
         NSLog(@"No data available");
         return;
     }
-    NSArray * parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+   id parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSLog(@"people near by %@",parse);
-    
+    if (![[parse objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        return;
+    }
+    NSArray * people=[parse objectForKey:@"data"];
     NSMutableDictionary * dict=[[NSMutableDictionary alloc]init];
-    for (int i=0; i<parse.count; i++) {
-        dict=[parse objectAtIndex:i];
+    for (int i=0; i<people.count; i++) {
+        dict=[people objectAtIndex:i];
         [ [SingletonClass shareSingleton].viewerName addObject:[dict objectForKey:@"displayName"]];
         [[SingletonClass shareSingleton].imgCount addObject:[dict objectForKey:@"imagecount"]];
         [[SingletonClass shareSingleton].isOnline addObject:[dict objectForKey:@"isOnline"]];

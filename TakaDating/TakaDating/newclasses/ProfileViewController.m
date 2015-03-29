@@ -64,6 +64,9 @@
             [self.profileTableView reloadData];
            // [[NSNotificationCenter defaultCenter]removeObserver:self name:@"AboutMe" object:nil];
         }
+        if (self.creditsTableView.hidden==NO) {
+            [self.creditsTableView reloadData];
+        }
     }
     if (viewAppear==NO) {
         [self createScrollUI];
@@ -131,7 +134,7 @@
         
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
             self.parentView.frame=CGRectMake(0, 0, windowSize.width, windowSize.height-25);
-            self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
+           // self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
         }
         else{
             if ([UIScreen mainScreen].bounds.size.height>500) {
@@ -140,9 +143,16 @@
             else{
                 self.parentView.frame=CGRectMake(0, 0, windowSize.width, self.view.frame.size.height-80);
             }
-            self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg.png"]];
+           // self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg.png"]];
         }
-       
+        CAGradientLayer *layer = [CAGradientLayer layer];
+        layer.frame = self.parentView.bounds;
+        UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+        UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)50/255 alpha:1.0];
+        
+        layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
+        [self.parentView.layer insertSublayer:layer atIndex:0];
+
         
         [self.view addSubview:self.parentView];
        
@@ -540,7 +550,7 @@ NS_AVAILABLE_IOS(5_0){
         self.profileTableView.separatorStyle=UITableViewCellSeparatorStyleNone;
         self.profileTableView.estimatedRowHeight=70;
         self.profileTableView.rowHeight=UITableViewAutomaticDimension;
-        self.profileTableView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)176/255 blue:(CGFloat)176/255 alpha:1.0];
+        self.profileTableView.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
 
         [self.profileTableView setShowsVerticalScrollIndicator:NO];
         [self.secondView addSubview:self.profileTableView];
@@ -569,7 +579,7 @@ NS_AVAILABLE_IOS(5_0){
     }
         self.creditsTableView.delegate=self;
         self.creditsTableView.dataSource=self;
-        self.creditsTableView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)176/255 blue:(CGFloat)176/255 alpha:1.0];
+        self.creditsTableView.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
           [self.creditsTableView setShowsVerticalScrollIndicator:NO];
         [self.secondView addSubview:self.creditsTableView];
         
@@ -1188,21 +1198,21 @@ NS_AVAILABLE_IOS(5_0){
                 
                 if (indexPath.row==0) {
                     
-                    if ([SingletonClass shareSingleton].intr_name.count>0) {
-                        int y=0;
-                        int x=0;
+                    if ([SingletonClass shareSingleton].selectedIntId.count>0) {
+                        //int y=0;
+                        //int x=0;
                         UIView * backView=[[UIView alloc]init];
                         backView.frame=CGRectMake(0, 0,cell.frame.size.width, cell.contentView.frame.size.height);
                         
                         [cell.contentView addSubview:backView];
                                                 
-                        if ([SingletonClass shareSingleton].intr_name.count>6) {
+                        if ([SingletonClass shareSingleton].selectedIntId.count>6) {
                             //[self createInterestUI:5 indexpath:indexPath];
                             
                             for (int i=0;i<5;i++) {
                                 
                                 UIButton * btn1=[[UIButton alloc]init];
-                                btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                                 btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
                                 [btn1 setTitle:@"interest1" forState:UIControlStateNormal];
                                 [btn1 setBackgroundColor:[UIColor clearColor]];
                                 btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
@@ -1234,9 +1244,9 @@ NS_AVAILABLE_IOS(5_0){
                             int x=0;
                             
                             
-                            for (int i=0;i<[SingletonClass shareSingleton].intr_name.count;i++) {
+                            for (int i=0;i<[SingletonClass shareSingleton].selectedIntId.count;i++) {
                                 UIButton * btn1=[[UIButton alloc]init];
-                                btn1.frame=CGRectMake(0+i*110, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                                 btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
                                 [btn1 setTitle:@"interest1" forState:UIControlStateNormal];
                                 [btn1 setBackgroundColor:[UIColor clearColor]];
                                 btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
@@ -1318,19 +1328,20 @@ NS_AVAILABLE_IOS(5_0){
             [cell.contentView addSubview:imgView];
             
             UILabel * creditLabel=[[UILabel alloc]init];
-            creditLabel.frame=CGRectMake(cell.frame.size.width/2, 115, 50, 50);
+            
+            creditLabel.frame=CGRectMake(cell.frame.size.width/2, 115, 150, 50);
             if (!credits) {
                 creditLabel.text=@"0";
             }
             else{
                 creditLabel.text=[NSString stringWithFormat:@"%@",credits];
             }
-            creditLabel.font=[UIFont boldSystemFontOfSize:40];
+            creditLabel.font=[UIFont boldSystemFontOfSize:20];
             [cell.contentView addSubview:creditLabel];
             
             
             UIButton * refillCredits=[UIButton buttonWithType:UIButtonTypeCustom];
-            refillCredits.frame=CGRectMake(cell.frame.size.width/2-100, 200, 168, 30);
+            refillCredits.frame=CGRectMake(cell.frame.size.width/2-80, 200, 168, 30);
             [refillCredits setTitle:@"Top Up" forState:UIControlStateNormal];
             refillCredits.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"setting_btn_bg.png"]];
             refillCredits.titleLabel.font=[UIFont systemFontOfSize:font_size];
@@ -1378,7 +1389,7 @@ NS_AVAILABLE_IOS(5_0){
             
            
         
-        if ([SingletonClass shareSingleton].intr_name.count>0) {
+        if ([SingletonClass shareSingleton].selectedIntId.count>0) {
             return  200;
            /*
             for (int s=0; s<[SingletonClass shareSingleton].intr_name.count; s++) {

@@ -59,8 +59,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 {
     [super viewDidLoad];
     nameArr=[[NSMutableArray alloc]initWithObjects:@"One",@"Two",@"Three",@"Four",@"Five", nil];
-    self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    
+   // self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     windowSize =[UIScreen mainScreen].bounds.size;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(editButtonAction) name:@"editButtonAction" object:nil];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(cancelButtonAction) name:@"cancelButtonAction" object:nil];
@@ -130,7 +130,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 
 -(void)createUI{
-    self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+   // self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     CGFloat fontSize;
       CGRect   frame,srchFrame;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
@@ -178,7 +179,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
             sectionView.frame=CGRectMake(0, 0, windowSize.width, 60);
         }
         
-        sectionView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+        sectionView.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
         
     if (!self.messageTable) {
         self.messageTable=[[UITableView alloc]init];
@@ -202,8 +203,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 //        }
         self.messageTable.delegate=self;;
         self.messageTable.dataSource=self;
-            self.messageTable.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-        self.messageTable.separatorColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)165/255 blue:(CGFloat)165/255 alpha:1.0];
+            self.messageTable.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
+        self.messageTable.separatorColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
         
         [self.view addSubview:self.messageTable];
         
@@ -216,10 +217,15 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         
         self.searchbar.backgroundColor=[UIColor whiteColor];
         self.searchbar.searchBarStyle=UISearchBarStyleProminent;
-        [sectionView addSubview:self.searchbar];
+       // [sectionView addSubview:self.searchbar];
         
+        searchBar=[[UITextField alloc]init];
+        searchBar.frame=srchFrame;
+        searchBar.layer.cornerRadius=7;
+        searchBar.clipsToBounds=YES;
+        [sectionView addSubview:searchBar];
         
-         NSArray *arry=[NSArray arrayWithObjects:@"All",@"Unread",@"Online", nil];
+         NSArray *arry=[NSArray arrayWithObjects:@"All",@"Online", nil];
         
         self.segment=[[UISegmentedControl alloc]initWithItems:arry];
         
@@ -231,7 +237,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
         [sectionView addSubview:self.segment];
        for (UIControl *subview in self.segment.subviews) {
-            subview.tintColor = [subview isSelected] ? [UIColor colorWithRed:135.0/255.0 green:10.0/255.0 blue:2.0/255.0 alpha:1.0] : [UIColor blackColor];
+            subview.tintColor = [subview isSelected] ? [UIColor colorWithRed:255.0/255.0 green:53.0/255.0 blue:153.0/255.0 alpha:1.0] : [UIColor blackColor];
        }
         self.messageTable.tableHeaderView=sectionView ;
     }
@@ -243,7 +249,8 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 -(void)MySegmentControlAction:(UISegmentedControl *)sender{
         for (UIControl *subview in sender.subviews) {
-            subview.tintColor = [subview isSelected] ? [UIColor colorWithRed:135.0/255.0 green:10.0/255.0 blue:2.0/255.0 alpha:1.0] : [UIColor blackColor];
+           // subview.tintColor = [subview isSelected] ? [UIColor colorWithRed:135.0/255.0 green:10.0/255.0 blue:2.0/255.0 alpha:1.0] : [UIColor blackColor];
+             subview.tintColor = [subview isSelected] ? [UIColor colorWithRed:255.0/255.0 green:53.0/255.0 blue:153.0/255.0 alpha:1.0] : [UIColor blackColor];
         }
     
  
@@ -255,6 +262,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     }
     else if (sender.selectedSegmentIndex==1)
     {
+        online=YES;
+        [self.messageTable reloadData];
+
         NSLog(@"index Two selected");
     }
     else{
@@ -408,28 +418,19 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     
     if (editbuttonSelect==NO) {
-        XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
-        
-        /// Fetch chat history with perticulor user
-        
-        /*XMPPMessageArchivingCoreDataStorage *storage = [XMPPMessageArchivingCoreDataStorage   sharedInstance];
-        NSManagedObjectContext *moc = [storage mainThreadManagedObjectContext];
-        
-       //xmppMessageArchivingStorage = [XMPPMessageArchivingCoreDataStorage sharedInstance];
-       XMPPMessageArchiving * xmppMessageArchivingModule = [[XMPPMessageArchiving alloc] initWithMessageArchivingStorage:[XMPPMessageArchivingCoreDataStorage sharedInstance]];
-        [xmppMessageArchivingModule activate:xmppStream];
-        [xmppMessageArchivingModule  addDelegate:self delegateQueue:dispatch_get_main_queue()];*/
-        //[self loadarchivemsg:user.displayName];
+       // XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+       
        
       if(self.mdVC)
       {
           self.mdVC=nil;
       }
           //self.mdVC=[[MessageDetailViewController alloc]initWithNibName:@"MessageDetailViewController" bundle:nil];
-        self.mdVC=[[MessageDetailViewController alloc]initWithUser:user.displayName];
+        self.mdVC=[[MessageDetailViewController alloc]initWithUser:[userId objectAtIndex:indexPath.row]];
         self.mdVC.titleStr= [userName objectAtIndex:indexPath.row];
-        self.mdVC.userId=user.displayName;
-        [self fetchAllChatHistory:user];
+        self.mdVC.userId=[userId objectAtIndex:indexPath.row];
+        //[self fetchAllChatHistory:user];
+        [self fetchChatConversation:[userId objectAtIndex:indexPath.row]];
     [self.navigationController pushViewController:self.mdVC animated:YES];
     }
 
@@ -500,6 +501,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
                 NSMutableDictionary * dict2=[[NSMutableDictionary alloc]init];
                 [dict2 setObject:[dict objectForKey:@"body"] forKey:@"msg"];
                 [dict2 setObject:@"you" forKey:@"sender"];
+               // [dict2 setObject:[dict objectForKey:<#(id)#>] forKey:@"time"]
                 [[SingletonClass shareSingleton].messages addObject:dict2];
             }
             else if ([[dict objectForKey:@"toJID"] isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID]]&& [[dict objectForKey:@"fromJID"]isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",user.displayName]]) {
@@ -521,6 +523,41 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 -(void)deleteButtonAction:(id)sender{
     
+}
+
+#pragma mark-textfield delegate methods
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [self filterContentForSearchText:textField.text
+                               scope:[[self.searchDisplayController.searchBar scopeButtonTitles]
+                                      objectAtIndex:[self.searchDisplayController.searchBar
+                                                     selectedScopeButtonIndex]]];
+    [textField resignFirstResponder];
+    return YES;
+}
+
+- (void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope
+{
+    searchImages =[[NSMutableArray alloc]init];
+    searchIds=[[NSMutableArray alloc]init];
+    NSPredicate *resultPredicate = [NSPredicate
+                                    predicateWithFormat:@"SELF contains[cd] %@",
+                                    searchText];
+    
+    searchResults = [userName filteredArrayUsingPredicate:resultPredicate];
+    for(int i=0;i<userName.count;i++)
+    {
+        for(int j=0;j<searchResults.count;j++)
+        {
+            if([searchResults[j] isEqualToString:userName[i]])
+            {
+                [searchImages addObject:profileImage[i]];
+                [searchIds addObject:userId[i]];
+            }
+        }
+        [self.messageTable reloadData];
+        search=YES;
+    }
 }
 
 
@@ -585,6 +622,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     profileImage=[[NSMutableArray alloc]init];
     userName=[[NSMutableArray alloc]init];
+    userId=[[NSMutableArray alloc]init];
     NSLog(@"xmmp Roster Friends list %lu",(unsigned long)[self fetchedResultsController].sections.count);
     NSArray *sections = [[self fetchedResultsController] sections];
     for (int j=0; j<sections.count;j++) {
@@ -628,9 +666,11 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
                 NSMutableDictionary * dict=[parse objectForKey:@"userprofile"];
                 [profileImage addObject:[dict objectForKey:@"thumbanailUrl"]];
                 [userName addObject:[dict objectForKey:@"displayName"]];
+                [userId addObject:[dict objectForKey:@"userId"]];
         }
         }
     }
+        NSLog(@"User id %@",userId);
     }
 }
 
@@ -643,58 +683,55 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 }
 
 #pragma -mark Fetch history chat
-
-/*-(void)loadarchivemsg:(NSString *)chatWithUser
-{
+-(void)fetchChatConversation:(NSString*)user{
+    [[SingletonClass shareSingleton].messages removeAllObjects];
+    NSError * error;
+    NSURLResponse * urlResponse;
     
-    XMPPMessageArchivingCoreDataStorage *storage = [XMPPMessageArchivingCoreDataStorage sharedInstance];
-    NSManagedObjectContext *moc = [storage mainThreadManagedObjectContext];
-    NSEntityDescription *entityDescription = [NSEntityDescription entityForName:@"XMPPMessageArchiving_Message_CoreDataObject"
-                                                         inManagedObjectContext:moc];
-    NSFetchRequest *request = [[NSFetchRequest alloc]init];
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/chat/get-chat-conv/"];
     
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
     
-    NSString *predicateFrmt = @"bareJidStr==%@ ";
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:predicateFrmt, [NSString stringWithFormat:@"%@@takadating.com",chatWithUser]];
-    request.predicate = predicate;
-    NSLog(@"%@",[[NSUserDefaults standardUserDefaults] stringForKey:@"kXMPPmyJID"]);
-    [request setEntity:entityDescription];
-    NSError *error;
-    NSArray *messages_arc = [moc executeFetchRequest:request error:&error];
-    
-    [self print:[[NSMutableArray alloc]initWithArray:messages_arc] chatWithUser:chatWithUser];
-}
-
--(void)print:(NSMutableArray*)messages_arc chatWithUser:(NSString*)chatWithUser{
-    @autoreleasepool {
-        NSMutableArray * messages=[[NSMutableArray alloc]init];
-        for (XMPPMessageArchiving_Message_CoreDataObject *message in messages_arc) {
-            
-            NSXMLElement *element = [[NSXMLElement alloc] initWithXMLString:message.messageStr error:nil];
-            NSLog(@"to param is %@",[element attributeStringValueForName:@"to"]);
-            
-            NSMutableDictionary *m = [[NSMutableDictionary alloc] init];
-            [m setObject:message.body forKey:@"msg"];
-            
-            if ([[element attributeStringValueForName:@"to"] isEqualToString:chatWithUser]) {
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    NSString * body=[NSString stringWithFormat:@"fromJID=%@&toJID=%@",[SingletonClass shareSingleton].userID,user];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+   // NSLog(@"Chat response %@",json);
+    if ([[json objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        NSArray * chatData=[json objectForKey:@"data"];
+        if (chatData.count<1) {
+            return;
+        }
+        [[SingletonClass shareSingleton].messages removeAllObjects];
+         NSMutableDictionary * dict=[NSMutableDictionary dictionary];
+        for (int i=0; i<chatData.count; i++) {
+            dict=[chatData objectAtIndex:i];
+            if ([[dict objectForKey:@"fromJID"] isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID]]&& [[dict objectForKey:@"toJID"]isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",user]]) {
                 
-                [m setObject:@"you" forKey:@"sender"];
+                
+                NSMutableDictionary * dict2=[[NSMutableDictionary alloc]init];
+                [dict2 setObject:[dict objectForKey:@"body"] forKey:@"msg"];
+                [dict2 setObject:@"you" forKey:@"sender"];
+                [dict2 setObject:[dict objectForKey:@"sentDate"] forKey:@"time"];
+                [[SingletonClass shareSingleton].messages addObject:dict2];
             }
-            else
-            {
-                [m setObject:chatWithUser forKey:@"sender"];
+            else if ([[dict objectForKey:@"toJID"] isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID]]&& [[dict objectForKey:@"fromJID"]isEqualToString:[NSString stringWithFormat:@"%@@takadating.com",user]]) {
+                
+                
+                NSMutableDictionary * dict2=[[NSMutableDictionary alloc]init];
+                [dict2 setObject:[dict objectForKey:@"body"] forKey:@"msg"];
+                [dict2 setObject:@"sender" forKey:@"sender"];
+                [dict2 setObject:[dict objectForKey:@"sentDate"] forKey:@"time"];
+                [[SingletonClass shareSingleton].messages addObject:dict2];
+                
             }
-            
-            
-            [messages addObject:m];
-            
-            NSLog(@"bareJid param is %@",message.bareJid);
-            NSLog(@"bareJidStr param is %@",message.bareJidStr);
-            NSLog(@"body param is %@",message.body);
-            NSLog(@"timestamp param is %@",message.timestamp);
-            NSLog(@"outgoing param is %d",[message.outgoing intValue]);
-            NSLog(@"***************************************************");
+
         }
     }
-}*/
+}
 @end

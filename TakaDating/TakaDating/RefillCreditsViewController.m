@@ -18,12 +18,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     windowSize=[UIScreen mainScreen].bounds.size;
-    self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+   // self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    
+    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     CAGradientLayer * layer=[CAGradientLayer layer];
     layer.frame=CGRectMake(0, 0, windowSize.width ,55);
     
-    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
-    UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+   // UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
+   // UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+    UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
@@ -191,7 +195,7 @@
         balance=[NSString stringWithFormat:@"Your current balance is 0"];
     }
     else{
-        balance=[NSString stringWithFormat:@"%@",credit];
+        balance=[NSString stringWithFormat:@"Your current balance is %@",credit];
     }
     
     self.creditsLabel.text=balance;
@@ -333,70 +337,6 @@
 -(void)cancelButtonAction:(id)sender{
     [self.navigationController popViewControllerAnimated:YES];
 }
-/*
-#pragma  check for continent
--(void)checkForContinent:(int)tag{
-    if (tag==100) {
-        if ([continent isEqualToString:@"AS"]) {
-            description=@"AS1";
-        }
-        else if([continent isEqualToString:@"AF"]){
-            description=@"AF1";
-        }
-        else if ([continent isEqualToString:@"AM"]){
-            description=@"AM1";
-        }
-        else if ([continent isEqualToString:@"AUS"]){
-            description=@"AUS1";
-        }
-        else if ([continent isEqualToString:@"SAM"]){
-            description=@"SAM1";
-        }
-        else if ([continent isEqualToString:@"EU"]){
-            description=@"EU1";
-        }
-    }
-    else if(tag==600){
-        if ([continent isEqualToString:@"AS"]) {
-            description=@"AS";
-        }
-        else if([continent isEqualToString:@"AF"]){
-            description=@"AF1";
-        }
-        else if ([continent isEqualToString:@"AM"]){
-            description=@"AM1";
-        }
-        else if ([continent isEqualToString:@"AUS"]){
-            description=@"AUS1";
-        }
-        else if ([continent isEqualToString:@"SAM"]){
-            description=@"SAM1";
-        }
-        else if ([continent isEqualToString:@"EU"]){
-            description=@"EU1";
-        }
-    }
-    else{
-        if ([continent isEqualToString:@"AS"]) {
-            description=@"AS1";
-        }
-        else if([continent isEqualToString:@"AF"]){
-            description=@"AF1";
-        }
-        else if ([continent isEqualToString:@"AM"]){
-            description=@"AM1";
-        }
-        else if ([continent isEqualToString:@"AUS"]){
-            description=@"AUS1";
-        }
-        else if ([continent isEqualToString:@"SAM"]){
-            description=@"SAM1";
-        }
-        else if ([continent isEqualToString:@"EU"]){
-            description=@"EU1";
-        }
-    }
-}*/
 
 #pragma mark- callPayPalPaymentMethod
 -(void)callPayPalPaymentMethod:(UIButton*)sender{
@@ -483,19 +423,19 @@
     NSMutableDictionary * dict=[NSMutableDictionary dictionary];
     dict=[completedPayment.confirmation objectForKey:@"response"];
     if ([[dict objectForKey:@"state"]  isEqualToString:@"approved"]) {
-        self.creditsLabel.text=[NSString stringWithFormat:@"Your current balance is %@",total];
-        [[NSUserDefaults standardUserDefaults]setObject:self.creditsLabel.text forKey:@"credit"];
-        [[NSUserDefaults standardUserDefaults]synchronize];
+        
+       
        
         NSError * error=nil;
         NSURLResponse * urlResponse=nil;
-        
-        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/payment/insert-payment-detail"];
+   
+
+        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/mobile-app/insert-payment"];
          NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
         [request setHTTPMethod:@"POST"];
         [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
 
-        NSString * body=[NSString stringWithFormat:@"userid=%@&txn_id=%@&paypal_id=%@&created_at=%@&discription=%@&amount=%@&status=%@",[SingletonClass shareSingleton].userID,[dict objectForKey:@"id"],[dict objectForKey:@"id"],[dict objectForKey:@"create_time"],desc,[NSString stringWithFormat:@"%@",total],@"Success"];
+        NSString * body=[NSString stringWithFormat:@"userid=%@&txn_id=%@&paypal_id=%@&created_at=%@&discription=%@&amount=%@&status=%@&transactiontype=1",[SingletonClass shareSingleton].userID,[dict objectForKey:@"id"],[dict objectForKey:@"id"],[dict objectForKey:@"create_time"],desc,[NSString stringWithFormat:@"%@",total],@"Success"];
       
         [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
         
@@ -503,7 +443,31 @@
         if (data==nil) {
             return;
         }
-        id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        id parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        if ([[parse objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+                [SingletonClass shareSingleton].balance=1;
+            NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/mobile-app/check-balance"];
+            NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+            [request setHTTPMethod:@"POST"];
+            [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+            
+            NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+            [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+            NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+            if (data==nil) {
+                return;
+            }
+            id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+            if ([[json objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+                NSMutableDictionary * dict=[NSMutableDictionary dictionary];
+                NSLog( @"balance is %@",json);
+                dict=[json objectForKey:@"data"];
+                
+                self.creditsLabel.text=[NSString stringWithFormat:@"%@",[dict objectForKey:@"balance"]];
+                [[NSUserDefaults standardUserDefaults]setObject:[dict objectForKey:@"balance"] forKey:@"credit"];
+                [[NSUserDefaults standardUserDefaults]synchronize];
+            }
+        }
     }
 }
 - (void)didReceiveMemoryWarning {

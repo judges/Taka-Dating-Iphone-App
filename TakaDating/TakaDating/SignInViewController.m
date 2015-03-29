@@ -53,13 +53,15 @@
     
     // Do any additional setup after loading the view from its nib.
     windowSize=[UIScreen mainScreen].bounds.size;
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    
+    //self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, windowSize.width, 55);
-    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
-    UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+ //   UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
+  //  UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+    UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
@@ -193,7 +195,7 @@
    
     [forgotPasswordBtn setTitle:@" Forgot password ?" forState:UIControlStateNormal];
     [forgotPasswordBtn setTitleColor:secColorfrgt forState:UIControlStateNormal];
-    forgotPasswordBtn.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    forgotPasswordBtn.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     forgotPasswordBtn.titleLabel.font=[UIFont systemFontOfSize:12];
     [forgotPasswordBtn addTarget:self action:@selector(forgotPasswordButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:forgotPasswordBtn];
@@ -326,7 +328,7 @@
             [self setField:passwordField forKey:kXMPPmyPassword];
             
             [[self appdelegate]connect];
-            [self getAllChatHistory];
+            //[self getAllChatHistory];
             
             [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"signIn"];
             [[NSUserDefaults standardUserDefaults]synchronize];
@@ -540,13 +542,16 @@
         [SingletonClass shareSingleton].bodyType=[NSString stringWithFormat:@"BodyType:%@",[self appearanceBodyType:[dict objectForKey:@"bodyType"]]];
    
     [SingletonClass shareSingleton].userID=[dict objectForKey:@"userId"];
-    [[NSUserDefaults standardUserDefaults]setObject: [SingletonClass shareSingleton].userID forKey:@"userId"];
+
+    
+    [[NSUserDefaults standardUserDefaults]setObject:[parse objectForKey:@"balance"] forKey:@"credit"];
     [[NSUserDefaults standardUserDefaults]synchronize];
     
     [SingletonClass shareSingleton ].dob=[dict objectForKey:@"dob"];
     NSLog(@"UserID %@",[SingletonClass shareSingleton].userID);
    
     [SingletonClass shareSingleton].superPower=[[dict objectForKey:@"superpower"]intValue];
+    
         [SingletonClass shareSingleton].hairColor=[NSString stringWithFormat:@"HairColor:%@",[self appearanceHairColor:[dict objectForKey:@"hairColor"]]];
    
         [SingletonClass shareSingleton].eyeColor=[NSString stringWithFormat:@"EyeColor:%@",[self appearanceEyeColor:[dict objectForKey:@"eyeColor"]]];

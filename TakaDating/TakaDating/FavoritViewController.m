@@ -41,7 +41,8 @@
    
     windowSize=[UIScreen mainScreen].bounds.size;
     isProfilePic=YES;//if yes display all details, else display add phot button
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+   // self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     if (cellSelectedArr ) {
         cellSelectedArr=nil;
     }
@@ -416,6 +417,9 @@
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    if ([SingletonClass shareSingleton].superPower==0) {
+        return;
+    }
      [SingletonClass shareSingleton].fromChat=NO;
     UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
     if (indexPath.section==0) {
@@ -529,7 +533,7 @@
             [self.secaddPhotoButton setBackgroundImage:[UIImage imageNamed:button] forState:UIControlStateNormal];
             self.secaddPhotoButton.layer.cornerRadius=4;
             self.secaddPhotoButton.clipsToBounds=YES;
-            [self.secaddPhotoButton addTarget:self action:@selector(addPhotoButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+            [self.secaddPhotoButton addTarget:self action:@selector(addPhotoButtonActionFavourite:) forControlEvents:UIControlEventTouchUpInside];
             [backView addSubview:self.secaddPhotoButton];
         }
         self.secaddPhotoButton.hidden=NO;
@@ -565,7 +569,7 @@
 
        
         [self.promoteButton setBackgroundImage:[UIImage imageNamed:button] forState:UIControlStateNormal];
-           [self.promoteButton addTarget:self action:@selector(addMeHereButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+           [self.promoteButton addTarget:self action:@selector(promoteButtonActionFavourite:) forControlEvents:UIControlEventTouchUpInside];
            [backView addSubview:self.promoteButton];
     }
     //    self.promoteButton.hidden=NO;
@@ -652,7 +656,7 @@
             [self.addPhotoButton setTitle:@"Add photos" forState:UIControlStateNormal];
             [self.addPhotoButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
             [self.addPhotoButton setBackgroundImage:[UIImage imageNamed:button_img] forState:UIControlStateNormal];
-            [self.addPhotoButton addTarget:self action:@selector(addPhotoButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+            [self.addPhotoButton addTarget:self action:@selector(addPhotoButtonActionFavourite:) forControlEvents:UIControlEventTouchUpInside];
             [backView addSubview:self.addPhotoButton];
         }
         self.addPhotoButton.hidden=NO;
@@ -756,7 +760,7 @@
 
 #pragma mark-add Photo
 
--(void)addPhotoButtonAction:(id)sender{
+-(void)addPhotoButtonActionFavourite:(id)sender{
     if (!self.addPhoto) {
         self.addPhoto=[[AddphotosViewController alloc]initWithNibName:@"AddphotosViewController" bundle:nil];
     }
@@ -844,6 +848,15 @@
         [self callWebServicesForFavorite];
         [self.refreshActivityIndicator stopAnimating];
     }
+}
+
+#pragma mark- promote
+-(void)promoteButtonActionFavourite:(UIButton *)sender{
+    if (self.promoteVC) {
+        self.promoteVC=nil;
+    }
+    self.promoteVC=[[PromoteyourselfViewController alloc]initWithNibName:@"PromoteyourselfViewController" bundle:nil];
+    [self.navigationController pushViewController:self.promoteVC animated:YES];
 }
 
 #pragma mark- web service for favourite

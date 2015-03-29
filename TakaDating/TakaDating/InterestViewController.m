@@ -45,12 +45,15 @@
 //    self.browseByCat=[NSArray arrayWithObjects:@"Food & Drink",@"Music",@"Movies & TV Shows",@"Fashion & Beauty",@"Sports",@"Travel",@"Profession",@"Games",@"Hobbies",@"Books & Culture",@"Other", nil];
     
     windowSize=[UIScreen mainScreen].bounds.size;
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    //self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, windowSize.width, 55);
-    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
-    UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+   // UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
+  //  UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+    UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
@@ -123,8 +126,8 @@ self.titleLabel.frame=CGRectMake(windowSize.width/2-60, 20, windowSize.width-200
         self.intersetTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height-145);
     }
     }
-    self.intersetTable.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    self.intersetTable.separatorColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.intersetTable.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
+    self.intersetTable.separatorColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     self.intersetTable.delegate=self;
     self.intersetTable.dataSource=self;
     [self.view addSubview:self.intersetTable];
@@ -132,7 +135,7 @@ self.titleLabel.frame=CGRectMake(windowSize.width/2-60, 20, windowSize.width-200
     
     UIView * sectionView=[[UIView alloc]init];
     sectionView.frame=CGRectMake(0, 0, windowSize.width, 60);
-    sectionView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    sectionView.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
         sectionView.frame=CGRectMake(0, 0, windowSize.width, 120);
     }

@@ -39,12 +39,14 @@
     
     appdelegate=[UIApplication sharedApplication].delegate;
     
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    
+    //self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, windowSize.width, 55);
-    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
-    UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+   // UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
+    //UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+    UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
@@ -116,8 +118,8 @@
     }
     self.filterTable.delegate=self;
     self.filterTable.dataSource=self;
-    self.filterTable.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    self.filterTable.separatorColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.filterTable.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
+    self.filterTable.separatorColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     self.filterTable.hidden=NO;
     [self.view addSubview:self.filterTable];
     
@@ -616,6 +618,10 @@
     
 
     NSString * body=[NSString stringWithFormat:@"gen=%d&hereFor=%d&location=%@&interestedIn=%d&start_age=%@&end_age=%@&radius=%@&lat=%@&lag=%@&userId=%@&count=%@&status=%d",selectedRowSecOne,selectedRowSecTwo,self.placeTextFiled.text,0,heightStr,weightStr,distance,lat,log,[SingletonClass shareSingleton].userID,@"0",1];
+    
+   //  NSString * body=[NSString stringWithFormat:@"gen=1&hereFor=1&location=Germany&interestedIn=0&start_age=20&end_age=22&radius=100&lat=51.1657&lag=10.4515&userId=16174915&count=0&status=1"];
+    
+   
     [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
     NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
     if (data==nil) {

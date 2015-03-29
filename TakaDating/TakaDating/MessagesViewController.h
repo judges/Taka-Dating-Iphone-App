@@ -15,16 +15,19 @@
 
 
 
-@interface MessagesViewController : UIViewController<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate>
+@interface MessagesViewController : UIViewController<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,UITextFieldDelegate>
 
 {
-    BOOL editbuttonSelect,selectAll,online,completion;
+    BOOL editbuttonSelect,selectAll,online,completion,search;
     NSMutableArray *nameArr;
     CGFloat row_hh,secHeight;
     CGSize  windowSize;
     NSFetchedResultsController *fetchedResultsController;
     UITextField *    buddyField;
-    NSMutableArray * profileImage, * userName;
+    NSMutableArray * profileImage, * userName,* userId;
+    UITextField * searchBar;
+    NSArray * searchResults;
+    NSMutableArray * searchImages,* searchIds;
 
 }
 

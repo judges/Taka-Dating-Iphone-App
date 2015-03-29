@@ -36,12 +36,14 @@
     [self.view addSubview:headerview];
    
     
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    
+  //  self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, windowSize.width, headerview.frame.size.height);
-    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
-    UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+   // UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
+   // UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+    UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [headerview.layer insertSublayer:layer atIndex:0];
   
@@ -456,7 +458,7 @@ NS_AVAILABLE_IOS(5_0){
         }
         self.profileTableView.delegate=self;
         self.profileTableView.dataSource=self;
-        self.profileTableView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)176/255 blue:(CGFloat)176/255 alpha:1.0];
+        self.profileTableView.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
         
         [self.profileTableView setShowsVerticalScrollIndicator:NO];
         [self.secondView addSubview:self.profileTableView];
@@ -901,7 +903,7 @@ NS_AVAILABLE_IOS(5_0){
                         
                         for (int i=0;i<interests.count;i++) {
                             UIButton * btn1=[[UIButton alloc]init];
-                            btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                           btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
                            [btn1 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i]] forState:UIControlStateNormal];
                             [btn1 setBackgroundColor:[UIColor clearColor]];
                             btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
@@ -912,7 +914,7 @@ NS_AVAILABLE_IOS(5_0){
                             [backView addSubview:btn1];
                             
                             UIButton * btn2=[[UIButton alloc]init];
-                            btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
+                           btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
                              [btn2 setTitle:[NSString stringWithFormat:@"%@",[interests objectAtIndex:i]] forState:UIControlStateNormal];
                             [btn2 setBackgroundColor:[UIColor clearColor]];
                             btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
@@ -1440,6 +1442,19 @@ NS_AVAILABLE_IOS(5_0){
     }
     id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSLog(@"%@",json);
+    
+    NSURL * postUrl1=[NSURL URLWithString:@"http://takadating.com:9090/plugins/userService/userservice"];
+    NSMutableURLRequest * request1=[[NSMutableURLRequest alloc]initWithURL:postUrl1 cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request1 setHTTPMethod:@"POST"];
+    [request1 addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    NSString * body1=[NSString stringWithFormat:@"type=add_roster&secret=3U3vCIjx&username=%@&item_jid=%@@takadating.com&name=%@&subscription=3",_useriId,[SingletonClass shareSingleton].userID,[SingletonClass shareSingleton].name];
+    [request1 setHTTPBody:[body1 dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    NSData * data1=[NSURLConnection sendSynchronousRequest:request1 returningResponse:&urlResponse error:&error];
+    if (data1==nil) {
+        return;
+    }
+    id json1=[NSJSONSerialization JSONObjectWithData:data1 options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"%@",json1);
    
 
 }

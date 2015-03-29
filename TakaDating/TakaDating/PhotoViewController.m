@@ -55,7 +55,9 @@
     self.view.frame=[SingletonClass shareSingleton].frame;
     NSLog(@"view frame %f",self.view.frame.size.height-268);
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+   // self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    
+    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         x=140;
@@ -304,6 +306,22 @@
         }
         [self.navigationController pushViewController:self.addPhoto animated:YES];
     }
+    else{
+        if (indexPath.section==0) {
+            profilePicPath= [privacyTwoPic objectAtIndex:indexPath.row-1];
+        }
+        else if (indexPath.section==1)
+        {
+          profilePicPath= [privacyZeroPic objectAtIndex:indexPath.row-1];
+        }
+        else
+        {
+          profilePicPath=[privacyOnePic objectAtIndex:indexPath.row-1];
+        }
+        actionSheet =[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"OK", nil];
+        [actionSheet showFromRect:CGRectMake(windowSize.width/2-40, windowSize.height/2, 200, 100) inView:self.view animated:YES];
+        
+    }
 }
 
 #pragma mark-divideImagesOnBasisPrivacy
@@ -336,7 +354,37 @@
     }
 }
 
-
+#pragma  mark- actionsheet delegate methods
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex==0) {
+       //SET PROFILE PIC
+        NSError * error;
+        NSURLResponse * urlResponse;
+        
+        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/user/set-profile-pic"];
+        
+        NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+        [request setHTTPMethod:@"POST"];
+        [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+        
+        NSString * body=[NSString stringWithFormat:@"userid=%@&propicurl=%@&imageId=0",[SingletonClass shareSingleton].userID,profilePicPath];
+        
+        [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+        
+        NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+        
+        if (data==nil) {
+            return;
+        }
+        id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+        NSLog(@"%@",json);
+        if ([[json objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
+            [SingletonClass shareSingleton].profileImg=profilePicPath;
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"setProfilePic" object:nil userInfo:nil];
+            [[NSNotificationCenter defaultCenter]removeObserver:self name:@"setProfilePic" object:nil];
+        }
+    }
+}
 
 #pragma mark- Header View for section four
 

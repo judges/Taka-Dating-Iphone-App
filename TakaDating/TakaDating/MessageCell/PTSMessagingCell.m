@@ -125,20 +125,35 @@ static CGFloat messageTextSize = 14.0;
     CGRect avatarImageFrame = CGRectZero;
        
     if (self.sent == YES) {
-        timeLabelFrame = CGRectMake(self.frame.size.width - dateSize.width - textMarginHorizontal-60,  textSize.height + 3*textMarginVertical, dateSize.width, dateSize.height);
+        timeLabelFrame = CGRectMake(self.frame.size.width - dateSize.width - textMarginHorizontal-0,  textSize.height + 3*textMarginVertical, dateSize.width, dateSize.height);
         
-        ballonViewFrame = CGRectMake(self.frame.size.width - (textSize.width + 2*textMarginHorizontal)-60-dateSize.width, timeLabelFrame.size.height, dateSize.width+textSize.width + 2*textMarginHorizontal,dateSize.height+textSize.height + 2*textMarginVertical);
+        if (dateSize.width>textSize.width) {
+            ballonViewFrame = CGRectMake(self.frame.size.width - (textSize.width + 2*textMarginHorizontal)-0-dateSize.width, timeLabelFrame.size.height, dateSize.width+textSize.width+ 2*textMarginHorizontal,dateSize.height+textSize.height + 2*textMarginVertical);
+        }
+        else{
+            ballonViewFrame = CGRectMake(self.frame.size.width - (textSize.width + 2*textMarginHorizontal)-0-dateSize.width, timeLabelFrame.size.height, textSize.width+textSize.width + 2*textMarginHorizontal,dateSize.height+textSize.height + 2*textMarginVertical);
+        }
+
         
-        messageLabelFrame = CGRectMake(self.frame.size.width - (textSize.width + textMarginHorizontal)-60,  ballonViewFrame.origin.y + textMarginVertical, textSize.width, textSize.height);
+       // ballonViewFrame = CGRectMake(self.frame.size.width - (textSize.width + 2*textMarginHorizontal)-60-dateSize.width, timeLabelFrame.size.height, dateSize.width+textSize.width + 2*textMarginHorizontal,dateSize.height+textSize.height + 2*textMarginVertical);
+        
+        messageLabelFrame = CGRectMake(self.frame.size.width - (textSize.width + textMarginHorizontal)+0,  ballonViewFrame.origin.y + textMarginVertical, textSize.width, textSize.height);
         
         avatarImageFrame = CGRectMake(self.frame.size.width-60, timeLabelFrame.size.height+5, 40.0f, 40.0f);
 
     } else {
-        timeLabelFrame = CGRectMake(textMarginHorizontal+60,  textSize.height + 3*textMarginVertical, dateSize.width, dateSize.height);
+        timeLabelFrame = CGRectMake(textMarginHorizontal,  textSize.height + 3*textMarginVertical, dateSize.width, dateSize.height);
         
-        ballonViewFrame = CGRectMake(55.0f, timeLabelFrame.size.height, dateSize.width+ textSize.width + 2*textMarginHorizontal, dateSize.height+textSize.height + 2*textMarginVertical);
+        if (dateSize.width>textSize.width) {
+            ballonViewFrame = CGRectMake(0.0f, timeLabelFrame.size.height, dateSize.width+20+2*textMarginVertical, dateSize.height+textSize.height + 2*textMarginVertical);
+        }
+        else{
+            ballonViewFrame = CGRectMake(0.0f, timeLabelFrame.size.height, textSize.width+20+2*textMarginVertical , dateSize.height+textSize.height + 2*textMarginVertical);
+        }
+       
+       // ballonViewFrame = CGRectMake(0.0f, timeLabelFrame.size.height, dateSize.width+ textSize.width + 2*textMarginHorizontal, dateSize.height+textSize.height + 2*textMarginVertical);
         
-        messageLabelFrame = CGRectMake(textMarginHorizontal+60, ballonViewFrame.origin.y + textMarginVertical, textSize.width, textSize.height);
+        messageLabelFrame = CGRectMake(textMarginHorizontal, ballonViewFrame.origin.y + textMarginVertical, textSize.width, textSize.height);
         
         
         avatarImageFrame = CGRectMake(10, timeLabelFrame.size.height+5, 40.0f, 40.0f);

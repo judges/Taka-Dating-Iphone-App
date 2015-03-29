@@ -38,8 +38,8 @@
                   [super viewDidLoad];
     windowSize=[UIScreen mainScreen].bounds.size;
     selectedIndex=0;
-    age1=[NSArray arrayWithObjects:@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30",@"31",@"32",@"33",@"34",@"35", nil];
-    age2=[NSArray arrayWithObjects:@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30",@"31",@"32",@"33",@"34",@"35", nil];
+    age1=[NSArray arrayWithObjects:@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30",@"31",@"32",@"33",@"34",@"35",@"36",@"37",@"38",@"39",@"40",@"41",@"42",@"43",@"44",@"45",@"46",@"47",@"48",@"49",@"50",@"51",@"52",@"53",@"54",@"55",@"56",@"57",@"58",@"59",@"60",@"61",@"62",@"62",@"63",@"64",@"65",@"66",@"67",@"68",@"69",@"70",@"71",@"72",@"72",@"73",@"74",@"75",@"76",@"77",@"78",@"79",@"80",nil];
+    age2=[NSArray arrayWithObjects:@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30",@"31",@"32",@"33",@"34",@"35",@"36",@"37",@"38",@"39",@"40",@"41",@"42",@"43",@"44",@"45",@"46",@"47",@"48",@"49",@"50",@"51",@"52",@"53",@"54",@"55",@"56",@"57",@"58",@"59",@"60",@"61",@"62",@"62",@"63",@"64",@"65",@"66",@"67",@"68",@"69",@"70",@"71",@"72",@"72",@"73",@"74",@"75",@"76",@"77",@"78",@"79",@"80",nil];
     
     self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] init];
      self.refreshActivityIndicator.frame=CGRectMake(windowSize.width/2-20, 150, 40, 40);
@@ -53,14 +53,16 @@
     self.refreshActivityIndicator.alpha = 1.0;
   
     
-    appdelegate=[UIApplication sharedApplication].delegate;
+    //appdelegate=[UIApplication sharedApplication].delegate;
     
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    
+   // self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, windowSize.width, 55);
-    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
-    UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    //UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
+   // UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+    UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
@@ -161,7 +163,8 @@
     }
         self.filterTable.delegate=self;
         self.filterTable.dataSource=self;
-    
+        self.filterTable.backgroundColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
+        self.filterTable.separatorColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     self.filterTable.hidden=NO;
     [self.view addSubview:self.filterTable];
     
@@ -288,7 +291,7 @@
         self.textFiled.frame=CGRectMake(10, 0, windowSize.width, row_hh);
         self.textFiled.delegate=self;
         self.textFiled.font=[UIFont systemFontOfSize:font_size];
-        combineStr=[NSString stringWithFormat:@"%@ - %@ years",[SingletonClass shareSingleton].enFromAge,[SingletonClass shareSingleton].enEndAge];
+        
         if (!combineStr) {
              self.textFiled.text=@"";
         }

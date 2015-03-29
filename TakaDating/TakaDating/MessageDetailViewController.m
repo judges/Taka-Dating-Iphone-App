@@ -82,13 +82,16 @@
 
 
 -(void)createUI{
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    //self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];;
      windowSize=[UIScreen mainScreen].bounds.size;
     
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, self.view.frame.size.width, 55);
-    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
-    UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    //UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
+   // UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+    UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
@@ -138,7 +141,7 @@
     tView.delegate=self;
     tView.dataSource=self;
     tView.separatorStyle=UITableViewCellSelectionStyleNone;
-    tView.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    tView.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     [tView setShowsHorizontalScrollIndicator:NO];
     [scrollView addSubview:tView];
    
@@ -209,11 +212,15 @@
         
         
         
+        int timeStamp=[[NSDate date] timeIntervalSince1970];
         
+        NSString * time=[NSString stringWithFormat:@"%d",timeStamp];
         
         XMPPMessage *msg = [XMPPMessage message];
         [msg addAttributeWithName:@"type" stringValue:@"chat"];
         [msg addAttributeWithName:@"to" stringValue:[NSString stringWithFormat:@"%@@takadating.com",chatWithUser]];
+        //[msg addAttributeWithName:time objectValue:@"time"];
+        
         NSXMLElement *body = [NSXMLElement elementWithName:@"body" stringValue:messageStr];
         [msg addChild:body];
         //[[self xmppStream] sendElement:msg];
@@ -225,7 +232,7 @@
         NSMutableDictionary *m = [[NSMutableDictionary alloc] init];
         [m setObject:messageStr forKey:@"msg"];
         [m setObject:@"you" forKey:@"sender"];
-        //  [m setObject:[NSString getCurrentTime] forKey:@"time"];
+        [m setObject:time forKey:@"time"];
         
         [[SingletonClass shareSingleton].messages addObject:m];
         [tView reloadData];
@@ -296,9 +303,9 @@
 {
     NSDictionary *dict = nil;
     dict=[[SingletonClass shareSingleton].messages objectAtIndex:indexPath.row];
-    NSLog(@"message %@",[SingletonClass shareSingleton].messages);
+    //NSLog(@"message %@",[SingletonClass shareSingleton].messages);
     CGSize messageSize = [PTSMessagingCell messageSize:[dict objectForKey:@"msg"]];
-    NSLog(@"message height %f",messageSize.height);
+   // NSLog(@"message height %f",messageSize.height);
     return messageSize.height + 2*[PTSMessagingCell textMarginVertical] + 20.0f;
 }
 
@@ -331,13 +338,25 @@
     //    //Normal messages
     //    else
     //    {
+    
+   
+    
     ccell.messageLabel.text =[dict objectForKey:@"msg"];
+    
+    int timeStamp=[[dict objectForKey:@"time"]intValue];
+    NSDate * date = [NSDate dateWithTimeIntervalSince1970:timeStamp];
+    NSString * str=[NSString stringWithFormat:@"%@",date];
+    
+    ccell.timeLabel.text=str;
+
     if(![[dict objectForKey:@"sender"] isEqualToString:@"you"])
     {
-        ccell.sent=YES;
+       
+            ccell.sent=YES;
     }
     else
     {
+        
         ccell.sent=NO;
     }
     

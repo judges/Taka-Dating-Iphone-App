@@ -45,7 +45,8 @@
     }
     cellSelectedArr=[[NSMutableArray alloc]init];
     windowSize=[UIScreen mainScreen].bounds.size;
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+   // self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     
    // [self profileVisitorsWebservice];
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(createUI) name:@"visitorsUI" object:nil];
@@ -364,6 +365,10 @@
             [self.navigationController pushViewController:self.promoteVC animated:YES];
         }
     }*/
+    
+    if ([SingletonClass shareSingleton].superPower==0) {
+        return;
+    }
      [SingletonClass shareSingleton].fromChat=NO;
         UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
         
@@ -608,6 +613,7 @@
         id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
         NSLog(@"grnated award %@",json);
         awardSanction=YES;
+        [SingletonClass shareSingleton].visitorAward=YES;
     }
     }
    }

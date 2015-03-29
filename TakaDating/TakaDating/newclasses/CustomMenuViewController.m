@@ -105,12 +105,19 @@
     //[self presentViewController:nav  animated:YES completion:nil];
 }
 
+-(void)setProfilePic{
+    [self.menuTableView reloadData];
+}
+
 #pragma mark -
 - (void)viewDidLoad
 
 {
     
     [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(setProfilePic) name:@"setProfilePic" object:nil];
+    
     [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]init];
    [SingletonClass shareSingleton].viewerID=[[NSMutableArray alloc]init];
     [SingletonClass shareSingleton].viewerImage=[[NSMutableArray alloc]init];
@@ -183,8 +190,11 @@
 
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = self.headerView.bounds;
-    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
-    UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    //UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
+   // UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+    UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
+    
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.headerView.layer insertSublayer:layer atIndex:0];
     

@@ -19,12 +19,14 @@
         CGFloat font_size;
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
                 self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, frame.size.height-25, frame.size.width, 25)];
-            self.headerTitleLabel.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"header_ipad.png"]];
+           // self.headerTitleLabel.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"header_ipad.png"]];
+             self.headerTitleLabel.backgroundColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)10/255 blue:(CGFloat)211/255 alpha:1.0];
             font_size=20;
         }
         else{
             self.headerTitleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, frame.size.height-25, frame.size.width, 25)];
-             self.headerTitleLabel.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"header.png"]];
+            // self.headerTitleLabel.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"header.png"]];
+          self.headerTitleLabel.backgroundColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)10/255 blue:(CGFloat)211/255 alpha:1.0];
             font_size=13;
         }
         // self.headerTitleLabel.backgroundColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];

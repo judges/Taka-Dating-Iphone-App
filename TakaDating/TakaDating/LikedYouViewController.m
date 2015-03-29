@@ -32,7 +32,8 @@
     // Do any additional setup after loading the view from its nib.
     
     windowSize=[UIScreen mainScreen].bounds.size;
-   self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+  // self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     if (cellSelectedArr) {
         cellSelectedArr=nil;
     }
@@ -95,13 +96,55 @@
 }
 
 -(void) createLikedYouUI{
-    
-    if (thumbanailUrl.count<1)
+    if (![SingletonClass shareSingleton].profileImg) {
+         [self createUI];
+    }
+    else if (thumbanailUrl.count<1)
     {
-        [self createUI];
+        [self createUIIfNoPic];
+       
     }
     else{
         [self createCollectionView];
+    }
+}
+
+#pragma mark- Create UI if no Profile pic
+-(void)createUIIfNoPic{
+    CGFloat font_size;
+    if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+        font_size=20;
+    }
+    else{
+        font_size=13;
+    }
+    UILabel * label=[[UILabel alloc]init];
+    label.frame=CGRectMake(windowSize.width/2-130, windowSize.height/2-140, windowSize.width/2+100, 50);
+    label.font=[UIFont systemFontOfSize:font_size];
+    label.text=@"Nobody has liked you yet.Promote yourself to be shown to more people";
+    label.textAlignment=NSTextAlignmentCenter;
+    label.textColor=[UIColor blackColor];
+    label.numberOfLines=0;
+    label.lineBreakMode=NSLineBreakByCharWrapping;
+    [self.view addSubview:label];
+    
+    UIButton * addPhotoBtn=[[UIButton alloc]init];
+    addPhotoBtn.frame=CGRectMake(windowSize.width/2-80, windowSize.height/2-50,167, 32);
+    [addPhotoBtn setTitle:@"Promote yourself" forState:UIControlStateNormal];
+    [addPhotoBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    //addPhoto.titleLabel.font=[UIFont systemFontOfSize:12];
+    addPhotoBtn.clipsToBounds=YES;
+    addPhotoBtn.layer.cornerRadius=5;
+   
+    [addPhotoBtn setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
+    [addPhotoBtn addTarget:self action:@selector(promoteButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:addPhotoBtn];
+    
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        addPhotoBtn.frame=CGRectMake(windowSize.width/2-100, windowSize.height/2-200,167, 32);
+        label.frame=CGRectMake(windowSize.width/2-250, windowSize.height/2-140, windowSize.width/2+100, 50);
+        [addPhotoBtn setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg_ipad.png"] forState:UIControlStateNormal];
+        
     }
 }
 
@@ -125,21 +168,22 @@
     label.lineBreakMode=NSLineBreakByCharWrapping;
     [self.view addSubview:label];
     
-    UIButton * addPhoto=[[UIButton alloc]init];
-    addPhoto.frame=CGRectMake(windowSize.width/2-80, windowSize.height/2-50,167, 32);
-    [addPhoto setTitle:@"Add photos" forState:UIControlStateNormal];
-    [addPhoto setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    UIButton * addPhotoBtn=[[UIButton alloc]init];
+    addPhotoBtn.frame=CGRectMake(windowSize.width/2-80, windowSize.height/2-50,167, 32);
+    [addPhotoBtn setTitle:@"Add photos" forState:UIControlStateNormal];
+    [addPhotoBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     //addPhoto.titleLabel.font=[UIFont systemFontOfSize:12];
-    addPhoto.clipsToBounds=YES;
-    addPhoto.layer.cornerRadius=5;
-    [addPhoto addTarget:self action:@selector(moveToPhotoclass) forControlEvents:UIControlEventTouchUpInside];
-    [addPhoto setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
-    [self.view addSubview:addPhoto];
+    addPhotoBtn.clipsToBounds=YES;
+    addPhotoBtn.layer.cornerRadius=5;
+    
+    [addPhotoBtn setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
+    [addPhotoBtn addTarget:self action:@selector(addPhotoButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:addPhotoBtn];
     
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-        addPhoto.frame=CGRectMake(windowSize.width/2-100, windowSize.height/2-200,167, 32);
+        addPhotoBtn.frame=CGRectMake(windowSize.width/2-100, windowSize.height/2-200,167, 32);
         label.frame=CGRectMake(windowSize.width/2-250, windowSize.height/2-140, windowSize.width/2+100, 50);
-        [addPhoto setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg_ipad.png"] forState:UIControlStateNormal];
+        [addPhotoBtn setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg_ipad.png"] forState:UIControlStateNormal];
         
     }
     
@@ -445,6 +489,10 @@
 }
 #pragma mark-
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    if ([SingletonClass shareSingleton].superPower==0) {
+        return;
+    }
+     [SingletonClass shareSingleton].fromChat=NO;
     if (userProfileVC) {
         userProfileVC=nil;
     }
@@ -553,7 +601,7 @@
     if (awardSanction==NO) {
         
     
-    if (useriId.count>10) {
+    if (useriId.count>=10) {
         
         
         NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/award/grant-award/"];
@@ -577,20 +625,30 @@
         NSLog(@"grnated award %@",json);
     }
         awardSanction=YES;
+        [SingletonClass shareSingleton].userLikesAward=YES;
     }
 
 }
 
-#pragma mark- Add button action
-/*
--(void)moveToPhotoclass:{
+#pragma mark- Promote button action
+
+-(void)promoteButtonAction:(UIButton *)sender{
     if (promote) {
         promote=nil;
     }
     promote=[[PromoteyourselfViewController alloc]initWithNibName:@"PromoteyourselfViewController" bundle:nil];
     [self.navigationController pushViewController:promote animated:YES];
 }
-*/
+
+#pragma mark- add photo
+
+-(void)addPhotoButtonAction:(UIButton *)sender{
+    if (addPhoto) {
+        addPhoto=nil;
+    }
+    addPhoto=[[AddphotosViewController alloc]initWithNibName:@"AddphotosViewController" bundle:nil];
+    [self.navigationController pushViewController:addPhoto animated:YES];
+}
 
 /*
 #pragma mark - Navigation

@@ -67,9 +67,8 @@
             self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"screen1_480.png"]];
         }
     
-    [self createUI];
     }
-    
+    [self createUI];
 }
 
 - (void)didReceiveMemoryWarning
@@ -455,7 +454,11 @@
     [SingletonClass shareSingleton ].dob=[dict objectForKey:@"dob"];
     NSLog(@"UserID %@",[SingletonClass shareSingleton].userID);
     
-    [SingletonClass shareSingleton].superPower=[[dict objectForKey:@"superpower"]intValue];
+    [SingletonClass shareSingleton].superPower=[[parse objectForKey:@"superpower"]intValue];
+    [[NSUserDefaults standardUserDefaults]setObject:[parse objectForKey:@"balance"] forKey:@"credit"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    NSLog(@"%d",[SingletonClass shareSingleton].superPower);
+    
     [SingletonClass shareSingleton].hairColor=[NSString stringWithFormat:@"HairColor:%@",[self appearanceHairColor:[dict objectForKey:@"hairColor"]]];
     
     [SingletonClass shareSingleton].eyeColor=[NSString stringWithFormat:@"EyeColor:%@",[self appearanceEyeColor:[dict objectForKey:@"eyeColor"]]];

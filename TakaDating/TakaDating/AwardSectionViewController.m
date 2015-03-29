@@ -8,6 +8,7 @@
 
 #import "AwardSectionViewController.h"
 #import "AwardTableViewCell.h"
+#import "SingletonClass.h"
 
 
 @interface AwardSectionViewController ()
@@ -19,14 +20,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
     windowSize=[UIScreen mainScreen].bounds.size;
-    self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-   
+   // self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+   self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
+    
     
     CAGradientLayer *layer = [CAGradientLayer layer];
     layer.frame = CGRectMake(0, 0, windowSize.width, 55);
-    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
-    UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+   // UIColor *firstColor = [UIColor colorWithRed:(CGFloat)207/255 green:(CGFloat)42/255 blue:(CGFloat)43/255 alpha:1.0];
+   // UIColor *secColor = [UIColor colorWithRed:(CGFloat)121/255 green:(CGFloat)2/255 blue:(CGFloat)0/255 alpha:1.0];
+    UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+    UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
     layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
     [self.view.layer insertSublayer:layer atIndex:0];
     
@@ -61,8 +66,18 @@
     else{
         height=55;
     }
-
-    [self createUI];
+    dispatch_async(dispatch_get_global_queue(0, 0),^{
+        if (likesAward==NO) {
+            [self checkLikesAward];
+        }
+        if (viewsAward==NO) {
+            [self checkViewsAward];
+        }
+        dispatch_async(dispatch_get_main_queue(),^{
+             [self createUI];
+        });
+    });
+   
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -79,7 +94,8 @@
     awardTbl.frame=CGRectMake(0, height, windowSize.width, windowSize.height-50);
     awardTbl.delegate=self;
     awardTbl.dataSource=self;
-    awardTbl.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
+    awardTbl.backgroundColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
+   
     awardTbl.separatorStyle=UITableViewCellSeparatorStyleNone;
     [self.view addSubview:awardTbl];
 }
@@ -127,25 +143,41 @@
     }
     else*/ if (indexPath.row==0)
     {
+        if (likesAward==YES) {
+            cell.imgView.image=[UIImage imageNamed:@"award_1.png"];
+        }
         cell.cellLable.text=@"One of the top voters of the week!";
          cell.cellSubLbl.text=@"Like 1000 different people to win this award.";
     }
     else if (indexPath.row==1)
     {
-        cell.cellLable.text=@"The most liked people!";
+        if ([SingletonClass shareSingleton].userLikesAward==YES) {
+            cell.imgView.image=[UIImage imageNamed:@"award_3.png"];
+        }
+         cell.cellLable.text=@"The most liked people!";
          cell.cellSubLbl.text=@"Get 10 likes from different people to win this award.";
     }
     else if (indexPath.row==2)
     {
+        NSLog(@"%lu",(unsigned long)[SingletonClass shareSingleton].selectedIntName.count);
+        if ([SingletonClass shareSingleton].selectedIntName.count>=15) {
+            cell.imgView.image=[UIImage imageNamed:@"award_2_interest.png"];
+        }
         cell.cellLable.text=@"The most Interested person!";
          cell.cellSubLbl.text=@"Add 15 interests in your profile to get this award.";
     }
     else if (indexPath.row==3)
     {
+        if ([SingletonClass shareSingleton].visitorAward==YES) {
+            cell.imgView.image=[UIImage imageNamed:@"award_4.png"];
+        }
         cell.cellLable.text=@"The most checked out people!";
          cell.cellSubLbl.text=@"Get visited by 50 people in a week to win this award.";
     }
     else{
+        if (viewsAward==YES) {
+            cell.imgView.image=[UIImage imageNamed:@"award_5.png"];
+        }
         cell.cellLable.text=@"The biggest window shoppers!";
          cell.cellSubLbl.text=@"Visit 200 user profiles in a week to win this award.";
     }
@@ -165,6 +197,61 @@
 
 -(void)cancelButtonAction:(UIButton*)sender{
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+#pragma mark- check Likes Award
+
+-(void)checkLikesAward{
+    NSError * error;
+    NSURLResponse * urlResponse;
+    
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/mobile-app/check-my-likes/"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@" Likes Award %@ ", json);
+    if ([[json objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        if ([[json objectForKey:@"likescount"] isEqualToNumber:[NSNumber numberWithInt:1000]]) {
+            likesAward=YES;
+        }
+    }
+}
+
+#pragma  mark- check Views Award
+
+-(void)checkViewsAward{
+    NSError *error;
+    NSURLResponse * urlResponse;
+    
+    NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/mobile-app/check-my-views/"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    NSString * body=[NSString stringWithFormat:@"userId=%@",[SingletonClass shareSingleton].userID];
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@" Views data ===-==- %@",json);
+    if ([[json objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+     int count=[[json objectForKey:@"visitcount"]intValue];
+        
+        if (count>=200) {
+            viewsAward=YES;
+        }
+    }
 }
 
 - (void)didReceiveMemoryWarning {
