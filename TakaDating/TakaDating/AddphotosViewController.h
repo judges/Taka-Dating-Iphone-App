@@ -27,5 +27,6 @@
 @property(nonatomic)UILabel * titleLabel;
 @property(nonatomic)UIButton * cancelButton;
 @property(nonatomic)UIImagePickerController * imagePicker;
+@property(nonatomic)UIActivityIndicatorView * activityView;
 
 @end

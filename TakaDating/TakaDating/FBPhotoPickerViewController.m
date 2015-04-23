@@ -123,6 +123,11 @@
     collectionFlowLayout.minimumLineSpacing=(float)2.0;
     collectionFlowLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, height, size.width, size.height-minus) collectionViewLayout:collectionFlowLayout];
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        collectionFlowLayout.minimumInteritemSpacing = (CGFloat)2.0;
+        collectionFlowLayout.minimumLineSpacing = (CGFloat)10.0;
+
+    }
     self.automaticallyAdjustsScrollViewInsets = NO;
     //self.mainCollectionView.contentInset = UIEdgeInsetsMake(0, 0, 10, 0);
     [self.mainCollectionView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];

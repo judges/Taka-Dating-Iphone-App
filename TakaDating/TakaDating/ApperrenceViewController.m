@@ -612,6 +612,13 @@
         return;
     }
     id parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    if ([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
+       [[AppDelegate sharedAppDelegate]showToastMessage:@" Updated successfully"];
+    }
+    else
+    {
+      [[AppDelegate sharedAppDelegate]showToastMessage:@" Fail to update"];
+    }
     //Not completed yet
 }
 - (void)didReceiveMemoryWarning

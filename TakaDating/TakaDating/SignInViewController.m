@@ -266,10 +266,15 @@
 -(void)SignInButtonAction{
     [SingletonClass shareSingleton].facebookLog=NO;
   
+    [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"accessToken"];
     NSError * error=nil;
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    
     NSURLResponse * urlResponse=nil;
     
-    NSString * checkNetwork=[[NSUserDefaults standardUserDefaults]objectForKey:@"NetworkStatus"];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"kNetworkReachabilityChangedNotification" object:nil userInfo:nil];
+    BOOL checkNetwork=[[NSUserDefaults standardUserDefaults]boolForKey:@"NetworkStatus"];
+    
     if (checkNetwork) {
         NSString * requestBody;
     NSString * signIn=[[NSUserDefaults standardUserDefaults]objectForKey:@"signIn"];
@@ -388,6 +393,10 @@
             
         
     }
+    else{
+        UIAlertView * alert=[[UIAlertView alloc]initWithTitle:nil message:@"Check your internet connection" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        [alert show];
+    }
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -475,6 +484,11 @@
         [alert show];
         return;
     }else{
+        [[NSNotificationCenter defaultCenter]postNotificationName:@"kNetworkReachabilityChangedNotification" object:nil userInfo:nil];
+        BOOL checkNetwork=[[NSUserDefaults standardUserDefaults]boolForKey:@"NetworkStatus"];
+        if (checkNetwork) {
+            
+        
             UIAlertView * alert=[[UIAlertView alloc]initWithTitle:@"Forgot password " message:@"Password has been sent to your email." delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
         [alert show];
         
@@ -495,6 +509,12 @@
             }
         }];
     }
+        else
+        {
+            UIAlertView * alert=[[UIAlertView alloc]initWithTitle:nil message:@"Check your internet connection" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+        }
+    }
+    
 }
 #pragma mark- getAllChat history
 -(void)getAllChatHistory{

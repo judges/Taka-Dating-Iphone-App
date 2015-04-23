@@ -9,6 +9,7 @@
 #import "PromoteyourselfViewController.h"
 #import "SingletonClass.h"
 #import "UIImageView+WebCache.h"
+#import "promoteCollectionViewCell.h"
 
 @interface PromoteyourselfViewController ()
 {
@@ -91,6 +92,8 @@
     flowLayout.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, height, size.width, size.height-500)collectionViewLayout:flowLayout];
+        flowLayout.minimumInteritemSpacing = (CGFloat)2.0;
+        flowLayout.minimumLineSpacing = (CGFloat)10.0;
     }
     else{
         self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, height, size.width, size.height+50) collectionViewLayout:flowLayout];
@@ -102,7 +105,7 @@
     self.mainCollectionView.delegate = self;
         //self.mainCollectionView.backgroundColor = [UIColor colorWithRed:(CGFloat)59/255 green:(CGFloat)97/255 blue:(CGFloat)107/255 alpha:1];
     self.mainCollectionView.backgroundColor = [UIColor blackColor];
-    [self.mainCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
+    [self.mainCollectionView registerClass:[promoteCollectionViewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
     
     [self.view addSubview:self.mainCollectionView];
         //self.mainCollectionView.scrollEnabled = NO;
@@ -129,10 +132,10 @@
     // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
+    promoteCollectionViewCell *customCellView=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
     NSString *name = @"crm.png";
     
-     CustomCollectionCell *customCellView = [[CustomCollectionCell alloc] initWithFrame:cell.bounds];
+     //CustomCollectionCell *customCellView = [[CustomCollectionCell alloc] initWithFrame:cell.bounds];
     if(indexPath.row==0)
     {
         customCellView.profileImageView.image = [UIImage imageNamed:@"profile_pic_bg.png"];
@@ -157,10 +160,10 @@
         }
        
     }
-    cell.backgroundColor = [UIColor clearColor];
-    [cell addSubview:customCellView];
+   // cell.backgroundColor = [UIColor clearColor];
+  //  [cell addSubview:customCellView];
   
-    return cell;
+    return customCellView;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath

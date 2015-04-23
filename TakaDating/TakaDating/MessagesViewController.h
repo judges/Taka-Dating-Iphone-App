@@ -18,16 +18,17 @@
 @interface MessagesViewController : UIViewController<UISearchBarDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,UITextFieldDelegate>
 
 {
-    BOOL editbuttonSelect,selectAll,online,completion,search;
+    BOOL editbuttonSelect,selectAll,online,completion,search,unread;
     NSMutableArray *nameArr;
-    CGFloat row_hh,secHeight;
+    CGFloat row_hh,secHeight,fontSize;
     CGSize  windowSize;
     NSFetchedResultsController *fetchedResultsController;
     UITextField *    buddyField;
     NSMutableArray * profileImage, * userName,* userId;
     UITextField * searchBar;
     NSArray * searchResults;
-    NSMutableArray * searchImages,* searchIds;
+    NSMutableArray * searchImages,* searchIds,*unreadMsg,* unreadMsgId ,* unreadUserId,* unreadProfileImg,*unreadUserName;
+   
 
 }
 

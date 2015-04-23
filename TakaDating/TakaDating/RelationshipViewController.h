@@ -22,7 +22,7 @@
 @property (nonatomic) UIButton *cancelButton,*saveButton;
 @property(nonatomic,strong)NSString * titleStr;
 @property(nonatomic,assign)int index;
-
+@property(nonatomic)UIActivityIndicatorView * refreshActivityIndicator;
 
 
 @end

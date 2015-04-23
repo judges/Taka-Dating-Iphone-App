@@ -12,12 +12,17 @@
 #import "MessagesViewController.h"
 #import "VisitorsViewController.h"
 
-@interface SignUpViewController : UIViewController<UITextFieldDelegate,UIAlertViewDelegate, UIPickerViewDataSource,UIPickerViewDelegate,NSURLConnectionDelegate>
+@interface SignUpViewController : UIViewController<UITextFieldDelegate,UIAlertViewDelegate, UIPickerViewDataSource,UIPickerViewDelegate,NSURLConnectionDelegate,UITableViewDataSource,UITableViewDelegate>
 {
     BOOL radioBtnSelect;
     NSString* radiobutton;
     CGSize windowSize;
     NSMutableData * responseData;
+     UITextField * locationTextField;
+    UITableView * locationTbl;
+    BOOL searchRslt;
+    NSMutableArray * lng,*lat;
+    CGFloat row_hh;
 }
 
 @property (nonatomic, assign) CGSize windowSize;
@@ -36,4 +41,6 @@
 @property(nonatomic)UIImageView *looking_for_male,* looking_for_female;
 
 @property(nonatomic,strong) NSString * locationName,*pickerstr,*dateString;
+
+@property(nonatomic,strong)NSMutableArray* placeName,*logAndLat;
 @end

@@ -126,6 +126,17 @@
     self.relationTable.separatorColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     self.relationTable.scrollEnabled=NO;
     [self.view addSubview:self.relationTable];
+    
+    self.refreshActivityIndicator = [[UIActivityIndicatorView alloc] initWithFrame:CGRectMake(140, 220, 40, 40)];
+    
+    self.refreshActivityIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyleWhiteLarge;
+    
+    self.refreshActivityIndicator.color = [UIColor blackColor];
+    
+    [self.relationTable addSubview:self.refreshActivityIndicator];
+    [self.relationTable bringSubviewToFront:self.refreshActivityIndicator];
+    self.refreshActivityIndicator.alpha = 1.0;
+   
 }
 
 #pragma mark- Table Delegate methods
@@ -386,6 +397,7 @@
     
 }
 -(void)saveButtonAction:(id)sender{
+    [self.refreshActivityIndicator startAnimating];
     
     if (self.index==3) {
 //        NSString * urlStr=[NSString stringWithFormat:@"http://taka.dating/relationship-update/mobile/%@/%@",[SingletonClass shareSingleton].userID,selectedRow];
@@ -454,7 +466,7 @@
         NSString * postUrl=@"http://23.238.24.26/mobi/education-update";
         [self performSelector:@selector(callServiceToUpdate: body:) withObject:postUrl withObject:bodyStr];
     }
-
+    
 }
 
 
@@ -484,6 +496,8 @@
     else{
         NSLog(@"Unsuccessfull");
     }
+    [[AppDelegate sharedAppDelegate]showToastMessage:@" Updated successfully"];
+    [self.refreshActivityIndicator stopAnimating];
 }
 - (void)didReceiveMemoryWarning
 {

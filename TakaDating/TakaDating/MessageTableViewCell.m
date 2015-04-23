@@ -22,9 +22,16 @@
         
         
         self.cellLabel=[[UILabel alloc]init];
-        self.cellLabel.font=[UIFont systemFontOfSize:12];
+        self.cellLabel.font=[UIFont boldSystemFontOfSize:12];
         self.cellLabel.textColor=[UIColor blackColor];
         [self.containerView addSubview:self.cellLabel];
+        
+        self.cellDetailLbel=[[UILabel alloc]init];
+        self.cellDetailLbel.font=[UIFont systemFontOfSize:12];
+        self.cellDetailLbel.textColor=[UIColor blackColor];
+        self.cellDetailLbel.numberOfLines=0;
+        self.cellDetailLbel.lineBreakMode=NSLineBreakByWordWrapping;
+        [self.containerView addSubview:self.cellDetailLbel];
         
         self.deleteButton=[UIButton buttonWithType:UIButtonTypeCustom];
         [self.deleteButton setImage:[UIImage imageNamed:@"select_normal.png"] forState:UIControlStateNormal];

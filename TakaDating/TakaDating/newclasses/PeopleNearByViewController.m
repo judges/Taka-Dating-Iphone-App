@@ -14,12 +14,14 @@
 #import "SingletonClass.h"
 #import "UIImageView+WebCache.h"
 #import "UserProfileViewController.h"
+#import "customCollectionCiewCell.h"
 
 @interface PeopleNearByViewController ()
 {
     //UITableView *tempTable;
     //UICollectionReusableView *reuseableView;
     UILabel *textLabel;
+    customCollectionCiewCell *customCellView;
     CollectionHeaderTitleLabel *reuseableView;
     PromoteyourselfViewController * promote;
 }
@@ -47,6 +49,7 @@
 
 - (void)viewDidLoad
 {
+    windowSize=[UIScreen mainScreen].bounds.size;
     //[NSThread detachNewThreadSelector:@selector(callServiceForPeopleNearby) toTarget:self withObject:nil];
     // [self callServiceForPeopleNearby];
     
@@ -121,7 +124,7 @@
     
    // [self.refreshActivityIndicator stopAnimating];
      self.view.backgroundColor = [UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
-    windowSize=[UIScreen mainScreen].bounds.size;
+    
     self.topCollectionArray = @[@"Abc",@"Bcd",@"Cde",@"Def",@"Efg"];
     //---------
     UICollectionViewFlowLayout *flowLayOut= [[UICollectionViewFlowLayout alloc] init];
@@ -131,6 +134,8 @@
     
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height-55) collectionViewLayout:flowLayOut];
+        flowLayOut.minimumInteritemSpacing = (CGFloat)2.0;
+        flowLayOut.minimumLineSpacing = (CGFloat)10.0;
 
     }else{
         self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height-55) collectionViewLayout:flowLayOut];
@@ -144,7 +149,7 @@
     self.mainCollectionView.delegate = self;
     //self.mainCollectionView.backgroundColor = [UIColor colorWithRed:(CGFloat)59/255 green:(CGFloat)97/255 blue:(CGFloat)107/255 alpha:1];
     self.mainCollectionView.backgroundColor = [UIColor blackColor];
-    [self.mainCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
+    [self.mainCollectionView registerClass:[customCollectionCiewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
     
     [self.view addSubview:self.mainCollectionView];
     //self.mainCollectionView.scrollEnabled = NO;
@@ -159,6 +164,9 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
    // NSLog(@"count ---====--- %d",[SingletonClass shareSingleton].viewerID.count);
+    //if ([SingletonClass shareSingleton].viewerID.count>0) {
+    //    return 20;
+    //}
     return [SingletonClass shareSingleton].viewerID.count;
 }
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
@@ -167,22 +175,32 @@
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
-    //NSString *name = @"";
+   // CustomCellView *customCellView;
+
+         customCellView=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
+  
+   
+      //  customCellView = [[CustomCellView alloc] initWithFrame:cell.bounds];
+
     
-    
-    CustomCellView *customCellView = [[CustomCellView alloc] initWithFrame:cell.bounds];
-    //customCellView.profileImageView.image = [UIImage imageNamed:name];
-   // customCellView.nameLabel.text = @"Xyz";
     NSString * imageName=[NSString stringWithFormat:@"http://taka.dating/%@",[[SingletonClass shareSingleton].viewerImage objectAtIndex:indexPath.row]];
     NSURL * imageUrl=[NSURL URLWithString:imageName];
     [customCellView.profileImageView setImageWithURL:imageUrl];
     customCellView.nameLabel.text=[[SingletonClass shareSingleton].viewerName objectAtIndex:indexPath.row];
-    if ([[SingletonClass shareSingleton].isOnline[indexPath.row]  isEqualToString:@"0"]) {
-        customCellView.isOnlne.image=[UIImage imageNamed:@"offline_icon.png"];
+    NSString * online,* offline;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        online=@"online_icon_ipad.png";
+        offline=@"offline_icon_ipad.png";
     }
     else{
-         customCellView.isOnlne.image=[UIImage imageNamed:@"online_icon.png"];
+        online=@"online_icon.png";
+        offline=@"offline_icon.png";
+    }
+    if ([[SingletonClass shareSingleton].isOnline[indexPath.row]  isEqualToString:@"0"]) {
+        customCellView.isOnlne.image=[UIImage imageNamed:offline];
+    }
+    else{
+         customCellView.isOnlne.image=[UIImage imageNamed:online];
     }
     NSString *totalCount=[[[SingletonClass shareSingleton].imgCount objectAtIndex:indexPath.row]stringValue];
    // [NSString stringWithFormat:@"%d",(int)indexPath.row];
@@ -201,9 +219,9 @@
     }
     
     customCellView.customImageCounterView.totalImageCountLabel.text =totalCount ;
-    cell.backgroundColor = [UIColor clearColor];
-    [cell addSubview:customCellView];
-    return cell;
+    //cell.backgroundColor = [UIColor clearColor];
+    //[cell addSubview:customCellView];
+    return customCellView;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath

@@ -51,6 +51,15 @@
     [self.cancelButton addTarget:self action:@selector(cancelButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.cancelButton];
     
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        
+        layer.frame=CGRectMake(0, 0, windowSize.width ,75);
+        self.titleLabel.frame=CGRectMake(windowSize.width/2-60, 25, 120, 40);
+        self.titleLabel.font=[UIFont boldSystemFontOfSize:30];
+        self.cancelButton.frame = CGRectMake(windowSize.width/2-350, 25, 120, 40);
+        self.cancelButton.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+    }
+    
     
     self.payPalConfig = [[PayPalConfiguration alloc] init];
     self.payPalConfig.merchantName = @"Ultramagnetic Omega Supreme";
@@ -320,17 +329,47 @@
     oneYearLbl.text=@"3400.00 INR in total";
     [creditsView addSubview:oneYearLbl];
 
+    if(UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad){
+        
+     NSString * image=@"setting_btn_bg_ipad.png";
+        
+        [self.oneMonths setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:image]]];
+        [self.sixMonths setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:image]]];
+        [self.oneYear setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:image]]];
+        
+        instructionLbl.font=[UIFont boldSystemFontOfSize:25];
+        self.creditsLabel.font=[UIFont boldSystemFontOfSize:25];
+        
+        self.oneMonths.titleLabel.font=[UIFont systemFontOfSize:20];
+        self.sixMonths.titleLabel.font=[UIFont systemFontOfSize:20];
+        self.oneYear.titleLabel.font=[UIFont systemFontOfSize:20];
+        
+        
+         instructionLbl.frame=CGRectMake(windowSize.width/2-180, 50, windowSize.width-20, 30);
+         self.creditsLabel.frame=CGRectMake(windowSize.width/2-180, 50, windowSize.width-20, 30);
+        self.oneMonths.frame=CGRectMake(creditsView.frame.size.width/2-160, 100,328, 63);
+       // oneMonthLbl.frame=CGRectMake(creditsView.frame.size.width/2-20, 180, 200, 10);
+        self.sixMonths.frame=CGRectMake(creditsView.frame.size.width/2-160, 185,328, 63);
+       // sixMonthBtn.frame=CGRectMake(creditsView.frame.size.width/2-80, 250, 70, 10);
+       // sixMonthLbl.frame=CGRectMake(creditsView.frame.size.width/2, 250, 200, 10);
+        self.oneYear.frame=CGRectMake(creditsView.frame.size.width/2-160, 270, 328, 63);
+        //oneYearBtn.frame=CGRectMake(creditsView.frame.size.width/2-80, 310, 328, 10);
+       // oneYearLbl.frame=CGRectMake(creditsView.frame.size.width/2, 310, 200, 10);
+
+    }
+    else{
    // self.threeMonths.frame=CGRectMake(creditsView.frame.size.width/2-80, 70, 168, 31);
    // threeMonthBtn.frame=CGRectMake(creditsView.frame.size.width/2-80, 110, 70, 10);
    // threeMonthsLbl.frame=CGRectMake(creditsView.frame.size.width/2, 110, 200, 10);
     self.oneMonths.frame=CGRectMake(creditsView.frame.size.width/2-80, 140,168, 31);
-    oneMonthLbl.frame=CGRectMake(creditsView.frame.size.width/2-20, 180, 200, 10);
+  //  oneMonthLbl.frame=CGRectMake(creditsView.frame.size.width/2-20, 180, 200, 10);
     self.sixMonths.frame=CGRectMake(creditsView.frame.size.width/2-80, 205,168, 31);
-    sixMonthBtn.frame=CGRectMake(creditsView.frame.size.width/2-80, 250, 70, 10);
-    sixMonthLbl.frame=CGRectMake(creditsView.frame.size.width/2, 250, 200, 10);
+   // sixMonthBtn.frame=CGRectMake(creditsView.frame.size.width/2-80, 250, 70, 10);
+   // sixMonthLbl.frame=CGRectMake(creditsView.frame.size.width/2, 250, 200, 10);
     self.oneYear.frame=CGRectMake(creditsView.frame.size.width/2-80, 270, 168, 31);
-    oneYearBtn.frame=CGRectMake(creditsView.frame.size.width/2-80, 310, 70, 10);
-    oneYearLbl.frame=CGRectMake(creditsView.frame.size.width/2, 310, 200, 10);
+   // oneYearBtn.frame=CGRectMake(creditsView.frame.size.width/2-80, 310, 70, 10);
+   // oneYearLbl.frame=CGRectMake(creditsView.frame.size.width/2, 310, 200, 10);
+    }
 }
 
 #pragma mark-Cancel button action

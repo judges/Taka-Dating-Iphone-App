@@ -16,6 +16,8 @@
 #import "SingletonClass.h"
 #import "UIImageView+WebCache.h"
 #import "UserProfileViewController.h"
+#import "FavoriteCustomCell.h"
+
 
 @interface FavoritViewController ()
 
@@ -121,6 +123,11 @@
     flowLayOut.minimumLineSpacing = (CGFloat)2.0;
     flowLayOut.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.bounds.size.height) collectionViewLayout:flowLayOut];
+    if (UIUserInterfaceIdiomPad==UI_USER_INTERFACE_IDIOM()) {
+        flowLayOut.minimumInteritemSpacing = (CGFloat)2.0;
+        flowLayOut.minimumLineSpacing = (CGFloat)10.0;
+
+    }
     self.automaticallyAdjustsScrollViewInsets = NO;
     //self.mainCollectionView.contentInset = UIEdgeInsetsMake(0, 0, 10, 0);
     [self.mainCollectionView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
@@ -128,7 +135,7 @@
     self.mainCollectionView.delegate = self;
     //self.mainCollectionView.backgroundColor = [UIColor colorWithRed:(CGFloat)59/255 green:(CGFloat)97/255 blue:(CGFloat)107/255 alpha:1];
     self.mainCollectionView.backgroundColor = [UIColor blackColor];
-    [self.mainCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
+    [self.mainCollectionView registerClass:[FavoriteCustomCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
     
     [self.view addSubview:self.mainCollectionView];
     //self.mainCollectionView.scrollEnabled = NO;
@@ -168,12 +175,21 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
+    FavoriteCustomCell *customCellView=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
   
      //UICollectionViewCell * cell=[collectionView cellForItemAtIndexPath:indexPath];
-  CollectionCellView * customCellView=[[CollectionCellView alloc] initWithFrame:cell.bounds];
+  //CollectionCellView * customCellView=[[CollectionCellView alloc] initWithFrame:cell.bounds];
     
     //isProfilePic=YES;
+    NSString * online,* offline;
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        online=@"online_icon_ipad.png";
+        offline=@"offline_icon_ipad.png";
+    }
+    else{
+        online=@"online_icon.png";
+        offline=@"offline_icon.png";
+    }
          if(indexPath.section==0)
          {
              if (thumbanailUrl.count>0) {
@@ -219,21 +235,21 @@
             }
            
             if ([[isOnline objectAtIndex:indexPath.row]isEqualToString:@"1"]) {
-                customCellView.isOnlne.image=[UIImage imageNamed:@"online_icon.png"];
+                customCellView.isOnlne.image=[UIImage imageNamed:online];
             }
             else{
-                customCellView.isOnlne.image=[UIImage imageNamed:@"offline_icon.png"];
+                customCellView.isOnlne.image=[UIImage imageNamed:offline];
             }
             customCellView.customImageCounterView.hidden=NO;
                  
-                 if ([SingletonClass shareSingleton].superPower==0) {
+                 //if ([SingletonClass shareSingleton].superPower==0) {
                      customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
-                 }
-                 else{
+                // }
+                // else{
 
                      NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[thumbanailUrl objectAtIndex:indexPath.row]]];
                      [customCellView.profileImageView setImageWithURL:url] ;
-                 }
+                // }
             customCellView.nameLabel.text =[displayName objectAtIndex:indexPath.row] ;
             NSString *totalCount= [NSString stringWithFormat:@"%d",(int)indexPath.row];
             CGFloat h = 25 + ([totalCount length]*5);
@@ -245,14 +261,18 @@
             else{
                 customCellView.customImageCounterView.frame = CGRectMake(70-h, 55, h, 16);
             }
+                 if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                     
+                     customCellView.customImageCounterView.frame = CGRectMake(100, 120, 50, 30);
+                 }
             
             customCellView.customImageCounterView.totalImageCountLabel.text = [imageCount objectAtIndex:indexPath.row];
             
         }
         }
           //   }
-        cell.backgroundColor = [UIColor clearColor];
-        [cell addSubview:customCellView];
+      //  cell.backgroundColor = [UIColor clearColor];
+       // [cell addSubview:customCellView];
 
     }
     
@@ -260,19 +280,19 @@
         if (thumbanailUrlUser.count>0) {
             
                    if ([[isOnlineUser objectAtIndex:indexPath.row]isEqualToString:@"1"]) {
-                customCellView.isOnlne.image=[UIImage imageNamed:@"online_icon.png"];
+                customCellView.isOnlne.image=[UIImage imageNamed:online];
             }
             else{
-                customCellView.isOnlne.image=[UIImage imageNamed:@"offline_icon.png"];
+                customCellView.isOnlne.image=[UIImage imageNamed:offline];
             }
             customCellView.customImageCounterView.hidden=NO;
-            if ([SingletonClass shareSingleton].superPower==0) {
-                customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
-            }
-            else{
+           // if ([SingletonClass shareSingleton].superPower==0) {
+           //     customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
+           // }
+           // else{
                     NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[thumbanailUrlUser objectAtIndex:indexPath.row]]];
                 [customCellView.profileImageView setImageWithURL:url] ;
-            }
+          //  }
             customCellView.nameLabel.text =[displayNameUser objectAtIndex:indexPath.row] ;
             NSString *totalCount= [NSString stringWithFormat:@"%d",(int)indexPath.row];
             CGFloat h = 25 + ([totalCount length]*5);
@@ -284,21 +304,28 @@
             else{
                 customCellView.customImageCounterView.frame = CGRectMake(70-h, 55, h, 16);
             }
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                
+                customCellView.customImageCounterView.frame = CGRectMake(100, 120, 50, 30);
+            }
             
             customCellView.customImageCounterView.totalImageCountLabel.text = [imageCountUser objectAtIndex:indexPath.row];
 
         }
-        cell.backgroundColor = [UIColor clearColor];
-        [cell addSubview:customCellView];
+       // cell.backgroundColor = [UIColor clearColor];
+       // [cell addSubview:customCellView];
     }
     
-    return cell;
+    return customCellView;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath.section==1) {
         if (thumbanailUrlUser.count>0) {
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                return CGSizeMake(150, 150);
+            }
             return CGSizeMake(73, 73);
         }
         else{
@@ -309,6 +336,9 @@
     else if (indexPath.section==0)
     {
         if (thumbanailUrl.count>0) {
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                return CGSizeMake(150, 150);
+            }
             return CGSizeMake(73, 73);
         }
         else{
@@ -341,6 +371,10 @@
         size = CGSizeMake(self.view.frame.size.width, height);
         return size;
         }
+       if (thumbanailUrl.count<1) {
+           size = CGSizeMake(self.view.frame.size.width, height);
+           return size;
+       }
 
     }
     else  if(section==2)
@@ -349,6 +383,8 @@
             size = CGSizeMake(self.view.frame.size.width, height);
             return size;
         }
+       
+        
     }
         size = CGSizeMake(self.view.frame.size.width, 25);
         return size;
@@ -417,9 +453,9 @@
 }
 
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    if ([SingletonClass shareSingleton].superPower==0) {
-        return;
-    }
+    //if ([SingletonClass shareSingleton].superPower==0) {
+    //    return;
+    //}
      [SingletonClass shareSingleton].fromChat=NO;
     UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
     if (indexPath.section==0) {
@@ -561,7 +597,7 @@
         if (useriId.count<1) {
             
         
-       if (!self.promoteButton) {
+       //if (!self.promoteButton) {
            self.promoteButton.hidden=NO;
            self.promoteButton=[[UIButton alloc]initWithFrame:buttonff];
            [self.promoteButton setTitle:@"Promote yourself" forState:UIControlStateNormal];
@@ -571,10 +607,10 @@
         [self.promoteButton setBackgroundImage:[UIImage imageNamed:button] forState:UIControlStateNormal];
            [self.promoteButton addTarget:self action:@selector(promoteButtonActionFavourite:) forControlEvents:UIControlEventTouchUpInside];
            [backView addSubview:self.promoteButton];
-    }
+   // }
     //    self.promoteButton.hidden=NO;
    
-    if (!self.toplabel) {
+   // if (!self.toplabel) {
         self.toplabel=[[UILabel alloc]init];
         self.toplabel.frame=labelff;
         self.toplabel.textColor=[UIColor whiteColor];
@@ -585,7 +621,7 @@
         self.toplabel.text=@"No one has added you as a Favorite yet. Promote yourself to attract more attention:";
         [backView addSubview:self.toplabel];
 
-    }
+    //}
     self.toplabel.hidden=NO;
         for (int i=0; i<4; i++) {
             self.imgView=[[UIImageView alloc]init];

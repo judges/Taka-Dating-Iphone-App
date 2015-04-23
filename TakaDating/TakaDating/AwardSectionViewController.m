@@ -67,10 +67,10 @@
         height=55;
     }
     dispatch_async(dispatch_get_global_queue(0, 0),^{
-        if (likesAward==NO) {
+        if ([SingletonClass shareSingleton].likesAward==NO) {
             [self checkLikesAward];
         }
-        if (viewsAward==NO) {
+        if ([SingletonClass shareSingleton].viewsAward==NO) {
             [self checkViewsAward];
         }
         dispatch_async(dispatch_get_main_queue(),^{
@@ -143,7 +143,7 @@
     }
     else*/ if (indexPath.row==0)
     {
-        if (likesAward==YES) {
+        if ([SingletonClass shareSingleton].likesAward==YES) {
             cell.imgView.image=[UIImage imageNamed:@"award_1.png"];
         }
         cell.cellLable.text=@"One of the top voters of the week!";
@@ -175,7 +175,7 @@
          cell.cellSubLbl.text=@"Get visited by 50 people in a week to win this award.";
     }
     else{
-        if (viewsAward==YES) {
+        if ([SingletonClass shareSingleton].viewsAward==YES) {
             cell.imgView.image=[UIImage imageNamed:@"award_5.png"];
         }
         cell.cellLable.text=@"The biggest window shoppers!";
@@ -220,8 +220,9 @@
     id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSLog(@" Likes Award %@ ", json);
     if ([[json objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
-        if ([[json objectForKey:@"likescount"] isEqualToNumber:[NSNumber numberWithInt:1000]]) {
-            likesAward=YES;
+        int likes=[[NSNumber numberWithInt:1000]intValue];
+        if (likes>=1000) {
+            [SingletonClass shareSingleton].likesAward=YES;
         }
     }
 }
@@ -249,7 +250,7 @@
      int count=[[json objectForKey:@"visitcount"]intValue];
         
         if (count>=200) {
-            viewsAward=YES;
+            [SingletonClass shareSingleton].viewsAward=YES;
         }
     }
 }

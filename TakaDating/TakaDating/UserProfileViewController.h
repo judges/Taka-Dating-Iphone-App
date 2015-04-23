@@ -15,7 +15,7 @@
     CGSize windowSize;
      CGFloat row_hh,height;
     
-    NSArray * interests;
+    NSMutableArray * interests;
     
      
 }

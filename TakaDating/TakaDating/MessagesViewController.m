@@ -55,10 +55,28 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     return [[self appDelegate] xmppRoster];
 }
 
+/*-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:YES];
+    [profileImage removeAllObjects];
+    [userName removeAllObjects];
+    [userId removeAllObjects];
+    [self.messageTable removeFromSuperview];
+    [self.refreshActivity startAnimating];
+     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(fetchUserList) name:@"fetchUserList" object:nil];
+}
+*/
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    nameArr=[[NSMutableArray alloc]initWithObjects:@"One",@"Two",@"Three",@"Four",@"Five", nil];
+    profileImage=[[NSMutableArray alloc]init];
+    userName=[[NSMutableArray alloc]init];
+    userId=[[NSMutableArray alloc]init];
+    unreadMsg=[[NSMutableArray alloc]init];
+    unreadMsgId=[[NSMutableArray alloc]init];
+    unreadProfileImg=[[NSMutableArray alloc]init];
+    unreadUserId=[[NSMutableArray alloc]init];
+    unreadUserName=[[NSMutableArray alloc]init];
+   // nameArr=[[NSMutableArray alloc]initWithObjects:@"One",@"Two",@"Three",@"Four",@"Five", nil];
    // self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     self.view.backgroundColor= [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     windowSize =[UIScreen mainScreen].bounds.size;
@@ -132,11 +150,12 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 -(void)createUI{
    // self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)251/255 green:(CGFloat)177/255 blue:(CGFloat)176/255 alpha:1.0];
     self.view.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
-    CGFloat fontSize;
+    
       CGRect   frame,srchFrame;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         fontSize=20;
         frame=CGRectMake(windowSize.width/2-290, windowSize.height/2-50, windowSize.width-140, 60);
+        
     }
     else{
         frame=CGRectMake(windowSize.width/2-140, windowSize.height/2-50, windowSize.width-40, 60);
@@ -181,7 +200,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         
         sectionView.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
         
-    if (!self.messageTable) {
+    if (self.messageTable) {
+        self.messageTable=nil;
+    }
         self.messageTable=[[UITableView alloc]init];
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
            
@@ -223,15 +244,22 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         searchBar.frame=srchFrame;
         searchBar.layer.cornerRadius=7;
         searchBar.clipsToBounds=YES;
-        [sectionView addSubview:searchBar];
+        //[sectionView addSubview:searchBar];
         
-         NSArray *arry=[NSArray arrayWithObjects:@"All",@"Online", nil];
+        UIView * footerView=[[UIView alloc]initWithFrame:CGRectMake(0, 0, windowSize.width, 60)];
+        footerView.backgroundColor=[UIColor clearColor];
+        self.messageTable.tableFooterView=footerView ;
+        
+         NSArray *arry=[NSArray arrayWithObjects:@"All",@"Online",@"Unread", nil];
         
         self.segment=[[UISegmentedControl alloc]initWithItems:arry];
         
         self.segment.frame=frame;
         [self.segment addTarget:self action:@selector(MySegmentControlAction:) forControlEvents: UIControlEventValueChanged];
         self.segment.selectedSegmentIndex = 0;
+        NSDictionary *attributes = [NSDictionary dictionaryWithObject:[UIFont boldSystemFontOfSize:fontSize]
+                                                               forKey:NSFontAttributeName];
+        [self.segment setTitleTextAttributes:attributes forState:UIControlStateNormal];
         //[self.segment setTintColor:[UIColor colorWithRed:50.0/255.0 green:49.0/255.0 blue:49.0/255.0 alpha:1.0]];
        
 
@@ -241,7 +269,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
        }
         self.messageTable.tableHeaderView=sectionView ;
     }
-    }
+   // }
 }
 
 
@@ -257,20 +285,74 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     if (sender.selectedSegmentIndex==0) {
         online=NO;
+        unread=NO;
         [self.messageTable reloadData];
         NSLog(@"index one selected");
     }
     else if (sender.selectedSegmentIndex==1)
     {
         online=YES;
+        unread=NO;
         [self.messageTable reloadData];
 
-        NSLog(@"index Two selected");
+        NSLog(@"index Online selected");
     }
     else{
-        online=YES;
+        online=NO;
+        unread=YES;
+        [self getUnreadMessages];
         [self.messageTable reloadData];
-        NSLog(@"index three selected");
+    }
+}
+
+#pragma mark- get unread messages
+
+-(void)getUnreadMessages{
+    NSMutableDictionary * dict=[NSMutableDictionary dictionary];
+    for (int i=0; i<[self appDelegate].unreadMsgArr.count; i++) {
+        dict=[[self appDelegate].unreadMsgArr objectAtIndex:i];
+        if ([dict objectForKey:@"msg"]) {
+        if (![unreadMsgId containsObject:[dict objectForKey:@"jid"]]) {
+            [unreadMsg addObject:[dict objectForKey:@"msg"]];
+            [unreadMsgId addObject:[dict objectForKey:@"jid"]];
+            [[self appDelegate].unreadMsgArr removeObjectAtIndex:i];
+            [self fetchMessageUserDetails:[unreadMsgId objectAtIndex:i]];
+        }
+    }
+ }
+}
+
+#pragma  mark- fetchMessageUserDetails
+-(void)fetchMessageUserDetails : (NSString *)chatUserId{
+    
+    NSError * error;
+    NSURLResponse * urlResponse;
+    
+    NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/mobi/profile-details"];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    [request setHTTPMethod:@"POST"];
+    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+    
+    
+    NSString * body=[NSString stringWithFormat:@"userId=%@&loggedId=%@",chatUserId,[SingletonClass shareSingleton].userID];
+    
+    [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        return;
+    }
+    id parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"json response of user details %@",parse);
+    if (![[parse objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+        NSLog(@"No data in parse");
+    }
+    else{
+        NSMutableDictionary * dict=[parse objectForKey:@"userprofile"];
+        [unreadProfileImg addObject:[dict objectForKey:@"thumbanailUrl"]];
+        [unreadUserName addObject:[dict objectForKey:@"displayName"]];
+        [unreadUserId addObject:[dict objectForKey:@"userId"]];
     }
 }
 
@@ -282,9 +364,9 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     
     if (sectionIndex < [sections count])
     {
-        id <NSFetchedResultsSectionInfo> sectionInfo = sections[sectionIndex];
+//  id <NSFetchedResultsSectionInfo> sectionInfo = sections[sectionIndex];
         
-        int section = [sectionInfo.name intValue];
+        ///int section = [sectionInfo.name intValue];
        /* switch (section)
         {
             case 0  : return @"Available";
@@ -309,33 +391,41 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSArray *sections = [[self fetchedResultsController] sections];
-    if (!online) {
-        if (section < [sections count])
-        {
-            id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
-             NSLog(@"number of rows %ld",sectionInfo.numberOfObjects);
-            //return sectionInfo.numberOfObjects;
-            return userName.count;
+    
+    if (unread) {
+        if (unreadMsg.count<1) {
+            return 0;
         }
-        
+       return  unreadMsg.count;
     }
     else{
-      // NSArray *sections = [[self fetchedResultsController] sections];
         
-        if (section < [sections count])
-        {
-            id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
+        if (!online) {
+           // if (section < [sections count])
+           // {
+              //  id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
+               // NSLog(@"number of rows delegate %ld",userName.count);
+                //return sectionInfo.numberOfObjects;
+                return userName.count;
+           // }
             
-            int sec = [sectionInfo.name intValue];
-            if (sec==0) {
-                NSLog(@"number of rows %ld",sectionInfo.numberOfObjects);
-                return sectionInfo.numberOfObjects;
+        }
+        else if(online){
+            // NSArray *sections = [[self fetchedResultsController] sections];
+            
+            if (section < [sections count])
+            {
+                id <NSFetchedResultsSectionInfo> sectionInfo = sections[section];
+                
+                int sec = [sectionInfo.name intValue];
+                if (sec==0) {
+                    // NSLog(@"number of rows %ld",sectionInfo.numberOfObjects);
+                    return sectionInfo.numberOfObjects;
+                }
             }
         }
-        
-      
-        
     }
+    
     
     return 0;
 }
@@ -348,12 +438,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         cell=[[MessageTableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"cell"];
         [cell.deleteButton addTarget:self action:@selector(deleteButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     }
-    if (editbuttonSelect==YES) {
+  /*  if (editbuttonSelect==YES) {
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
             cell.imgView.frame=CGRectMake(35, 10, 50, 50);
             cell.deleteButton.frame=CGRectMake(15, 10, 25, 25);
             cell.cellLabel.frame=CGRectMake(100, 15, 200, 30);
             cell.deleteButton.tag=indexPath.row;
+            cell.cellLabel.font=[UIFont boldSystemFontOfSize:fontSize];
         }
         else{
         cell.imgView.frame=CGRectMake(25, 5, 30, 30);
@@ -361,7 +452,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         cell.cellLabel.frame=CGRectMake(70, 5, 150, 30);
         cell.deleteButton.tag=indexPath.row;
         }
-        if (selectAll==YES) {
+       if (selectAll==YES) {
             [cell.deleteButton setSelected:YES];
             [cell.deleteButton setImage:[UIImage imageNamed:@"select_active.png"] forState:UIControlStateSelected];
         }
@@ -372,21 +463,33 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         
     }
     else
-    {
+    {*/
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-            cell.cellLabel.frame=CGRectMake(70, 15, 200, 30);
+            cell.cellLabel.frame=CGRectMake(70, 5, 200, 20);
+            cell.cellDetailLbel.frame=CGRectMake(70, 20, 200, 15);
             cell.imgView.frame=CGRectMake(10, 10, 50, 50);
+            cell.cellLabel.font=[UIFont boldSystemFontOfSize:fontSize];
         }
         else{
-                cell.cellLabel.frame=CGRectMake(50, 10, 150, 30);
+                cell.cellDetailLbel.frame=CGRectMake(50, 20, 200, 15);
+                cell.cellLabel.frame=CGRectMake(50, 0, 150, 20);
                 cell.imgView.frame=CGRectMake(5, 5, 30, 30);
         }
+   // }
+    if (unread==YES) {
+        if (unreadMsg.count>0) {
+            cell.cellDetailLbel.text = [unreadMsg objectAtIndex:indexPath.row];
+            cell.cellLabel.text=[unreadUserName objectAtIndex:indexPath.row];
+            NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating%@",[unreadProfileImg objectAtIndex:indexPath.row]]];
+            [cell.imgView setImageWithURL:url];
+        }
+        
     }
-    
-    cell.cellLabel.text = [userName objectAtIndex:indexPath.row];
-    NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating%@",[profileImage objectAtIndex:indexPath.row]]];
-    [cell.imgView setImageWithURL:url];
-  
+    else{
+        cell.cellLabel.text = [userName objectAtIndex:indexPath.row];
+        NSURL * url=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating%@",[profileImage objectAtIndex:indexPath.row]]];
+        [cell.imgView setImageWithURL:url];
+    }
     return  cell;
    
    
@@ -425,12 +528,29 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
       {
           self.mdVC=nil;
       }
-          //self.mdVC=[[MessageDetailViewController alloc]initWithNibName:@"MessageDetailViewController" bundle:nil];
+        
         self.mdVC=[[MessageDetailViewController alloc]initWithUser:[userId objectAtIndex:indexPath.row]];
-        self.mdVC.titleStr= [userName objectAtIndex:indexPath.row];
-        self.mdVC.userId=[userId objectAtIndex:indexPath.row];
+//        self.mdVC.titleStr= [userName objectAtIndex:indexPath.row];
+//        self.mdVC.userId=[userId objectAtIndex:indexPath.row];
         //[self fetchAllChatHistory:user];
-        [self fetchChatConversation:[userId objectAtIndex:indexPath.row]];
+        [SingletonClass shareSingleton].chattingWith=[userId objectAtIndex:indexPath.row];
+        if (unread==YES) {
+            [self fetchChatConversation:[unreadUserId objectAtIndex:indexPath.row]];
+            self.mdVC.titleStr= [unreadUserName objectAtIndex:indexPath.row];
+            self.mdVC.userId=[unreadUserId objectAtIndex:indexPath.row];
+            
+            [unreadUserId removeObjectAtIndex:indexPath.row];
+            [unreadProfileImg removeObjectAtIndex:indexPath.row];
+            [unreadUserName removeObjectAtIndex:indexPath.row];
+            [unreadMsg removeObjectAtIndex:indexPath.row];
+
+        }
+        else{
+            self.mdVC.titleStr= [userName objectAtIndex:indexPath.row];
+            self.mdVC.userId=[userId objectAtIndex:indexPath.row];
+
+            [self fetchChatConversation:[userId objectAtIndex:indexPath.row]];
+        }
     [self.navigationController pushViewController:self.mdVC animated:YES];
     }
 
@@ -620,15 +740,13 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
     NSError * error=nil;
     NSURLResponse * urlResponse=nil;
     
-    profileImage=[[NSMutableArray alloc]init];
-    userName=[[NSMutableArray alloc]init];
-    userId=[[NSMutableArray alloc]init];
+  
     NSLog(@"xmmp Roster Friends list %lu",(unsigned long)[self fetchedResultsController].sections.count);
     NSArray *sections = [[self fetchedResultsController] sections];
     for (int j=0; j<sections.count;j++) {
         id <NSFetchedResultsSectionInfo> sectionInfo = sections[j];
         
-        NSLog(@"number of rows %ld",sectionInfo.numberOfObjects);
+        NSLog(@"number of rows %ld",(unsigned long)sectionInfo.numberOfObjects);
 
     
     
@@ -638,7 +756,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         
         XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
         
-        if (![user.displayName isEqualToString:[SingletonClass shareSingleton].userID]) {
+        //if (![user.displayName isEqualToString:[SingletonClass shareSingleton].userID]) {
             
         
         
@@ -649,7 +767,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
         [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
        
         
-        NSString * body=[NSString stringWithFormat:@"userId=%@&loggedId=%@",user.displayName,[SingletonClass shareSingleton].userID];
+        NSString * body=[NSString stringWithFormat:@"userId=%@&loggedId=%@",user.jid,[SingletonClass shareSingleton].userID];
         
         [request setHTTPBody:[body dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
         
@@ -669,7 +787,7 @@ static const int ddLogLevel = LOG_LEVEL_INFO;
                 [userId addObject:[dict objectForKey:@"userId"]];
         }
         }
-    }
+ //   }
         NSLog(@"User id %@",userId);
     }
 }

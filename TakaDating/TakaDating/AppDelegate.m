@@ -43,6 +43,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
 @interface AppDelegate()
 {
     MessageDetailViewController * mdVC;
+    
 }
 
 - (void)setupStream;
@@ -74,7 +75,8 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
 {
     //[NewRelicAgent startWithApplicationToken:@"AAf51ed5e2c602336259adc6f4c8404770ec806ea1"];
     
-
+    self.storeNewMsg=[[NSMutableDictionary alloc]init];
+    self.unreadMsgArr=[[NSMutableArray alloc]init];
    // [NewRelicAgent disableFeatures:NRFeatureFlag_CrashReporting];
        [self reacheability];
    
@@ -90,7 +92,9 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
                                                            PayPalEnvironmentSandbox : @"ASR0bxDIAqjAPLLlPs_echPOSIloTtvLdcQFNelhseLzNKcyqojUdMPOxxOZ"}];
    
     [SingletonClass shareSingleton].messages=[[NSMutableArray alloc]init];
-   
+    
+    [self reacheability];
+    [[NSNotificationCenter defaultCenter]postNotificationName:@"kNetworkReachabilityChangedNotification" object:nil];   
    
     return YES;
 }
@@ -272,7 +276,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
     [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
     
     
-    NSString * body=[NSString stringWithFormat:@"faceId=%@",[SingletonClass shareSingleton].userID];
+    NSString * body=[NSString stringWithFormat:@"faceId=%@",[SingletonClass shareSingleton].facebookId];
     [request setHTTPBody:[body
                          dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
     
@@ -286,6 +290,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
     NSLog(@"Parse facebook %@",parse);
     if([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]])
     {
+    [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"signIn"];
     NSDictionary * dict=[parse objectForKey:@"userdata"];
     NSString * loc=[dict objectForKey:@"location"];
     [SingletonClass shareSingleton].location=loc;
@@ -422,7 +427,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
     [SingletonClass shareSingleton].MessagesSetting=[dict objectForKey:@"MessagesSetting"];
     
     NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
-    if (imagesArr.count>0) {
+    /*if (imagesArr.count>0) {
         
         
        // NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
@@ -448,8 +453,8 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
         }
         [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]initWithArray:arr];
     }
-    
-    [SingletonClass shareSingleton].profileImg=[NSString stringWithFormat:@"http://taka.dating%@",[parse objectForKey:@"profileimg"]];
+    */
+    [SingletonClass shareSingleton].profileImg=[parse objectForKey:@"profileimg"];
     
     
   //  NSLog(@"user profile images %@",[SingletonClass shareSingleton].userImages);
@@ -845,6 +850,7 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
     
     [[NSUserDefaults standardUserDefaults] setBool:networkStatus forKey:@"NetworkStatus"];
     [[NSUserDefaults standardUserDefaults]synchronize];
+    [[NSNotificationCenter defaultCenter]removeObserver:self name:kReachabilityChangedNotification object:nil];
 }
 
 
@@ -1202,15 +1208,29 @@ NSString *const kXMPPmyPassword = @"kXMPPmyPassword";
         //int timeStamp=[timeStampStr intValue];
        // NSDate * date = [NSDate dateWithTimeIntervalSince1970:timeStamp];
        // NSString * str=[NSString stringWithFormat:@"%@",date];
+        
+        if (![[self.storeNewMsg objectForKey:@"jid"]isEqualToString:displayName]) {
+            [self.storeNewMsg setObject:displayName forKey:@"jid"];
+            [self.storeNewMsg setObject:body forKey:@"msg"];
+            
+        }
+        else{
+            
+            [self.storeNewMsg setObject:body forKey:@"msg"];
+        }
+        [self.unreadMsgArr addObject:self.storeNewMsg];
 
+        if ([displayName isEqualToString:[SingletonClass shareSingleton].chattingWith]) {
+            
+            NSMutableDictionary * dict=[[NSMutableDictionary alloc]init];
+            [dict setObject:body forKey:@"msg"];
+            [dict setObject:displayName forKey:@"sender"];
+            [dict setObject:time forKey:@"time"];
+            
+            [[SingletonClass shareSingleton].messages addObject:dict];
+        }
         
-        
-        NSMutableDictionary * dict=[[NSMutableDictionary alloc]init];
-        [dict setObject:body forKey:@"msg"];
-        [dict setObject:displayName forKey:@"sender"];
-        [dict setObject:time forKey:@"time"];
-        
-        [[SingletonClass shareSingleton].messages addObject:dict];
+       
         
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive)
         {

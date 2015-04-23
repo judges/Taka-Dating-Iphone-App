@@ -23,6 +23,7 @@
     UIView * view;
     UILabel *  ProfileName;
     NSArray *interests;
+    UIButton * profile,*photosBtn,*CreditsBtn;
     
 }
 

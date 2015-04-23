@@ -8,6 +8,7 @@
 
 #import "BasicInfoViewController.h"
 #import "SingletonClass.h"
+#import  "AppDelegate.h"
 
 @interface BasicInfoViewController ()
 
@@ -170,6 +171,7 @@
     self.radioButtonGirl=[UIButton buttonWithType:UIButtonTypeCustom];
     [self.radioButtonGirl setImage:[UIImage imageNamed:img_normal] forState:UIControlStateNormal];
     self.radioButtonGirl.tag=0;
+    self.radioButtonGirl.userInteractionEnabled=NO;
     
     [self.radioButtonGirl addTarget:self action:@selector(radioButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.radioButtonGirl];
@@ -178,6 +180,7 @@
     
     [self.radioButtonBoy setImage:[UIImage imageNamed:img_normal] forState:UIControlStateNormal];
     self.radioButtonBoy.tag=1;
+    self.radioButtonBoy.userInteractionEnabled=NO;
     
     [self.radioButtonBoy addTarget:self action:@selector(radioButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.radioButtonBoy];
@@ -323,10 +326,17 @@
     id parse=[NSJSONSerialization JSONObjectWithData:data
                                              options:NSJSONReadingAllowFragments error:&error];
     NSLog(@"parse  data for Basic %@",parse);
+    if ([[parse objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]]) {
+         [[AppDelegate sharedAppDelegate]showToastMessage:@" Updated successfully"];
+    }
+    else{
+         [[AppDelegate sharedAppDelegate]showToastMessage:@" Fail to update"];
+    }
+ 
 }
 
 #pragma mark- Radio Button Method
--(void)radioButtonAction:(id)sender{
+-(void)radioButtonAction:(UIButton*)sender{
     
     //self.radio_Select=YES;
     switch ([sender tag]) {

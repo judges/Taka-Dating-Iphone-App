@@ -318,7 +318,7 @@
         {
           profilePicPath=[privacyOnePic objectAtIndex:indexPath.row-1];
         }
-        actionSheet =[[UIActionSheet alloc]initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"OK", nil];
+        actionSheet =[[UIActionSheet alloc]initWithTitle:@"Set as profile pic" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"OK", nil];
         [actionSheet showFromRect:CGRectMake(windowSize.width/2-40, windowSize.height/2, 200, 100) inView:self.view animated:YES];
         
     }
@@ -361,7 +361,7 @@
         NSError * error;
         NSURLResponse * urlResponse;
         
-        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/user/set-profile-pic"];
+        NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/mobile-app/set-profile-pic"];
         
         NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
         [request setHTTPMethod:@"POST"];
@@ -382,6 +382,12 @@
             [SingletonClass shareSingleton].profileImg=profilePicPath;
             [[NSNotificationCenter defaultCenter]postNotificationName:@"setProfilePic" object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter]removeObserver:self name:@"setProfilePic" object:nil];
+        }
+        else
+        {
+            UIAlertView * alert=[[UIAlertView alloc]initWithTitle:nil message:@"Image is not uploaded" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            [alert show];
+            
         }
     }
 }

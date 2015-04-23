@@ -13,7 +13,7 @@
 @property(nonatomic,strong)UIView * containerView;
 @property(nonatomic,strong)UIImageView * imgView;
 @property(nonatomic,strong)UIButton * deleteButton;
-@property(nonatomic,strong)UILabel * cellLabel;
+@property(nonatomic,strong)UILabel * cellLabel,*cellDetailLbel;
 
 
 

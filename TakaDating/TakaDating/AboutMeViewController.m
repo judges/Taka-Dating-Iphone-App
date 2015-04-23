@@ -8,6 +8,7 @@
 
 #import "AboutMeViewController.h"
 #import "SingletonClass.h"
+#import "AppDelegate.h"
 
 @interface AboutMeViewController ()
 
@@ -191,9 +192,11 @@
     
     if ([[parse_interrested_in objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:198]]) {
         NSLog(@"Failed to do changes");
+         [[AppDelegate sharedAppDelegate]showToastMessage:@" Fail to update"];
     }
     else{
         NSLog(@"Successfull");
+         [[AppDelegate sharedAppDelegate]showToastMessage:@" Updated successfully"];
     }
 }
 

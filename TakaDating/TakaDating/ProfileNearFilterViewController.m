@@ -31,10 +31,10 @@
     searchRslt=NO;
    
     selectedIndex=0;
-    age1=[NSArray arrayWithObjects:@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29", nil];
-    age2=[NSArray arrayWithObjects:@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29", nil];
+    age1=[NSArray arrayWithObjects:@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30",@"31",@"32",@"33",@"34",@"35",@"36",@"37",@"38",@"39",@"40",@"41",@"42",@"43",@"44",@"45",@"46",@"47",@"48",@"49",@"50",@"51",@"52",@"53",@"54",@"55",@"56",@"57",@"58",@"59",@"60",@"61",@"62",@"62",@"63",@"64",@"65",@"66",@"67",@"68",@"69",@"70",@"71",@"72",@"72",@"73",@"74",@"75",@"76",@"77",@"78",@"79",@"80",nil];
+    age2=[NSArray arrayWithObjects:@"18",@"19",@"20",@"21",@"22",@"23",@"24",@"25",@"26",@"27",@"28",@"29",@"30",@"31",@"32",@"33",@"34",@"35",@"36",@"37",@"38",@"39",@"40",@"41",@"42",@"43",@"44",@"45",@"46",@"47",@"48",@"49",@"50",@"51",@"52",@"53",@"54",@"55",@"56",@"57",@"58",@"59",@"60",@"61",@"62",@"62",@"63",@"64",@"65",@"66",@"67",@"68",@"69",@"70",@"71",@"72",@"72",@"73",@"74",@"75",@"76",@"77",@"78",@"79",@"80",nil];
     
-    distancearr=[NSArray arrayWithObjects:@"5",@"10",@"50",@"100",@"140",@"150",nil];
+    distancearr=[NSArray arrayWithObjects:@"In city",@"10",@"50",@"100",@"140",@"Whole country",nil];
     
     
     appdelegate=[UIApplication sharedApplication].delegate;
@@ -262,34 +262,24 @@
     if (indexPath.section==1) {
        
         if (indexPath.row==0) {
-            if ([SingletonClass shareSingleton].sex==0) {
+            if ([SingletonClass shareSingleton].sex==1) {
                 
 
                 cell.accessoryType=UITableViewCellAccessoryCheckmark;
                  [cell setSelected:TRUE animated:TRUE];
+                index2=indexPath;
+                selectedRowSecTwo=(int)indexPath.row;
             }
-//            else{
-//
-//                cell.accessoryType=UITableViewCellAccessoryNone;
-//            }
-            index2=indexPath;
-            selectedRowSecTwo=(int)indexPath.row;
-            
             cell.textLabel.text=@"with a boy";
         }
         else{
-            if ([SingletonClass shareSingleton].sex==1) {
+            if ([SingletonClass shareSingleton].sex==0) {
                 
                 cell.accessoryType=UITableViewCellAccessoryCheckmark;
+                index2=indexPath;
+                selectedRowSecTwo=(int)indexPath.row;
             }
-//            else{
-//                
-//                cell.accessoryType=UITableViewCellAccessoryNone;
-//                
-//            }
-            index2=indexPath;
-            selectedRowSecTwo=(int)indexPath.row;
-            
+
             cell.textLabel.text=@"with a girl";
            
             
@@ -412,7 +402,13 @@
 
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
     if (textField==self.placeTextFiled) {
-        self.filterTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height/2-100);
+        if(UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad)
+        {
+          self.filterTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height/2-20);
+        }
+        else{
+            self.filterTable.frame=CGRectMake(0, height, windowSize.width, windowSize.height/2-20);
+        }
         return  YES;
     }
     else{
@@ -438,7 +434,7 @@
             }
             pickerView.delegate=self;
             pickerView.dataSource=self;
-            [pickerView setShowsSelectionIndicator:NO];
+            [pickerView setShowsSelectionIndicator:YES];
             pickerView.hidden=NO;
     
             [self.pickerBackView addSubview:pickerView];
@@ -496,6 +492,14 @@
     if (numberofComp==1) {
         self.distanceTxtField.text=[distancearr objectAtIndex:row];
         distance=[distancearr objectAtIndex:row];
+        if (row==0) {
+            distance=@"5";
+        }
+        else if (row==5)
+        {
+            distance=@"150";
+        }
+        
     }
     else{
     if(component==0)
@@ -506,6 +510,12 @@
         weightStr=[age2 objectAtIndex:row];
         
     }
+        if (!heightStr) {
+            heightStr=@"18";
+        }
+        if (!weightStr) {
+            weightStr=@"80";
+        }
     combineStr=[NSString stringWithFormat:@"%@ - %@ years",heightStr,weightStr];
     self.textFiled.text=combineStr;
         
@@ -610,14 +620,14 @@
     
     NSURL * url=[NSURL URLWithString:@"http://23.238.24.26/user/people"];
     
-    
+   
     NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
     [request setHTTPMethod:@"POST"];
     [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
     
     
 
-    NSString * body=[NSString stringWithFormat:@"gen=%d&hereFor=%d&location=%@&interestedIn=%d&start_age=%@&end_age=%@&radius=%@&lat=%@&lag=%@&userId=%@&count=%@&status=%d",selectedRowSecOne,selectedRowSecTwo,self.placeTextFiled.text,0,heightStr,weightStr,distance,lat,log,[SingletonClass shareSingleton].userID,@"0",1];
+    NSString * body=[NSString stringWithFormat:@"gen=%d&hereFor=%d&location=%@&interestedIn=%d&start_age=%@&end_age=%@&radius=%@&lat=%@&lag=%@&userId=%@&count=%@&status=%d",selectedRowSecTwo,selectedRowSecOne,self.placeTextFiled.text,0,heightStr,weightStr,distance,lat,log,[SingletonClass shareSingleton].userID,@"0",1];
     
    //  NSString * body=[NSString stringWithFormat:@"gen=1&hereFor=1&location=Germany&interestedIn=0&start_age=20&end_age=22&radius=100&lat=51.1657&lag=10.4515&userId=16174915&count=0&status=1"];
     
@@ -656,11 +666,12 @@
 #pragma mark- Cancel Button
 
 -(void)cancelButtonAction:(id)sender{
-    [self.navigationController popViewControllerAnimated:YES];
+   
     if (findPressed==YES) {
          [[NSNotificationCenter defaultCenter]postNotificationName:@"reloadCollectionView" object:nil];
         findPressed=NO;
     }
+    [self.navigationController popViewControllerAnimated:YES];
    
 }
 

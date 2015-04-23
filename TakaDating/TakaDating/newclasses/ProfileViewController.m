@@ -32,6 +32,7 @@
     PhotoViewController * photoVC;
     ISpeakLanguageViewController *  labguages;
     AwardSectionViewController * awardVC;
+    RefillCreditsViewController * creditsVC;
 }
 @property(nonatomic,strong)SettingViewController * settingVC;
 @property(nonatomic,strong)InterestViewController * interestVC;
@@ -82,7 +83,8 @@
      appdelegate = [UIApplication sharedApplication].delegate;
     self.selectedIndex=0;
     facebookVerify=YES;
-    self.sectionTwoData=[NSArray arrayWithObjects:@"Location",@"About Me",@"Inetrested In",@"Relationship",@"Sexuality",@"Appearence",@"Living",@"Children",@"Smoking",@"Drinking",@"Education",@"I Speak",@"I Work as", nil];
+    self.sectionTwoData=[NSArray arrayWithObjects:@"Location",@"About Me",@"Interested In",@"Relationship",@"Sexuality",@"Appearence",@"Living",@"Children",@"Smoking",@"Drinking",@"Education",@"I Speak",@"I Work as", nil];
+    
     
     
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
@@ -90,12 +92,14 @@
         credts_hh=400;
         font_size=25;
         self.sectionTwoImages=[NSArray arrayWithObjects:@"location_ipad.png",@"about_me_ipad.png",@"interested_in_ipad.png",@"relationship_ipad.png",@"sexuality_ipad.png",@"apperance_ipad.png",@"living_ipad.png",@"kids_ipad.png",@"smoking_ipad.png",@"drinking_ipad.png",@"education_ipad.png",@"language_ipad.png",@"work_ipad.png", nil];
+         self.awardImages=[NSArray arrayWithObjects:@"award_1_iPad.png",@"award_3_iPad.png",@"award_2_interest_iPad.png",@"award_4_iPad.png",@"award_5_iPad.png", nil];
     }
     else{
         row_hh=40;
         credts_hh=250;
         font_size=12;
         self.sectionTwoImages=[NSArray arrayWithObjects:@"location.png",@"about_me.png",@"add_interest.png",@"relationship.png",@"sexuality.png",@"apperance.png",@"living.png",@"kids.png",@"smoking.png",@"drinking.png",@"education.png",@"language.png",@"work.png", nil];
+        self.awardImages=[NSArray arrayWithObjects:@"award_1.png",@"award_3.png",@"award_2_interest.png",@"award_4.png",@"award_5.png", nil];
     }
     
     // Do any additional setup after loading the view from its nib.
@@ -471,6 +475,7 @@ NS_AVAILABLE_IOS(5_0){
 -(void)swipeGesture:(CGRect)frame{
     if(self.parentView.frame.origin.y==0)
     {
+        [NSThread detachNewThreadSelector:@selector(showAwards) toTarget:self withObject:nil];
         [UIView animateWithDuration:0.5 animations:^{
             
             if ([UIScreen mainScreen].bounds.size.height>500) {
@@ -510,7 +515,7 @@ NS_AVAILABLE_IOS(5_0){
             self.secondView.hidden=YES;
         } completion:^(BOOL finished) {
             self.swipe.direction=UISwipeGestureRecognizerDirectionUp;
-            
+            self.state=NO;
         }];
     }
 
@@ -655,6 +660,45 @@ NS_AVAILABLE_IOS(5_0){
     }
     
     id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    NSLog(@"Award %@",json);
+    NSMutableDictionary * dict=[NSMutableDictionary dictionary];
+    dict=[json objectForKey:@"awards"];
+    if ([[dict objectForKey:@"2"] isEqualToString:@"1"]) {
+        
+        [SingletonClass shareSingleton].likesAward=YES;
+    }
+    else{
+         [SingletonClass shareSingleton].likesAward=NO;
+    }
+    
+     if ([[dict objectForKey:@"3"] isEqualToString:@"1"]) {
+        [SingletonClass shareSingleton].userLikesAward=YES;
+    }
+     else{
+         [SingletonClass shareSingleton].userLikesAward=NO;
+     }
+    
+    if ([[dict objectForKey:@"4"] isEqualToString:@"1"]) {
+        [SingletonClass shareSingleton].interestAward=YES;
+    }
+    else{
+        [SingletonClass shareSingleton].interestAward=NO;
+    }
+    
+    if ([[dict objectForKey:@"5"] isEqualToString:@"1"]) {
+        
+        [SingletonClass shareSingleton].visitorAward=YES;
+    }
+    else{
+        [SingletonClass shareSingleton].visitorAward=NO;
+    }
+    
+   if ([[dict objectForKey:@"6"] isEqualToString:@"1"]) {
+        [SingletonClass shareSingleton].viewsAward=YES;
+    }
+   else{
+        [SingletonClass shareSingleton].viewsAward=NO;
+   }
     
 }
 
@@ -847,11 +891,11 @@ NS_AVAILABLE_IOS(5_0){
         [self.creditsTableView removeFromSuperview];
         [photoVC.view removeFromSuperview];
         [superPower.view removeFromSuperview];
-        self.profileTableView=nil;
-        self.creditsTableView=nil;
-        photoVC=nil;
-        superPower=nil;
-        self.secondView=nil;
+       // self.profileTableView=nil;
+       // self.creditsTableView=nil;
+        //photoVC=nil;
+       // superPower=nil;
+       // self.secondView=nil;
         [UIView animateWithDuration:0.5 animations:^{
             self.parentView.frame=CGRectMake(0,0 , self.screen_width, windowSize.height);
         } completion:^(BOOL finished) {
@@ -868,11 +912,11 @@ NS_AVAILABLE_IOS(5_0){
         [self.creditsTableView removeFromSuperview];
         [photoVC.view removeFromSuperview];
         [superPower.view removeFromSuperview];
-        self.profileTableView=nil;
-        self.creditsTableView=nil;
-        photoVC=nil;
-        superPower=nil;
-        self.secondView=nil;
+      //  self.profileTableView=nil;
+      //  self.creditsTableView=nil;
+      //  photoVC=nil;
+      //  superPower=nil;
+      //  self.secondView=nil;
         CGRect  ff;
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
             ff=CGRectMake(0, windowSize.height/2+55, windowSize.width,(windowSize.height-windowSize.height/2-80));
@@ -931,6 +975,11 @@ NS_AVAILABLE_IOS(5_0){
             return 0;
         }
     }
+    if (tableView==self.profileTableView) {
+        if (section==0) {
+            return 0;
+        }
+    }
         return row_hh+20;
     
 }
@@ -948,7 +997,7 @@ NS_AVAILABLE_IOS(5_0){
         }
         else if (section==0)
         {
-            rows=2;
+            rows=0;
             return rows;
             
         }
@@ -969,14 +1018,13 @@ NS_AVAILABLE_IOS(5_0){
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     NSString * facebook_img,* side_arrow,* awards,*super_powers;
     static NSString * cellIdentifier=@"cell";
-    //UITableViewCell * cell=[tableView dequeueReusableCellWithIdentifier:cellIdentifier];
-   // ProfileableViewCell * cell=(ProfileableViewCell*)[tableView cellForRowAtIndexPath:indexPath];
+    
     UITableViewCell * cell=[tableView cellForRowAtIndexPath:indexPath];
     if(!cell)
     {
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
-    //cell.imageView.image=[UIImage imageNamed:@"crm.png"];
+    
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         cell.textLabel.font=[UIFont boldSystemFontOfSize:22];
         cell.detailTextLabel.font=[UIFont systemFontOfSize:20];
@@ -1034,16 +1082,16 @@ NS_AVAILABLE_IOS(5_0){
               
                 if(indexPath.row==0)
                 {
-                    for(int i=0;i<4;i++)
+                    for(int i=0;i<5;i++)
                     {
                         UIImageView * imgView=[[UIImageView alloc]init];
                         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-                            imgView.frame=CGRectMake(10+(i*100), 10, 50, 50);
+                            imgView.frame=CGRectMake(10+(i*100), 5, 80, 80);
                             imgView.image=[UIImage imageNamed:awards];
 
                         }
                         else{
-                            imgView.frame=CGRectMake(10+(i*50), 5, 50, 40);
+                            imgView.frame=CGRectMake(10+(i*50), 2, 50, 40);
                             imgView.image=[UIImage imageNamed:awards];
                         }
                         imgView.layer.cornerRadius=12;
@@ -1213,7 +1261,7 @@ NS_AVAILABLE_IOS(5_0){
                                 
                                 UIButton * btn1=[[UIButton alloc]init];
                                  btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
-                                [btn1 setTitle:@"interest1" forState:UIControlStateNormal];
+                                [btn1 setTitle:[[SingletonClass shareSingleton].selectedIntName objectAtIndex:i+i] forState:UIControlStateNormal];
                                 [btn1 setBackgroundColor:[UIColor clearColor]];
                                 btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
                                 btn1.layer.borderWidth=0.7;
@@ -1225,7 +1273,7 @@ NS_AVAILABLE_IOS(5_0){
                                 
                                 UIButton * btn2=[[UIButton alloc]init];
                                 btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
-                                [btn2 setTitle:@"interest2" forState:UIControlStateNormal];
+                                [btn2 setTitle:[[SingletonClass shareSingleton].selectedIntName objectAtIndex:i+1] forState:UIControlStateNormal];
                                 [btn2 setBackgroundColor:[UIColor clearColor]];
                                 btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
                                 [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -1247,7 +1295,7 @@ NS_AVAILABLE_IOS(5_0){
                             for (int i=0;i<[SingletonClass shareSingleton].selectedIntId.count;i++) {
                                 UIButton * btn1=[[UIButton alloc]init];
                                  btn1.frame=CGRectMake(20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
-                                [btn1 setTitle:@"interest1" forState:UIControlStateNormal];
+                                [btn1 setTitle:[[SingletonClass shareSingleton].selectedIntName objectAtIndex:i] forState:UIControlStateNormal];
                                 [btn1 setBackgroundColor:[UIColor clearColor]];
                                 btn1.layer.borderColor=[UIColor lightGrayColor].CGColor;
                                 btn1.layer.borderWidth=0.7;
@@ -1259,7 +1307,7 @@ NS_AVAILABLE_IOS(5_0){
                                 
                                 UIButton * btn2=[[UIButton alloc]init];
                                 btn2.frame=CGRectMake(cell.contentView.frame.size.width/2+20, 0+i*50, cell.contentView.frame.size.width/2-40, 40);
-                                [btn2 setTitle:@"interest2" forState:UIControlStateNormal];
+                                [btn2 setTitle:[[SingletonClass shareSingleton].selectedIntName objectAtIndex:i] forState:UIControlStateNormal];
                                 [btn2 setBackgroundColor:[UIColor clearColor]];
                                 btn2.layer.borderColor=[UIColor lightGrayColor].CGColor;
                                 [btn2 setTitleColor:[UIColor lightGrayColor] forState:UIControlStateNormal];
@@ -1348,7 +1396,7 @@ NS_AVAILABLE_IOS(5_0){
             refillCredits.layer.cornerRadius=4;
             refillCredits.clipsToBounds=YES;
             refillCredits.titleLabel.textColor=[UIColor whiteColor];
-            [refillCredits addTarget:self action:@selector(refillButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+           // [refillCredits addTarget:self action:@selector(refillButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
             [cell.contentView addSubview:refillCredits];
             
             if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
@@ -1449,7 +1497,7 @@ NS_AVAILABLE_IOS(5_0){
     NSString * str;
     if (tableView==self.profileTableView) {
         if (section==0) {
-            str=@"Verify";
+            str=@"";
         }
         else if (section==1) {
             str=@"Awards";
@@ -1593,7 +1641,10 @@ NS_AVAILABLE_IOS(5_0){
 
 #pragma mark- refillButtonClicked
 -(void)refillButtonClicked:(id)sender{
-    RefillCreditsViewController * creditsVC=[[RefillCreditsViewController alloc]initWithNibName:@"RefillCreditsViewController" bundle:nil];
+    if (creditsVC) {
+        creditsVC=nil;
+    }
+    creditsVC=[[RefillCreditsViewController alloc]initWithNibName:@"RefillCreditsViewController" bundle:nil];
     [self.navigationController pushViewController:creditsVC animated:YES];
 }
 

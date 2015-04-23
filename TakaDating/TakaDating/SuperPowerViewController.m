@@ -40,6 +40,7 @@
 
 - (void)viewDidLoad
 {
+    self.view.userInteractionEnabled=NO;
     [super viewDidLoad];
     continent=[self findContinent ];
     self.view.frame=[SingletonClass shareSingleton].frame;

@@ -8,6 +8,7 @@
 
 #import "ISpeakLanguageViewController.h"
 #import "SingletonClass.h"
+#import "AppDelegate.h"
 
 @interface ISpeakLanguageViewController ()
 
@@ -310,9 +311,11 @@
     id parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     if ([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
         NSLog(@"Successfull");
+         [[AppDelegate sharedAppDelegate]showToastMessage:@" Updated successfully"];
     }
     else{
         NSLog(@"Unsuccessfull");
+         [[AppDelegate sharedAppDelegate]showToastMessage:@" Fail to update"];
     }
 }
 

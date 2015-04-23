@@ -92,13 +92,13 @@
       self.titleLabel.font=[UIFont boldSystemFontOfSize:30];
          self.cancelButton.titleLabel.font=[UIFont boldSystemFontOfSize:20];
         font_sz=20;
-        next_question=[UIImage imageNamed:@"next_question_ipad.png"];
+        next_question=[UIImage imageNamed:@"next_question_new_ipad.png"];
     }
     else{
        
         height=55;
         font_sz=12;
-        next_question=[UIImage imageNamed:@"next_question.png"];
+        next_question=[UIImage imageNamed:@"next_question_new.png"];
        
     }
 

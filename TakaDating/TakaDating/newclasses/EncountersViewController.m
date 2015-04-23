@@ -280,7 +280,7 @@
     
     
     
-    UIButton * profile=[[UIButton alloc]init];
+     profile=[[UIButton alloc]init];
     
     //[profile setTitle:@"Profile" forState:UIControlStateNormal];
     [profile setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
@@ -290,23 +290,26 @@
     profile.tag=1;
     [profile setImage:[UIImage imageNamed:@"profile_male_grey.png"] forState:UIControlStateNormal];
     [profile addTarget:self action:@selector(profileButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+     profile.exclusiveTouch=YES;
     [self.tabView addSubview:profile];
     
-    UIButton * photosBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+   photosBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     // [photosBtn setTitle:@"photos" forState:UIControlStateNormal];
     
     photosBtn.titleLabel.font=[UIFont boldSystemFontOfSize:9];
     [photosBtn setImage:[UIImage imageNamed:@"accept.png"] forState:UIControlStateNormal];
     [photosBtn addTarget:self action:@selector(yesButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     photosBtn.tag=2;
+    photosBtn.exclusiveTouch=YES;
     [self.tabView addSubview:photosBtn];
     
-    UIButton * CreditsBtn=[UIButton buttonWithType:UIButtonTypeCustom];
+    CreditsBtn=[UIButton buttonWithType:UIButtonTypeCustom];
     // [CreditsBtn setTitle:@"Credits" forState:UIControlStateNormal];
     
     CreditsBtn.titleLabel.font=[UIFont boldSystemFontOfSize:9];
     [CreditsBtn setImage:[UIImage imageNamed:@"decline.png"] forState:UIControlStateNormal];
     CreditsBtn.tag=3;
+    CreditsBtn.exclusiveTouch=YES;
     [CreditsBtn addTarget:self action:@selector(crossButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.tabView addSubview:CreditsBtn];
@@ -559,6 +562,8 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
 }
 
 -(void)swipeGesture:(CGRect)frame{
+    photosBtn.userInteractionEnabled=NO;
+    CreditsBtn.userInteractionEnabled=NO;
     if(self.parentView.frame.origin.y==0)
     {
         [UIView animateWithDuration:0.5 animations:^{
@@ -638,6 +643,8 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
             [self.secondView addSubview:self.profileTableView];
             
         }
+    photosBtn.userInteractionEnabled=YES;
+    CreditsBtn.userInteractionEnabled=YES;
     }
 
 
@@ -645,6 +652,8 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
 #pragma mark- profile button action
 
 -(void)profileButtonClick:(UIButton*)sender{
+    photosBtn.userInteractionEnabled=NO;
+    CreditsBtn.userInteractionEnabled=NO;
     int tagValue=(int)[sender tag];
     CGRect frame;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
@@ -660,6 +669,8 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
 }
 
 -(void)yesButtonAction:(id)sender{
+    profile.userInteractionEnabled=NO;
+    CreditsBtn.userInteractionEnabled=NO;
     [imageScroll removeFromSuperview];
     [view removeFromSuperview];
     [tagLine removeFromSuperview];
@@ -671,13 +682,18 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
         [self likeEncounterUser];
         dispatch_async(dispatch_get_main_queue(),^{
             [self callWebServiceForEncounter];
+            profile.userInteractionEnabled=YES;
+            CreditsBtn.userInteractionEnabled=YES;
             [self.refreshActivityIndicator stopAnimating];
             [self createScrollUI];
+            
         });
     });
 }
 
 -(void)crossButtonAction:(id)sender{
+    profile.userInteractionEnabled=NO;
+    photosBtn.userInteractionEnabled=NO;
     [imageScroll removeFromSuperview];
     [view removeFromSuperview];
     [tagLine removeFromSuperview];
@@ -689,6 +705,8 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
         [self disLikeEncounterUser];
         dispatch_async(dispatch_get_main_queue(),^{
             [self callWebServiceForEncounter];
+            profile.userInteractionEnabled=YES;
+            photosBtn.userInteractionEnabled=YES;
             [self.refreshActivityIndicator stopAnimating];
             [self createScrollUI];
         });
@@ -857,10 +875,15 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
         {
             if(indexPath.row==0)
             {
-                for(int i=0;i<4;i++)
+                for(int i=0;i<5;i++)
                 {
                     UIImageView * imgView=[[UIImageView alloc]init];
-                    imgView.frame=CGRectMake(10+(i*50), 5, 50, 40);
+                    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                        imgView.frame=CGRectMake(10+(i*100), 5, 80, 80);
+                    }
+                    else{
+                        imgView.frame=CGRectMake(10+(i*50), 5, 50, 40);
+                    }
                     imgView.image=[UIImage imageNamed:awards];
                     imgView.layer.cornerRadius=12;
                     imgView.clipsToBounds=YES;
@@ -1013,7 +1036,7 @@ targetContentOffset:(inout CGPoint *) targetContentOffset
                     }
                 }
                 else{
-                        cell.textLabel.text=@"Inetrests";
+                        cell.textLabel.text=@"Interests";
                         cell.imageView.image=[UIImage imageNamed:@"interest_icon.png"];
                 }
             }

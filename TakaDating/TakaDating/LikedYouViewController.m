@@ -15,6 +15,7 @@
 #import  "SingletonClass.h"
 #import  "UIImageView+WebCache.h"
 #import "AddphotosViewController.h"
+#import "customCollectionCiewCell.h"
 
 @interface LikedYouViewController (){
     CollectionHeaderTitleLabel * reuseableView;
@@ -253,6 +254,11 @@
     flowLayOut.minimumLineSpacing = (CGFloat)2.0;
     flowLayOut.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, self.view.bounds.size.height) collectionViewLayout:flowLayOut];
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        flowLayOut.minimumInteritemSpacing = (CGFloat)2.0;
+        flowLayOut.minimumLineSpacing = (CGFloat)10.0;
+
+    }
     self.automaticallyAdjustsScrollViewInsets = NO;
     //self.mainCollectionView.contentInset = UIEdgeInsetsMake(0, 0, 10, 0);
     [self.mainCollectionView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
@@ -260,7 +266,7 @@
     self.mainCollectionView.delegate = self;
     //self.mainCollectionView.backgroundColor = [UIColor colorWithRed:(CGFloat)59/255 green:(CGFloat)97/255 blue:(CGFloat)107/255 alpha:1];
     self.mainCollectionView.backgroundColor = [UIColor blackColor];
-    [self.mainCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
+    [self.mainCollectionView registerClass:[customCollectionCiewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
     
     [self.view addSubview:self.mainCollectionView];
     //self.mainCollectionView.scrollEnabled = NO;
@@ -282,8 +288,8 @@
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
-     CustomCellView *customCellView = [[CustomCellView alloc] initWithFrame:cell.bounds];
+    customCollectionCiewCell *customCellView=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
+//CustomCellView *customCellView = [[CustomCellView alloc] initWithFrame:cell.bounds];
     if (indexPath.section==0) {
         
     
@@ -322,14 +328,29 @@
         toggleButton.hidden=YES;
         // customCellView.togglebutton.hidden=YES;
     }
-        if ([SingletonClass shareSingleton].superPower==0) {
-            customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
+         NSString * online,* offline;
+        if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+            online=@"online_icon_ipad.png";
+            offline=@"offline_icon_ipad.png";
         }
         else{
+            online=@"online_icon.png";
+            offline=@"offline_icon.png";
+        }
+        if ([isOnline[indexPath.row]isEqualToString:@"0"]) {
+            customCellView.isOnlne.image=[UIImage imageNamed:offline];
+        }
+        else{
+            customCellView.isOnlne.image=[UIImage imageNamed:online];
+        }
+       // if ([SingletonClass shareSingleton].superPower==0) {
+       //     customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
+      //  }
+      //  else{
         
         NSURL * imageUrl=[NSURL URLWithString:[NSString stringWithFormat:@"http://taka.dating/%@",[thumbanailUrl objectAtIndex:indexPath.row]]];
         [customCellView.profileImageView setImageWithURL:imageUrl] ;
-        }
+      //  }
         customCellView.nameLabel.text =[displayName objectAtIndex:indexPath.row];
         NSString *totalCount= [NSString stringWithFormat:@"%d",(int)indexPath.row];
         CGFloat h = 25 + ([totalCount length]*5);
@@ -347,9 +368,9 @@
     }
    
    
-    cell.backgroundColor = [UIColor clearColor];
-    [cell addSubview:customCellView];
-    return cell;
+   // cell.backgroundColor = [UIColor clearColor];
+   // [cell addSubview:customCellView];
+    return customCellView;
 }
 
 -(void)toggleButtonAction:(id)sender{
@@ -489,9 +510,9 @@
 }
 #pragma mark-
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    if ([SingletonClass shareSingleton].superPower==0) {
+   // if ([SingletonClass shareSingleton].superPower==0) {
         return;
-    }
+   // }
      [SingletonClass shareSingleton].fromChat=NO;
     if (userProfileVC) {
         userProfileVC=nil;
@@ -601,7 +622,7 @@
     if (awardSanction==NO) {
         
     
-    if (useriId.count>=10) {
+    if ([SingletonClass shareSingleton].userLikesAward==NO && useriId.count>=10) {
         
         
         NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/award/grant-award/"];

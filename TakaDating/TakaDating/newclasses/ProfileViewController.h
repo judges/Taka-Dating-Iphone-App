@@ -30,7 +30,7 @@
 @property(nonatomic,strong)UITableView * profileTableView,* creditsTableView,* superPowerTableView;
 @property(nonatomic)BOOL animation,state;
 @property(nonatomic,assign)NSInteger selectedIndex;
-@property(nonatomic,strong)NSArray * sectionTwoData,*sectionTwoImages;
+@property(nonatomic,strong)NSArray * sectionTwoData,*sectionTwoImages,* awardImages;
 @property(nonatomic,strong)UISwipeGestureRecognizer * swipe;
 @property (nonatomic, assign) CGFloat screen_width;
 @property(nonatomic)UIView * secondView;

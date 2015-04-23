@@ -85,11 +85,15 @@
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         head_label_font=20.0;
         choise_font=15.0;
+        self.titleLabel.font=[UIFont boldSystemFontOfSize:30];
+        self.cancelButton.titleLabel.font=[UIFont boldSystemFontOfSize:20];
+        self.saveButton.titleLabel.font=[UIFont  boldSystemFontOfSize:20];
+        self.editButton.titleLabel.font=[UIFont boldSystemFontOfSize:20];
         layer.frame = CGRectMake(0, 0, w.width, 75);
-        self.titleLabel.frame=CGRectMake(w.width/2-50, 30, w.width/2-200, 25);
-        self.cancelButton.frame=CGRectMake(w.width/2-350, 30, 120, 25);
-        self.saveButton.frame=CGRectMake(w.width-140, 30, 120, 25);
-        self.editButton.frame=CGRectMake(w.width-140, 30, 120, 25);
+        self.titleLabel.frame=CGRectMake(w.width/2-50, 30, w.width/2-200, 40);
+        self.cancelButton.frame=CGRectMake(w.width/2-350, 30, 120, 40);
+        self.saveButton.frame=CGRectMake(w.width-140, 30, 120, 40);
+        self.editButton.frame=CGRectMake(w.width-140, 30, 120, 40);
     }
     else{
         head_label_font=14.0;

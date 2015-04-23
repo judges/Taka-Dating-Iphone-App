@@ -17,6 +17,7 @@
 {
     id parse;
     NSMutableData *responseData;
+     UITextField * locationTextField;
 }
 @property (nonatomic, assign) CGSize windowSize;
 @property (nonatomic) UIButton *facebook_btn;

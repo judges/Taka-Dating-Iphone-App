@@ -8,6 +8,7 @@
 
 #import "WorkAsViewController.h"
 #import "SingletonClass.h"
+#import "AppDelegate.h"
 
 @interface WorkAsViewController ()
 
@@ -309,9 +310,11 @@
     
     if ([[parse objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
         NSLog(@"Successfull");
+         [[AppDelegate sharedAppDelegate]showToastMessage:@" Updated successfully"];
     }
     else{
         NSLog(@"Unuccessfull");
+         [[AppDelegate sharedAppDelegate]showToastMessage:@" Faitl to Updated"];
     }
     
 }

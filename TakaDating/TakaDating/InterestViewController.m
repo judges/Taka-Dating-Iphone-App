@@ -555,7 +555,7 @@ self.titleLabel.frame=CGRectMake(windowSize.width/2-60, 20, windowSize.width-200
     NSLog(@"Update interests %@",json);
     if ([[json objectForKey:@"code"] isEqualToNumber:[NSNumber numberWithInt:200]]) {
         // Grant award..
-        if ([SingletonClass shareSingleton].intr_id.count>15) {
+        if ([SingletonClass shareSingleton].selectedIntId.count>=15 && [SingletonClass shareSingleton].interestAward==NO) {
             
         
         NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/award/grant-award/"];

@@ -146,7 +146,14 @@
         
         if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
             self.parentView.frame=CGRectMake(0, 75, windowSize.width, windowSize.height-25);
-            self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
+           // self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg_ipad.png"]];
+            CAGradientLayer *layer = [CAGradientLayer layer];
+            layer.frame = self.parentView.bounds;
+            UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+            UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
+            
+            layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
+            [self.parentView.layer insertSublayer:layer atIndex:0];
         }
         else{
             if ([UIScreen mainScreen].bounds.size.height>500) {
@@ -156,7 +163,14 @@
                  self.parentView.frame=CGRectMake(0,height ,self.screen_width, self.view.frame.size.height);
                 //self.parentView.frame=CGRectMake(0, 55, windowSize.width, self.view.frame.size.height-80);
             }
-            self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg.png"]];
+           // self.parentView.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"profile_screen_bg.png"]];
+            CAGradientLayer *layer = [CAGradientLayer layer];
+            layer.frame = self.parentView.bounds;
+            UIColor *firstColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)88/255 blue:(CGFloat)211/255 alpha:1.0];
+            UIColor *secColor = [UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)0/255 blue:(CGFloat)155/255 alpha:1.0];
+            
+            layer.colors = [NSArray arrayWithObjects:(id)[firstColor CGColor],(id)[secColor CGColor], nil];
+            [self.parentView.layer insertSublayer:layer atIndex:0];
         }
         
         
@@ -212,6 +226,7 @@
     profile.tag=1;
     [profile setImage:[UIImage imageNamed:@"profile_male_grey.png"] forState:UIControlStateNormal];
     [profile addTarget:self action:@selector(profileButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+    profile.exclusiveTouch=YES;
     [self.tabView addSubview:profile];
     
     UIButton * photosBtn=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -221,6 +236,7 @@
     [photosBtn setImage:[UIImage imageNamed:@"accept.png"] forState:UIControlStateNormal];
   //  [photosBtn addTarget:self action:@selector(yesButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     photosBtn.tag=2;
+    photosBtn.exclusiveTouch=YES;
     [self.tabView addSubview:photosBtn];
     
     UIButton * CreditsBtn=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -230,7 +246,7 @@
     [CreditsBtn setImage:[UIImage imageNamed:@"chat_blue_bg.png"] forState:UIControlStateNormal];
     CreditsBtn.tag=3;
     [CreditsBtn addTarget:self action:@selector(chatButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    
+    CreditsBtn.exclusiveTouch=YES;
     [self.tabView addSubview:CreditsBtn];
     
     //    UIButton * OffBtn=[UIButton buttonWithType:UIButtonTypeCustom];
@@ -764,13 +780,17 @@ NS_AVAILABLE_IOS(5_0){
         cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
     }
    
+    
+    NSString *awards;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
          cell.textLabel.font=[UIFont boldSystemFontOfSize:22];
         cell.detailTextLabel.font=[UIFont systemFontOfSize:20];
+        awards=@"award_ipad.png";
     }
     else{
          cell.textLabel.font=[UIFont boldSystemFontOfSize:12];
         cell.detailTextLabel.font=[UIFont systemFontOfSize:12];
+        awards=@"award.png";
     }
    
     if(tableView==self.profileTableView)
@@ -782,8 +802,13 @@ NS_AVAILABLE_IOS(5_0){
                 for(int i=0;i<4;i++)
                 {
                     UIImageView * imgView=[[UIImageView alloc]init];
-                    imgView.frame=CGRectMake(10+(i*50), 5, 50, 40);
-                    imgView.image=[UIImage imageNamed:@"award.png"];
+                    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                        imgView.frame=CGRectMake(10+(i*100), 5, 80, 80);
+                    }
+                    else{
+                        imgView.frame=CGRectMake(10+(i*50), 5, 50, 40);
+                    }
+                    imgView.image=[UIImage imageNamed:awards];
                     imgView.layer.cornerRadius=12;
                     imgView.clipsToBounds=YES;
                     [cell.contentView addSubview:imgView];
@@ -1045,8 +1070,13 @@ NS_AVAILABLE_IOS(5_0){
         _profession=[json objectForKey:@"profession"];
     }
          _appearance=[NSString stringWithFormat:@"Heighr:%@ Weight%@ Bodytype:%@ Eyecolor:%@ Haircolor:%@",_height,_weight,_bodyType,_eyeColor,_hairColor ];
-        interests=[parse objectForKey:@"interestList"];
-
+      NSArray*  interest=[parse objectForKey:@"interestList"];
+        NSMutableDictionary * intDict=[NSMutableDictionary dictionary];
+        interests=[[NSMutableArray alloc]init];
+        for (int i=0; i<interest.count; i++) {
+            intDict=[interest objectAtIndex:i];
+            [interests addObject:[intDict objectForKey:@"intr_name"]];
+        }
     }
     
     
@@ -1423,14 +1453,16 @@ NS_AVAILABLE_IOS(5_0){
 
 -(void)addBuddy{
     
-  /*  NSString * jid=[NSString stringWithFormat:@"%@@takadating.com",_useriId];
+    [[SingletonClass shareSingleton].messages removeAllObjects];
+    NSString * jid=[NSString stringWithFormat:@"%@@takadating.com",_useriId];
     XMPPJID *newBuddy = [XMPPJID jidWithString:jid];
-    [self.xmppRoster addUser:newBuddy withNickname:@""];*/
+    [self.xmppRoster addUser:newBuddy withNickname:@""];
     
-    NSError * error=nil;
+    // Adding friend to roaster
+  /* NSError * error=nil;
     NSURLResponse * urlResponse=nil;
     
-    NSURL * postUrl=[NSURL URLWithString:@"http://takadating.com:9090/plugins/userService/userservice"];
+    NSURL * postUrl=[NSURL URLWithString:@"http://takadating.com:9090/plugins/userService/userservice?"];
     NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
     [request setHTTPMethod:@"POST"];
     [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
@@ -1443,7 +1475,7 @@ NS_AVAILABLE_IOS(5_0){
     id json=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
     NSLog(@"%@",json);
     
-    NSURL * postUrl1=[NSURL URLWithString:@"http://takadating.com:9090/plugins/userService/userservice"];
+    NSURL * postUrl1=[NSURL URLWithString:@"http://takadating.com:9090/plugins/userService/userservice?"];
     NSMutableURLRequest * request1=[[NSMutableURLRequest alloc]initWithURL:postUrl1 cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
     [request1 setHTTPMethod:@"POST"];
     [request1 addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
@@ -1455,7 +1487,7 @@ NS_AVAILABLE_IOS(5_0){
     }
     id json1=[NSJSONSerialization JSONObjectWithData:data1 options:NSJSONReadingAllowFragments error:&error];
     NSLog(@"%@",json1);
-   
+   */
 
 }
 /*

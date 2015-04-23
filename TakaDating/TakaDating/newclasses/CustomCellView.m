@@ -23,7 +23,7 @@
         self.profileImageView.clipsToBounds = YES;
         //----------
         self.nameLabel = [[UILabel alloc] init];
-        self.nameLabel.frame=CGRectMake(7, 2, frame.size.width-10, 15);
+        self.nameLabel.frame=CGRectMake(7, 4, frame.size.width-10, 15);
         self.nameLabel.backgroundColor = [UIColor clearColor];
         self.nameLabel.textColor = [UIColor whiteColor];
         self.nameLabel.font = [UIFont systemFontOfSize:13];

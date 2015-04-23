@@ -128,10 +128,10 @@ static CGFloat messageTextSize = 14.0;
         timeLabelFrame = CGRectMake(self.frame.size.width - dateSize.width - textMarginHorizontal-0,  textSize.height + 3*textMarginVertical, dateSize.width, dateSize.height);
         
         if (dateSize.width>textSize.width) {
-            ballonViewFrame = CGRectMake(self.frame.size.width - (textSize.width + 2*textMarginHorizontal)-0-dateSize.width, timeLabelFrame.size.height, dateSize.width+textSize.width+ 2*textMarginHorizontal,dateSize.height+textSize.height + 2*textMarginVertical);
+            ballonViewFrame = CGRectMake(self.frame.size.width - (textSize.width + 2*textMarginVertical)-0-dateSize.width, timeLabelFrame.size.height, dateSize.width+textSize.width+ 2*textMarginVertical,dateSize.height+textSize.height + 2*textMarginVertical);
         }
         else{
-            ballonViewFrame = CGRectMake(self.frame.size.width - (textSize.width + 2*textMarginHorizontal)-0-dateSize.width, timeLabelFrame.size.height, textSize.width+textSize.width + 2*textMarginHorizontal,dateSize.height+textSize.height + 2*textMarginVertical);
+            ballonViewFrame = CGRectMake(self.frame.size.width - (textSize.width + 2*textMarginVertical)-20, timeLabelFrame.size.height, textSize.width+20 +2*textMarginVertical,dateSize.height+textSize.height + 2*textMarginVertical);
         }
 
         

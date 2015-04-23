@@ -64,7 +64,8 @@ extern NSString *const kXMPPmyPassword;
 @property (nonatomic, strong, readonly) XMPPCapabilities *xmppCapabilities;
 @property (nonatomic, strong, readonly) XMPPCapabilitiesCoreDataStorage *xmppCapabilitiesStorage;
 
-
+@property(nonatomic,strong)NSMutableDictionary * storeNewMsg;
+@property(nonatomic,strong)NSMutableArray * unreadMsgArr;
 
 - (NSManagedObjectContext *)managedObjectContext_roster;
 - (NSManagedObjectContext *)managedObjectContext_capabilities;

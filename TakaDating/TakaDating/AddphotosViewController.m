@@ -91,7 +91,14 @@
         height=55;
     }
     
-    [self createUI];
+        [self createUI];
+    self.activityView=[[UIActivityIndicatorView alloc]init];
+    self.activityView.frame=CGRectMake(windowSize.width/2-20, windowSize.height/2-50, 40, 40);
+    self.activityView.activityIndicatorViewStyle=UIActivityIndicatorViewStyleWhiteLarge;
+    self.activityView.color=[UIColor blackColor];
+    [self.addPhotoTable addSubview:self.activityView];
+    [self.addPhotoTable bringSubviewToFront:self.activityView];
+
 }
 
 -(void)createUI{
@@ -154,12 +161,15 @@
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
    
     if (indexPath.row==0) {
+        
         [self fetchPhotoFromFacebook];
     }
     if (indexPath.row==1) {
+        
         [self fetchPhotoFromInstagram];
     }
     if (indexPath.row==2) {
+        
         [self addingPhotofromLibrary];
     }
     if (indexPath.row==3) {
@@ -174,7 +184,7 @@
     UILabel * label=[[UILabel alloc]init];
     label.frame=CGRectMake(30, 10, 260, 50);
     label.textAlignment=NSTextAlignmentCenter;
-    label.lineBreakMode=NSLineBreakByCharWrapping;
+    label.lineBreakMode=NSLineBreakByWordWrapping;
     label.font=[UIFont systemFontOfSize:font_size];
     label.numberOfLines=0;
     label.backgroundColor=[UIColor clearColor];
@@ -223,6 +233,7 @@
 {
    img = image;
     [self dismissModalViewControllerAnimated:YES];
+    [self.activityView startAnimating];
     [self uploadPhoto:image];
     
 }
@@ -244,11 +255,13 @@
         if (error) {
             NSLog(@"Fail");
             [[AppDelegate sharedAppDelegate]showToastMessage:@"Image failed to Uploaded successfully"];
+            [self.activityView stopAnimating];
         }else{
         
             NSLog(@"Upload Successfull");
             NSLog(@"responsible %@",response);
              [[AppDelegate sharedAppDelegate]showToastMessage:@"Image Uploaded successfully"];
+            [self.activityView stopAnimating];
             [self getAllUploadedImages];
         }
     }];
@@ -349,8 +362,8 @@
     if ([[UIApplication sharedApplication] canOpenURL:instagramUrl]) {
         [[UIApplication sharedApplication] openURL:instagramUrl];
     }*/
-    NSString * client_id = @"ae273bad2ab543b789f5be827a6a1e29";
-    NSString * redirectUri=@"http://23.238.24.26/instagram-images/";
+    NSString * client_id = @"d5ff0e3fd54044cb99768e18da813fc8";
+    NSString * redirectUri=@"http://takadating.com/instagram-images/";
    // NSString * redirectUri=@"https://www.google.com/";
     NSString * url=[NSString stringWithFormat:@"https://instagram.com/oauth/authorize/?client_id=%@&redirect_uri=%@&response_type=token",client_id,redirectUri];
     NSURL * instagramUrl=[NSURL URLWithString:url];
@@ -364,7 +377,7 @@
 #pragma mark- delegate method of webView
 
 -(BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType{
-     NSString * redirectUrl=@"http://taka.dating/instagram-images/";
+     NSString * redirectUrl=@"http://takadating.com/instagram-images/";
     NSString * urlStr=[[request URL]absoluteString];
     NSLog(@"WebView URL %@",urlStr);
     NSArray *UrlParts =[NSArray arrayWithArray:[urlStr componentsSeparatedByString:[NSString stringWithFormat:@"%@/", redirectUrl]]];
@@ -412,7 +425,7 @@
     NSLog(@"Response : %@",dictResponse);
   //  NSMutableArray * finalArrList=[[NSMutableArray alloc]init];
     NSArray * resultArr=(NSArray*)[dictResponse objectForKey:@"data"];
-    NSLog(@"Result arr %@ ==--%d",resultArr,resultArr.count);
+    NSLog(@"Result arr %@ ==--%lu",resultArr,(unsigned long)resultArr.count);
     for (int i=0; i<resultArr.count; i++) {
         NSMutableDictionary * dict=[resultArr objectAtIndex:i];
         NSMutableDictionary * imageDic=[dict objectForKey:@"images"];
@@ -429,6 +442,7 @@
             self.photopicker=nil;
         }
         self.photopicker=[[FBPhotoPickerViewController alloc]initWithNibName:@"FBPhotoPickerViewController" bundle:nil];
+        [webView removeFromSuperview];
         [self.navigationController pushViewController:self.photopicker animated:YES];
     }
     else{
@@ -441,6 +455,7 @@
 #pragma  mark- cancel button
 
 -(void)cancelButtonAction:(id)sender{
+    [webView removeFromSuperview];
     //[[[[[UIApplication sharedApplication]keyWindow]subviews]lastObject]removeFromSuperview];
     [self.navigationController popViewControllerAnimated:YES];
 }

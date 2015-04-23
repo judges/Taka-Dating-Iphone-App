@@ -630,7 +630,7 @@
                 newViewController= [self.viewControllers objectAtIndex:2];
                 _selectedSection = indexPath.section;
                 _selectedIndex = indexPath.row;
-                if ([SingletonClass shareSingleton].facebookLog==YES) {
+                if ([SingletonClass shareSingleton].facebookId) {
                     NSString * picUrl=[[NSUserDefaults standardUserDefaults]objectForKey:@"profilePicUrl"];
                     [[SingletonClass shareSingleton].userImages addObject:picUrl];
                     NSLog(@"Profile pic url %@",[SingletonClass shareSingleton].userImages);

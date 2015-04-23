@@ -16,6 +16,7 @@
 #import "ActivationViewController.h"
 #import "LikedYouViewController.h"
 #import "AFNHelper.h"
+#import "SignInViewController.h"
 
 
 @interface SignUpViewController ()
@@ -121,6 +122,10 @@
     eighteenPlusLabel.font=[UIFont systemFontOfSize:9];
     [self.view addSubview:eighteenPlusLabel];
     
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        warningView.image=[UIImage imageNamed:@"warning_icon_small_ipad.png"];
+         eighteenPlusLabel.font=[UIFont systemFontOfSize:15];
+    }
     
     self.layer = [CALayer layer];
     //240
@@ -254,7 +259,7 @@
     [ self.letsGo setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     self.letsGo.layer.cornerRadius =7;
     self.letsGo.clipsToBounds = YES;
-    [ self.letsGo addTarget:self action:@selector(letsGoButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+    [ self.letsGo addTarget:self action:@selector(letsGoButtonAction) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview: self.letsGo];
     
     NSString * termsAndCondtion=@"By continuing you accept our Terms and Conditions. We will never share your Contact Details.";
@@ -318,8 +323,8 @@
     
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         self.layer.frame = CGRectMake(20, self.windowSize.width/2-200, self.windowSize.width-40,self.windowSize.width-200);
-        warningView.frame=CGRectMake(self.windowSize.width/2-100, 70, 15, 15);
-        eighteenPlusLabel.frame=CGRectMake(self.windowSize.width/2-75, 67, 210, 20);
+        warningView.frame=CGRectMake(self.windowSize.width/2-130, 105, 30, 30);
+        eighteenPlusLabel.frame=CGRectMake(self.windowSize.width/2-75, 107, 300, 20);
         
         
         emailLabel.Frame=CGRectMake(self.windowSize.width/2-250, self.windowSize.width/2-150,100,60);
@@ -450,16 +455,22 @@
     
 }
 -(BOOL)textFieldShouldBeginEditing:(UITextField *)textField{
+    if (textField==locationTextField) {
+        return YES;
+    }
+    else{
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-         textField.background=[UIImage imageNamed:@"signup_blueline_ipad.png"];
+            textField.background=[UIImage imageNamed:@"signup_blueline_ipad.png"];
     }
     else{
             textField.background=[UIImage imageNamed:@"signup_blueline.png"];
     }
+}
     return  YES;
 }
 -(BOOL)textFieldShouldEndEditing:(UITextField *)textField
 {
+   
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         textField.background=[UIImage imageNamed:@"signup_greyline_ipad.png"];
     }
@@ -470,6 +481,11 @@
 }
 -(BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    if (textField==locationTextField) {
+        [self FinlocationOnSearch:locationTextField.text];
+        
+        return YES;
+    }
     if (self.emailText==textField) {
         [SingletonClass shareSingleton].emailID=self.emailText.text;
     }
@@ -727,6 +743,10 @@
     self.emailText.placeholder=@"   Email or Cell phone";
     self.nameText.text=nil;
     self.nameText.placeholder=@"Enter Your Name";
+    self.passwordText.placeholder=@"Password";
+    self.dateString=@"YYYY/MM/DD";
+    [self.dateBtn setTitle:self.dateString forState:UIControlStateNormal];
+    [self.im_here_tooBtn setTitle:@"Please select " forState:UIControlStateNormal];
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -773,7 +793,7 @@
 
 #pragma mark-second lets go button
 
--(void)letsGoButtonAction:(id)sender{
+-(void)letsGoButtonAction{
     
    
    
@@ -785,8 +805,9 @@
     else
     {
         if (![SingletonClass shareSingleton].location) {
-            UIAlertView * alert=[[UIAlertView alloc]initWithTitle:nil message:@"Enable Location service in device" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-            [alert show];
+            [self createUIForLocation];
+            //UIAlertView * alert=[[UIAlertView alloc]initWithTitle:nil message:@"Enable Location service in device" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+           // [alert show];
         }
         else{
             NSString * hereForNum;
@@ -800,17 +821,17 @@
             else{
                 hereForNum=@"2";
             }
-        
-            NSString * checkNetwork=[[NSUserDefaults standardUserDefaults]objectForKey:@"NetworkStatus"];
+            [[NSNotificationCenter defaultCenter]postNotificationName:@"kNetworkReachabilityChangedNotification" object:nil userInfo:nil];
+            BOOL checkNetwork=[[NSUserDefaults standardUserDefaults]boolForKey:@"NetworkStatus"];
             if (checkNetwork) {
                 NSURL * url;
                 NSString * requestBody;
                 if ([SingletonClass shareSingleton].facebookId) {
                     url=[NSURL URLWithString:@"http://23.238.24.26/authentication/fbsignup/"];
-                    /*requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@&fbUserId=%@",self.nameText.text,self.dateString,[SingletonClass shareSingleton].location,[SingletonClass shareSingleton].lattitude,[SingletonClass shareSingleton].longitude,radiobutton,hereForNum,self.emailText.text,self.passwordText.text,[SingletonClass shareSingleton].facebookId];*/
+                    requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@&fbUserId=%@",self.nameText.text,self.dateString,[SingletonClass shareSingleton].location,[SingletonClass shareSingleton].lattitude,[SingletonClass shareSingleton].longitude,radiobutton,hereForNum,self.emailText.text,self.passwordText.text,[SingletonClass shareSingleton].facebookId];
                     
                     
-                     requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@&fbUserId=%@",self.nameText.text,self.dateString,@"Bangalore",@"21.00",@"33.0",radiobutton,hereForNum,self.emailText.text,self.passwordText.text,[SingletonClass shareSingleton].facebookId];
+                    /* requestBody =[NSString stringWithFormat:@"displayName=%@&dob=%@&location=%@&latitude=%@&longitude=%@&sex=%@&hereFor=%@&userEmail=%@&password=%@&fbUserId=%@",self.nameText.text,self.dateString,@"Bangalore",@"21.00",@"33.0",radiobutton,hereForNum,self.emailText.text,self.passwordText.text,[SingletonClass shareSingleton].facebookId];*/
                     
                 }
                 else{
@@ -853,31 +874,17 @@
                     
                     
                     
-                    NSString * activationkey=[parse objectForKey:@"active"];
-                    NSURL * urlActiveStr=[NSURL URLWithString:@"http://23.238.24.26/mobi/verification"];
-                    
-                    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:urlActiveStr cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
-                    
-                    [request setHTTPMethod:@"POST"];
-                    [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-                    
-                    //NSMutableDictionary * dict=[NSMutableDictionary dictionary];
-                    NSURLResponse * urlResponse=nil;
-                    NSError * error=nil;
-                    
-                    NSString * active=[NSString stringWithFormat:@"email=%@&activationKey=%@&password=%@",self.emailText.text,activationkey,self.passwordText.text];
-                    [request setHTTPBody:[active dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
-                    NSData *dataActivation=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
-                    
-                    id parse1=[NSJSONSerialization JSONObjectWithData:dataActivation options:NSJSONReadingAllowFragments error:&error];
-                    NSLog(@"activation parse %@",parse1);
-                    
-                    if ([[parse1 objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]] ) {
-                        
+                  //Facebook Sign up
                         
                         
                         if ([SingletonClass shareSingleton].facebookId) {
                             
+                            [[NSUserDefaults standardUserDefaults]setObject:self.emailText.text forKey:@"userEmail"];
+                            [[NSUserDefaults standardUserDefaults]setObject:self.passwordText.text forKey:@"password"];
+                            [[NSUserDefaults standardUserDefaults]synchronize];
+
+                            [[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"signIn"];
+                            [[NSUserDefaults standardUserDefaults]synchronize];
                             NSError * error;
                             NSURLResponse * urlReponse;
                           //  NSString * fbid= [[NSUserDefaults standardUserDefaults]objectForKey:ConnectedFacebookUserID];
@@ -888,7 +895,7 @@
                             [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
                             
                             
-                            NSString * body=[NSString stringWithFormat:@"faceId=%@",[SingletonClass shareSingleton].userID];
+                            NSString * body=[NSString stringWithFormat:@"faceId=%@",[SingletonClass shareSingleton].facebookId];
                             [request setHTTPBody:[body
                                                   dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
                             
@@ -911,9 +918,12 @@
                                 
                                 [SingletonClass shareSingleton].bodyType=[NSString stringWithFormat:@"BodyType:%@",[self appearanceBodyType:[dict objectForKey:@"bodyType"]]];
                                 
-                                [SingletonClass shareSingleton].userID=[dict objectForKey:@"userId"];
-                                [[NSUserDefaults standardUserDefaults]setObject: [SingletonClass shareSingleton].userID forKey:@"userId"];
+                                [[NSUserDefaults standardUserDefaults]setObject:[parse objectForKey:@"balance"] forKey:@"credit"];
                                 [[NSUserDefaults standardUserDefaults]synchronize];
+                                
+                                [SingletonClass shareSingleton].superPower=[[dict objectForKey:@"superpower"]intValue];
+                                
+                                [SingletonClass shareSingleton].userID=[dict objectForKey:@"userId"];
                                 
                                 [SingletonClass shareSingleton ].dob=[dict objectForKey:@"dob"];
                                 NSLog(@"UserID %@",[SingletonClass shareSingleton].userID);
@@ -974,7 +984,7 @@
                                 
                                 NSData * Data=[NSData dataWithBytes:[data UTF8String] length:[data length]];
                                 NSDictionary * dataDict=[NSJSONSerialization JSONObjectWithData:Data options:NSJSONReadingMutableLeaves error:&error];
-                                if (error) {
+                                if (data==nil) {
                                     return ;
                                 }
                                 
@@ -1006,7 +1016,7 @@
                                 NSDictionary * emailDict=[NSJSONSerialization JSONObjectWithData:notifyData options:NSJSONReadingMutableLeaves error:&error];
                                 NSDictionary * email=[emailDict objectForKey:@"Email"];
                                 NSDictionary * mobile=[emailDict objectForKey:@"Mobile"];
-                                if (error) {
+                                if (data==nil) {
                                     return ;
                                 }
                                 
@@ -1034,37 +1044,35 @@
                                 [SingletonClass shareSingleton].InvisibleModeSetting=[dict objectForKey:@"InvisibleModeSetting"];
                                 [SingletonClass shareSingleton].MessagesSetting=[dict objectForKey:@"MessagesSetting"];
                                 
-                                 NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
-                                 if (imagesArr.count>0) {
-                                 
-                                 
-                             //    NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
-                                 NSMutableArray * dictarr=[[NSMutableArray alloc]init];
-                                 NSMutableArray * arr=[[ NSMutableArray alloc]init];
-                                 
-                                 for (int i=0; i<imagesArr.count; i++) {
+                                NSArray * imagesArr=[parse objectForKey:@"imagegallery"];
+                               /* if (imagesArr.count>0) {
                                     
-                                 dict =[imagesArr objectAtIndex:i];
-                                 if ([[dict objectForKey:@"privacy"]isEqualToString:@"3"]){
-                                 NSString * imageName=[NSString stringWithString:[dict objectForKey:@"imageLink"]];
-                                 [arr addObject:imageName];
-                                 
-                                 }
-                                 else{
-                                 [dictarr addObject:[dict objectForKey:@"imageLink"]];
-                                 NSString * imageName=[NSString stringWithFormat:@"http://taka.dating%@",[dict objectForKey:@"imageLink"]];
-                                 NSLog(@"image Name %@",imageName);
-                                 [arr addObject:imageName];
-                                 }
-                                 
-                                 
-                                 }
-                                 [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]initWithArray:arr];
-                                 }
+                                    
+                                    // NSMutableDictionary * dictImges=[[NSMutableDictionary alloc]init];
+                                    NSMutableArray * dictarr=[[NSMutableArray alloc]init];
+                                    NSMutableArray * arr=[[ NSMutableArray alloc]init];
+                                    
+                                    for (int i=0; i<imagesArr.count; i++) {
+                                        
+                                        dict =[imagesArr objectAtIndex:i];
+                                        if ([[dict objectForKey:@"privacy"]isEqualToString:@"3"]){
+                                            NSString * imageName=[NSString stringWithString:[dict objectForKey:@"imageLink"]];
+                                            [arr addObject:imageName];
+                                            
+                                        }
+                                        else{
+                                            [dictarr addObject:[dict objectForKey:@"imageLink"]];
+                                            NSString * imageName=[NSString stringWithFormat:@"http://taka.dating%@",[dict objectForKey:@"imageLink"]];
+                                            NSLog(@"image Name %@",imageName);
+                                            [arr addObject:imageName];
+                                        }
+                                        
+                                        
+                                    }
+                                    [SingletonClass shareSingleton].userImages =[[NSMutableArray alloc]initWithArray:arr];
+                                }*/
                                 
-                                [SingletonClass shareSingleton].profileImg=[NSString stringWithFormat:@"http://taka.dating%@",[parse objectForKey:@"profileimg"]];
-                                
-                                
+                                [SingletonClass shareSingleton].profileImg=[parse objectForKey:@"profileimg"];
                                 //  NSLog(@"user profile images %@",[SingletonClass shareSingleton].userImages);
                                 // [SingletonClass shareSingleton].profileImages=(NSArray*)imagesArr;
                                 NSString * jibField=[NSString stringWithFormat:@"%@@takadating.com",[SingletonClass shareSingleton].userID];
@@ -1116,13 +1124,48 @@
                                 
                                 customMenuViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
                                 [self presentViewController:navi animated:YES completion:nil];
+                                [SingletonClass shareSingleton].location=nil;
+                                self.emailText.text=nil;
+                                self.emailText.placeholder=@"   Email or Cell phone";
+                                self.nameText.text=nil;
+                                self.nameText.placeholder=@"Enter Your Name";
+                                self.passwordText.placeholder=@"Password";
+                                self.dateString=@"YYYY/MM/DD";
+                                [self.dateBtn setTitle:self.dateString forState:UIControlStateNormal];
+                                [self.im_here_tooBtn setTitle:@"Please select " forState:UIControlStateNormal];
                             }
+                        }
+                        else{
+                            NSString * activationkey=[parse objectForKey:@"active"];
+                            NSURL * urlActiveStr=[NSURL URLWithString:@"http://23.238.24.26/mobi/verification"];
                             
+                            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:urlActiveStr cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
                             
+                            [request setHTTPMethod:@"POST"];
+                            [request addValue:@"application/x-www-form-urlencoded; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
                             
-
+                            //NSMutableDictionary * dict=[NSMutableDictionary dictionary];
+                            NSURLResponse * urlResponse=nil;
+                            NSError * error=nil;
+                            
+                            NSString * active=[NSString stringWithFormat:@"email=%@&activationKey=%@&password=%@",self.emailText.text,activationkey,self.passwordText.text];
+                            [request setHTTPBody:[active dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES]];
+                            NSData *dataActivation=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+                            
+                            id parse1=[NSJSONSerialization JSONObjectWithData:dataActivation options:NSJSONReadingAllowFragments error:&error];
+                            NSLog(@"activation parse %@",parse1);
+                            
+                            if ([[parse1 objectForKey:@"code"]isEqualToNumber:[NSNumber numberWithInt:200]] ) {
+                                [[NSUserDefaults standardUserDefaults] setObject:nil forKey:@"accessToken"];
+                              
+                                [[NSUserDefaults standardUserDefaults]synchronize];
                                 
+                                SignInViewController * signIn=[[SignInViewController alloc]initWithNibName:@"SignInViewController" bundle:nil];
+                                [self.navigationController
+                                 pushViewController:signIn animated:YES];
                             }
+
+                        
                             
                         }
 
@@ -1130,12 +1173,15 @@
                         
                     }
                 }
+            else  {
+                UIAlertView * alert=[[UIAlertView alloc]initWithTitle:nil message:@"Check your network connection" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+                [alert show];
+            }
 
             
             }
         }
     }
-
 
 
 
@@ -1533,4 +1579,120 @@
    
     NSLog(@"Error in connection -==- %@",error);
 }
+
+#pragma mark- Allow use to enter Location
+
+-(void)createUIForLocation{
+    locationTbl=[[UITableView alloc]init];
+    locationTbl.frame=CGRectMake(0, 0, windowSize.width, windowSize.height);
+    locationTbl.delegate=self;
+    locationTbl.dataSource=self;
+    locationTbl.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
+    locationTbl.separatorStyle=UITableViewCellSeparatorStyleNone;
+    [self.view addSubview:locationTbl];
+    
+    UIView * headerView=[[UIView alloc]init];
+    headerView.frame=CGRectMake(0, 0, windowSize.width, 50);
+    locationTbl.tableHeaderView=headerView;
+    
+    locationTextField =[[UITextField alloc]init];
+    locationTextField.frame=CGRectMake(5, 15, windowSize.width, 35);
+    locationTextField.delegate=self;
+    locationTextField.placeholder=@"Enter your city.";
+    locationTextField.backgroundColor=[UIColor whiteColor];
+    [headerView addSubview:locationTextField];
+   
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+         headerView.frame=CGRectMake(0, 0, windowSize.width, 60);
+        locationTextField.frame=CGRectMake(5, 15, windowSize.width, 35);
+        row_hh=60;
+    }
+    else{
+        row_hh=45;
+    }
+    
+    
+    
+}
+
+#pragma mark- find location on search
+
+-(void)FinlocationOnSearch:(NSString *)place{
+    NSError * error;
+    NSURLResponse * urlResponse;
+    
+    NSString * urlStr=[NSString stringWithFormat:@"http://maps.google.com/maps/api/geocode/json?address=\"%@\"&sensor=false",place];
+    urlStr=[urlStr stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSURL * url=[NSURL URLWithString:urlStr];
+    
+    NSMutableURLRequest * request=[[NSMutableURLRequest alloc]initWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];
+    
+    NSData * data=[NSURLConnection sendSynchronousRequest:request returningResponse:&urlResponse error:&error];
+    if (data==nil) {
+        NSLog(@"no data available ");
+        return;
+    }
+    
+    id parse=[NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingAllowFragments error:&error];
+    
+    self.placeName=[[NSMutableArray alloc]init];
+    self.logAndLat=[[NSMutableArray alloc]init];
+   
+    NSMutableArray * allPlaces=[parse objectForKey:@"results"];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSMutableDictionary*  dict=[[NSMutableDictionary alloc]init];
+        NSMutableDictionary*  geoDict=[[NSMutableDictionary alloc]init];
+        NSMutableDictionary*  locationDict=[[NSMutableDictionary alloc]init];
+        lat=[[NSMutableArray alloc]init];
+        lng=[[NSMutableArray alloc]init];
+        for (int i=0;i<allPlaces.count; i++) {
+            dict=[allPlaces objectAtIndex:i];
+            [self.placeName addObject:[dict objectForKey:@"formatted_address"]];
+            geoDict=[dict objectForKey:@"geometry"];
+            locationDict=[geoDict objectForKey:@"location"];
+            [lng addObject:[locationDict objectForKey:@"lng"]];
+            [lat addObject:[locationDict objectForKey:@"lat"]];
+            [self.logAndLat addObject:[NSString stringWithFormat:@"%@/%@",[SingletonClass shareSingleton].longitude, [SingletonClass shareSingleton].lattitude]];
+        }
+        searchRslt=YES;
+        [locationTbl reloadData];
+    });
+    
+
+}
+
+#pragma  mark- table View  delegate methods
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
+    if (searchRslt==NO) {
+        return 0;
+    }
+    return  self.placeName.count;
+}
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSString * cellId=@"cell";
+    
+    UITableViewCell * cell=[tableView cellForRowAtIndexPath:indexPath];
+    if (!cell) {
+        cell=[[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
+    }
+    cell.textLabel.text=[self.placeName objectAtIndex:indexPath.row];
+    return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    [SingletonClass shareSingleton].longitude=[lng objectAtIndex:indexPath.row];
+    [SingletonClass shareSingleton].lattitude=[lat objectAtIndex:indexPath.row];
+    [SingletonClass shareSingleton].location=[self.placeName objectAtIndex:indexPath.row];
+    [locationTbl removeFromSuperview];
+    [self letsGoButtonAction];
+    
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return  row_hh;
+}
+
 @end

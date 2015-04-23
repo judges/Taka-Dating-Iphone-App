@@ -52,19 +52,19 @@
 	// Do any additional setup after loading the view, typically from a nib.
     self.windowSize = [UIScreen mainScreen].bounds.size;
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
-                 self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"splashscreen.png"]];
+                 self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"screen1_new.png"]];
         
     }
     else{
         if(self.windowSize.height>500)
         {
             NSLog(@"WindowSize %f",self.windowSize.height);
-            self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"screen1_568.png"]];
+            self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"screen1_568_new.png"]];
         }
         else{
             NSLog(@"WindowSize %f",self.windowSize.height);
 
-            self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"screen1_480.png"]];
+            self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"screen1_480_new.png"]];
         }
     
     }
@@ -77,7 +77,7 @@
     // Dispose of any resources that can be recreated.
 }
 -(void) createUI{
-    CGSize windowSize=[UIScreen mainScreen].bounds.size;
+    //CGSize windowSize=[UIScreen mainScreen].bounds.size;
     
     self.facebook_btn = [UIButton buttonWithType:UIButtonTypeCustom];
     
@@ -109,14 +109,47 @@
     [self.facebook_btn setUserInteractionEnabled:YES];
     [self.other_option_btn setUserInteractionEnabled:YES];
     
+    
   
     
     NSString * signIn=[[NSUserDefaults standardUserDefaults]objectForKey:@"signIn"];
     if ([signIn isEqualToString:@"YES"]) {
         
+        NSArray *animationArray=[NSArray arrayWithObjects:
+                                 [UIImage imageNamed:@"loader1.png"],
+                                 [UIImage imageNamed:@"loader2.png"],
+                                 [UIImage imageNamed:@"loader3.png"],
+                                 [UIImage imageNamed:@"loader4.png"],
+                                 [UIImage imageNamed:@"loader5.png"],
+                                 [UIImage imageNamed:@"loader6.png"],
+                                 [UIImage imageNamed:@"loader7.png"],
+                                 [UIImage imageNamed:@"loader8.png"],
+                                 [UIImage imageNamed:@"loader9.png"],
+                                 [UIImage imageNamed:@"loader10.png"],
+                                 [UIImage imageNamed:@"loader11.png"],
+                                 [UIImage imageNamed:@"loader12.png"],
+                                 [UIImage imageNamed:@"loader13.png"],
+                                 [UIImage imageNamed:@"loader14.png"],
+                                 [UIImage imageNamed:@"loader15.png"],
+                                 [UIImage imageNamed:@"loader16.png"],
+                                 [UIImage imageNamed:@"loader17.png"],
+                                 [UIImage imageNamed:@"loader18.png"],
+                                 nil];
+        UIImageView *animationView=[[UIImageView alloc]initWithFrame:CGRectMake(140, 250,50, 50)];
+        [self.view addSubview:animationView];
+      
+        animationView.animationImages=animationArray;
+        animationView.animationDuration=1.5;
+        animationView.animationRepeatCount=0;
+        
+        [animationView startAnimating];
+       
+        
         [self.facebook_btn setUserInteractionEnabled:NO];
         [self.other_option_btn setUserInteractionEnabled:NO];
+        //[[self appdelegate]showHUDLoadingView:@"Loading"];
         [self SignInButtonAction];
+        
         
     }
 
@@ -204,7 +237,8 @@
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
     }
 }
--(void)signupAction{
+-(void)signupAction
+{
     if (self.signUpVC) {
         self.signUpVC=nil;
     }
@@ -386,10 +420,11 @@
         navi.navigationBar.hidden = YES;
         
         
-        
+       
         customMenuViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         [self presentViewController:navi animated:YES completion:nil];
         
+      
         [NSThread detachNewThreadSelector:@selector(getAllUpdatedInterests) toTarget:self withObject:nil];
         
         
@@ -431,7 +466,7 @@
         }
     }
     
-    
+     [[self appdelegate]hideHUDLoadingView];
 }
 
 #pragma mark- getAllDataFromService

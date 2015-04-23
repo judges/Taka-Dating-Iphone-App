@@ -143,11 +143,14 @@
     tView.separatorStyle=UITableViewCellSelectionStyleNone;
     tView.backgroundColor=[UIColor colorWithRed:(CGFloat)255/255 green:(CGFloat)148/255 blue:(CGFloat)214/255 alpha:1.0];
     [tView setShowsHorizontalScrollIndicator:NO];
+    UIView * footerView=[[UIView alloc]init];
+    footerView.frame=CGRectMake(0, 0,self.view.frame.size.width,40);
+    tView.tableFooterView=footerView;
     [scrollView addSubview:tView];
    
     
     messageField =[[UITextField alloc]init];
-    messageField.frame=CGRectMake(0, scrollView.frame.size.height-110,scrollView.frame.size.width-50, 50);
+    messageField.frame=CGRectMake(0, scrollView.frame.size.height-90,scrollView.frame.size.width-50, 30);
     messageField.backgroundColor=[UIColor whiteColor];
     messageField.layer.cornerRadius=7;
     messageField.clipsToBounds=YES;
@@ -157,7 +160,7 @@
     
     
     UIButton * sendButton=[UIButton buttonWithType:UIButtonTypeCustom];
-    sendButton.frame=CGRectMake(scrollView.frame.size.width-45, scrollView.frame.size.height-105, 40, 40);
+    sendButton.frame=CGRectMake(scrollView.frame.size.width-45, scrollView.frame.size.height-95, 40, 35);
     sendButton.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"send_social.png"]];
     [sendButton addTarget:self action:@selector(sendMessage) forControlEvents:UIControlEventTouchUpInside];
     [scrollView addSubview:sendButton];
@@ -363,7 +366,7 @@
     if(ccell.sent)
     {
         //ccell.avatarImageView.image=self.opponenetImage;
-        ccell.ballonImageName=@"balloon_read_right.png";
+        ccell.ballonImageName=@"balloon_read_right_new.png";
         
     }
     else
@@ -398,7 +401,7 @@
 //                scrollView.frame = CGRectMake(scrollView.frame.origin.x, (scrollView.frame.origin.y - 170.0), scrollView.frame.size.width, scrollView.frame.size.height);
 //            }
 //            else{
-                scrollView.frame = CGRectMake(scrollView.frame.origin.x, (scrollView.frame.origin.y - 220.0), scrollView.frame.size.width, scrollView.frame.size.height);
+                scrollView.frame = CGRectMake(scrollView.frame.origin.x, (scrollView.frame.origin.y - 250.0), scrollView.frame.size.width, scrollView.frame.size.height);
           //  }
     }];
     return  YES;

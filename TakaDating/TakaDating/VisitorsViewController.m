@@ -14,6 +14,7 @@
 #import "SingletonClass.h"
 #import "UIImageView+WebCache.h"
 #import "UserProfileViewController.h"
+#import "customCollectionCiewCell.h"
 
 
 @interface VisitorsViewController ()
@@ -21,6 +22,7 @@
     //UITableView *tempTable;
     //UICollectionReusableView *reuseableView;
     UILabel *textLabel;
+    //CustomCellView *customCellView ;
     CollectionHeaderTitleLabel *reuseableView;
 }
 @property(nonatomic,strong)PromoteyourselfViewController * promoteVC;
@@ -123,6 +125,13 @@
     [promoteButton setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg.png"] forState:UIControlStateNormal];
     [promoteButton addTarget:self action:@selector(addMeHereButtonAction:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:promoteButton];
+    if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+        promoteButton.frame=CGRectMake(windowSize.width/2-100, windowSize.height/2-200,167, 32);
+        label.frame=CGRectMake(windowSize.width/2-250, windowSize.height/2-140, windowSize.width/2+100, 50);
+        label.font=[UIFont boldSystemFontOfSize:20];
+        [promoteButton setBackgroundImage:[UIImage imageNamed:@"setting_btn_bg_ipad.png"] forState:UIControlStateNormal];
+        
+    }
 }
 
 
@@ -138,6 +147,9 @@
     flowLayOut.sectionInset = UIEdgeInsetsMake(10, 10, 10, 10);
     if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
         self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height) collectionViewLayout:flowLayOut];
+        flowLayOut.minimumInteritemSpacing = (CGFloat)2.0;
+        flowLayOut.minimumLineSpacing = (CGFloat)10.0;
+
         
     }else{
         self.mainCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, windowSize.width, windowSize.height+90) collectionViewLayout:flowLayOut];
@@ -150,7 +162,7 @@
     self.mainCollectionView.delegate = self;
     //self.mainCollectionView.backgroundColor = [UIColor colorWithRed:(CGFloat)59/255 green:(CGFloat)97/255 blue:(CGFloat)107/255 alpha:1];
     self.mainCollectionView.backgroundColor = [UIColor blackColor];
-    [self.mainCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
+    [self.mainCollectionView registerClass:[customCollectionCiewCell class] forCellWithReuseIdentifier:@"CustomCollectionCell"];
     
     [self.view addSubview:self.mainCollectionView];
     //self.mainCollectionView.scrollEnabled = NO;
@@ -173,12 +185,12 @@
 // The cell that is returned must be retrieved from a call to -dequeueReusableCellWithReuseIdentifier:forIndexPath:
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    UICollectionViewCell *cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
+    customCollectionCiewCell *customCellView=[collectionView dequeueReusableCellWithReuseIdentifier:@"CustomCollectionCell" forIndexPath:indexPath];
    // UICollectionViewCell * cell=[collectionView cellForItemAtIndexPath:indexPath];
    
+         //customCellView = [[CustomCellView alloc] initWithFrame:cell.bounds];
     
     
-    CustomCellView *customCellView = [[CustomCellView alloc] initWithFrame:cell.bounds];
     
     if (indexPath.section==0) {
         
@@ -192,7 +204,7 @@
             toggleButton.frame=CGRectMake(60,5, 15, 15);
             [toggleButton setImage:[UIImage imageNamed:@"select_normal.png"] forState:UIControlStateNormal];
             [toggleButton setImage:[UIImage imageNamed:@"select_active.png"] forState:UIControlStateSelected];
-            [customCellView addSubview:toggleButton];
+           // [customCellView addSubview:toggleButton];
             
             
             if (selectAll==NO) {
@@ -223,21 +235,32 @@
         }
     customCellView.customImageCounterView.hidden=NO;
             NSURL * imageUrl;
-            if ([SingletonClass shareSingleton].superPower==0) {
-                 customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
-            }
-            else{
+           // *************** This is for super power adding ************
+           // if ([SingletonClass shareSingleton].superPower==0) {
+               //  customCellView.profileImageView .image= [UIImage imageNamed:@"Blur.jpg"];
+           // }
+           // else{
              imageUrl=[NSURL URLWithString:[NSString stringWithFormat:@"%@",[viewerImage objectAtIndex:indexPath.row]]];
                  [customCellView.profileImageView setImageWithURL:imageUrl];
-            }
+           // }
            
    
     customCellView.nameLabel.text =[viewerName objectAtIndex:indexPath.row];
+            NSString *offline,*online;
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                online=@"online_icon_ipad.png";
+                offline=@"offline_icon_ipad.png";
+            }
+            else{
+                online=@"online_icon.png";
+                offline=@"offline_icon.png";
+            }
+            
        if ([isOnline[indexPath.row] isEqualToNumber:[NSNumber numberWithInt:0]]) {
-           customCellView.isOnlne.image=[UIImage imageNamed:@"offline_icon.png"];
+           customCellView.isOnlne.image=[UIImage imageNamed:offline];
        }
        else{
-           customCellView.isOnlne.image=[UIImage imageNamed:@"online_icon.png"];
+           customCellView.isOnlne.image=[UIImage imageNamed:online];
          
        }
     NSString *totalCount= [NSString stringWithFormat:@"%d",(int)indexPath.row];
@@ -250,6 +273,10 @@
     else{
         customCellView.customImageCounterView.frame = CGRectMake(70-h, 55, h, 16);
     }
+            if (UI_USER_INTERFACE_IDIOM()==UIUserInterfaceIdiomPad) {
+                
+                customCellView.customImageCounterView.frame = CGRectMake(100, 120, 50, 30);
+            };
     
     //customCellView.customImageCounterView.totalImageCountLabel.text = [SingletonClass shareSingleton].imgCount[indexPath.row];
        customCellView.customImageCounterView.totalImageCountLabel.text = imgCount[indexPath.row];
@@ -294,9 +321,9 @@
         customCellView.customImageCounterView.frame = CGRectMake(100, 120, 50, 30);
     }
     }
-    cell.backgroundColor = [UIColor clearColor];
-    [cell addSubview:customCellView];
-    return cell;
+    //cell.backgroundColor = [UIColor clearColor];
+   // [cell addSubview:customCellView];
+    return customCellView;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -366,9 +393,9 @@
         }
     }*/
     
-    if ([SingletonClass shareSingleton].superPower==0) {
+   // if ([SingletonClass shareSingleton].superPower==0) {
         return;
-    }
+   // }
      [SingletonClass shareSingleton].fromChat=NO;
         UserProfileViewController * userDataVC=[[UserProfileViewController alloc]initWithNibName:@"UserProfileViewController" bundle:nil];
         
@@ -592,7 +619,7 @@
     if (awardSanction==NO) {
         
     
-    if (viewerID.count>50) {
+    if ([SingletonClass shareSingleton].visitorAward==NO &&  viewerID.count>50) {
         NSURL * postUrl=[NSURL URLWithString:@"http://23.238.24.26/award/grant-award/"];
         
         NSMutableURLRequest *  request=[[NSMutableURLRequest alloc]initWithURL:postUrl cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:50];

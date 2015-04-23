@@ -191,7 +191,7 @@
     else{
     cell.containerView.frame=CGRectMake(0, 0, windowSize.width, row_hh);
     cell.cellLabel.textColor=[UIColor blackColor];
-    cell.cellLabel.frame=CGRectMake(60, 10, 200, 30);
+    cell.cellLabel.frame=CGRectMake(60, 5, 200, 30);
     cell.cellButton.frame=CGRectMake(20, 10, 15, 15);
         normal=@"select_normal.png";
         select=@"select.png";
@@ -253,17 +253,20 @@
     if ([cell.cellButton isSelected]==YES) {
         [cell.cellButton setImage:[UIImage imageNamed:normal]forState:UIControlStateNormal];
         [cell.cellButton setSelected:NO];
-        [self.selectedArray removeObject:indexPath];
+        
    
             for (int j=0; j<[SingletonClass shareSingleton].selectedIntName.count; j++) {
                 if ([[[SingletonClass shareSingleton].selectedIntName objectAtIndex:j]isEqualToString:[subData objectAtIndex:indexPath.row]]) {
-                    [[SingletonClass shareSingleton].selectedIntName removeObjectAtIndex:indexPath.row];
-                    [[SingletonClass shareSingleton].selectedIntId removeObjectAtIndex:indexPath.row];
+                    [[SingletonClass shareSingleton].selectedIntName removeObjectAtIndex:j];
+                    [[SingletonClass shareSingleton].selectedIntId removeObjectAtIndex:j];
                     [self.addInterestTable reloadData];
+                    [self.selectedArray removeObject:indexPath];
+                    NSLog(@" ids1  %@",[SingletonClass shareSingleton].selectedIntId );
+                    NSLog(@" names1 %@",[SingletonClass shareSingleton].selectedIntName);
                 }
             }
        
-        NSLog(@" %@",[subData objectAtIndex:indexPath.row]);
+        
     }
     else{
         [cell.cellButton setImage:[UIImage imageNamed:select]forState:UIControlStateSelected];
@@ -271,6 +274,7 @@
         [self.selectedArray addObject:indexPath];
         [[SingletonClass shareSingleton].selectedIntName addObject:[subData objectAtIndex:indexPath.row]];
         [[SingletonClass shareSingleton].selectedIntId addObject:[self.intr_id_arr objectAtIndex:indexPath.row]];
+         [self.addInterestTable reloadData];
         NSLog(@" %@",[subData objectAtIndex:indexPath.row]);
       
         

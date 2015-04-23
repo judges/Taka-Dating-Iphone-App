@@ -94,5 +94,8 @@
 
 // Award Section
 
-@property(nonatomic)BOOL visitorAward,userLikesAward;
+@property(nonatomic)BOOL visitorAward,userLikesAward,viewsAward,likesAward,interestAward;
+
+//chatting with user
+@property(nonatomic)NSString * chattingWith;
 @end
